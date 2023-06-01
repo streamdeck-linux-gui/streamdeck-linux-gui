@@ -336,7 +336,7 @@ class StreamDeckServer:
         :return: The vertical alignment setting
         :rtype: str
         """
-        if self.get_text_vertical_align(serial_number, page, button) != alignment:
+        if self.get_text_horizontal_align(serial_number, page, button) != alignment:
             self._button_state(serial_number, page, button)["text_horizontal_align"] = alignment
             self._save_state()
             self.update_button_filters(serial_number, page, button)
