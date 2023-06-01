@@ -215,15 +215,23 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_3.addWidget(self.text)
 
-        self.textButton = QPushButton(self.groupBox)
-        self.textButton.setObjectName(u"textButton")
-        self.textButton.setMinimumSize(QSize(30, 0))
-        self.textButton.setMaximumSize(QSize(30, 16777215))
+        self.text_v_align = QPushButton(self.groupBox)
+        self.text_v_align.setObjectName(u"text_v_align")
+        self.text_v_align.setMinimumSize(QSize(30, 0))
+        self.text_v_align.setMaximumSize(QSize(30, 16777215))
         icon2 = QIcon()
         icon2.addFile(u":/icons/icons/vertical-align.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.textButton.setIcon(icon2)
+        self.text_v_align.setIcon(icon2)
 
-        self.horizontalLayout_3.addWidget(self.textButton)
+        self.horizontalLayout_3.addWidget(self.text_v_align)
+
+        self.text_h_align = QPushButton(self.groupBox)
+        self.text_h_align.setObjectName(u"text_h_align")
+        icon3 = QIcon()
+        icon3.addFile(u":/icons/icons/horizontal-align.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.text_h_align.setIcon(icon3)
+
+        self.horizontalLayout_3.addWidget(self.text_h_align)
 
 
         self.formLayout.setLayout(1, QFormLayout.FieldRole, self.horizontalLayout_3)
@@ -355,8 +363,8 @@ class Ui_MainWindow(object):
         QWidget.setTabOrder(self.pages, self.imageButton)
         QWidget.setTabOrder(self.imageButton, self.removeButton)
         QWidget.setTabOrder(self.removeButton, self.text)
-        QWidget.setTabOrder(self.text, self.textButton)
-        QWidget.setTabOrder(self.textButton, self.command)
+        QWidget.setTabOrder(self.text, self.text_v_align)
+        QWidget.setTabOrder(self.text_v_align, self.command)
         QWidget.setTabOrder(self.command, self.keys)
         QWidget.setTabOrder(self.keys, self.switch_page)
         QWidget.setTabOrder(self.switch_page, self.change_brightness)
@@ -410,9 +418,10 @@ class Ui_MainWindow(object):
         self.removeButton.setText("")
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"Label:", None))
 #if QT_CONFIG(tooltip)
-        self.textButton.setToolTip(QCoreApplication.translate("MainWindow", u"Text vertical alignment", None))
+        self.text_v_align.setToolTip(QCoreApplication.translate("MainWindow", u"Text vertical alignment", None))
 #endif // QT_CONFIG(tooltip)
-        self.textButton.setText("")
+        self.text_v_align.setText("")
+        self.text_h_align.setText("")
         self.label_4.setText(QCoreApplication.translate("MainWindow", u"Font:", None))
         self.label_3.setText(QCoreApplication.translate("MainWindow", u"Command:", None))
         self.label_5.setText(QCoreApplication.translate("MainWindow", u"Press Keys:", None))

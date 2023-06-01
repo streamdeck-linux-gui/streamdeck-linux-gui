@@ -355,6 +355,20 @@ def align_text_vertical(window) -> None:
     redraw_buttons(window.ui)
 
 
+def align_text_horizontal(window) -> None:
+    serial_number = _deck_id(window.ui)
+    position = api.get_text_horizontal_align(serial_number, _page(window.ui), selected_button.index)  # type: ignore # Index property added
+    if position == "center" or position == "":
+        position = "left"
+    elif position == "left":
+        position = "right"
+    elif position == "right":
+        position = ""
+
+    api.set_text_horizontal_align(serial_number, _page(window.ui), selected_button.index, position)  # type: ignore # Index property added
+    redraw_buttons(window.ui)
+
+
 def remove_image(window) -> None:
     deck_id = _deck_id(window.ui)
     image = api.get_button_icon(deck_id, _page(window.ui), selected_button.index)  # type: ignore # Index property added
@@ -433,7 +447,8 @@ def enable_button_configuration(ui, enabled: bool):
     ui.switch_page.setEnabled(enabled)
     ui.imageButton.setEnabled(enabled)
     ui.removeButton.setEnabled(enabled)
-    ui.textButton.setEnabled(enabled)
+    ui.text_h_align.setEnabled(enabled)
+    ui.text_v_align.setEnabled(enabled)
     ui.label_5.setVisible(pnput_supported)
     ui.keys.setVisible(pnput_supported)
     ui.label_6.setVisible(pnput_supported)
@@ -771,7 +786,8 @@ def create_main_window(logo: QIcon, app: QApplication) -> MainWindow:
     set_button_text_font_list(ui)
     ui.switch_page.valueChanged.connect(partial(update_switch_page, ui))
     ui.imageButton.clicked.connect(partial(select_image, main_window))
-    ui.textButton.clicked.connect(partial(align_text_vertical, main_window))
+    ui.text_h_align.clicked.connect(partial(align_text_horizontal, main_window))
+    ui.text_v_align.clicked.connect(partial(align_text_vertical, main_window))
     ui.removeButton.clicked.connect(partial(remove_image, main_window))
     ui.settingsButton.clicked.connect(partial(show_settings, main_window))
     ui.actionExport.triggered.connect(partial(export_config, main_window))

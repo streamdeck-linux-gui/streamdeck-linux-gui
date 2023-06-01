@@ -12,10 +12,11 @@ class TextFilter(Filter):
 
     image: Image
 
-    def __init__(self, text: str, font: str, font_size: int, vertical_align: str):
+    def __init__(self, text: str, font: str, font_size: int, vertical_align: str, horizontal_align: str):
         super(TextFilter, self).__init__()
         self.text = text
         self.vertical_align = vertical_align
+        self.horizontal_align = horizontal_align
         self.true_font = ImageFont.truetype(font, font_size)
         # fmt: off
         kernel = [
@@ -31,7 +32,7 @@ class TextFilter(Filter):
         self.image = None
 
         # Hashcode should be created for anything that makes this frame unique
-        self.hashcode = hash((self.__class__, text, font, font_size, vertical_align))
+        self.hashcode = hash((self.__class__, text, font, font_size, vertical_align, horizontal_align))
 
     def initialize(self, size: Tuple[int, int]):
         self.image = Image.new("RGBA", size)
@@ -40,7 +41,7 @@ class TextFilter(Filter):
         # Calculate the height and width of the text we're drawing, using the font itself
         label_w = backdrop_draw.textlength(self.text, font=self.true_font)
         # Calculate dimensions for text that include ascender (above the line)
-        # and below the line  (descender) characters. This is used to adust the
+        # and below the line  (descender) characters. This is used to adjust the
         # font placement and should allow for button text to horizontally align
         # across buttons. Basically we want to figure out what is the tallest
         # text we will need to draw.
@@ -60,7 +61,15 @@ class TextFilter(Filter):
             label_y = size[1] - label_h
             # Default or "bottom"
 
-        label_pos = ((size[0] - label_w) // 2, label_y)
+        if self.horizontal_align == "left":
+            label_x = 0
+        elif self.horizontal_align == "right":
+            label_x = size[0] - label_w
+        else:
+            label_x = (size[0] - label_w) // 2
+            # Default or "center"
+
+        label_pos = (label_x, label_y)
 
         backdrop_draw.text(label_pos, text=self.text, font=self.true_font, fill="black")
         self.image = self.image.filter(TextFilter.font_blur)
