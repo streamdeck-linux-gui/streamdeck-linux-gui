@@ -11,12 +11,13 @@ from typing import Dict, Optional
 import pkg_resources
 from PySide6 import QtWidgets
 from PySide6.QtCore import QMimeData, QSignalBlocker, QSize, Qt, QTimer, QUrl
-from PySide6.QtGui import QAction, QDesktopServices, QDrag, QIcon
+from PySide6.QtGui import QAction, QDesktopServices, QDrag, QFontDatabase, QIcon
 from PySide6.QtWidgets import QApplication, QDialog, QFileDialog, QMainWindow, QMenu, QMessageBox, QSizePolicy, QSystemTrayIcon
 
 from streamdeck_ui.api import StreamDeckServer
 from streamdeck_ui.cli.server import CLIStreamDeckServer
 from streamdeck_ui.config import LOGO, STATE_FILE
+from streamdeck_ui.config import FONTS_PATH, LOGO, STATE_FILE
 from streamdeck_ui.semaphore import Semaphore, SemaphoreAcquireError
 from streamdeck_ui.ui_main import Ui_MainWindow
 from streamdeck_ui.ui_settings import Ui_SettingsDialog
@@ -36,7 +37,6 @@ except ImportError as pynput_error:
     print("and your operating system uses Wayland.")
     print("")
     print(f"For troubleshooting purposes, the actual error is: \n{pynput_error}")
-
 
 api: StreamDeckServer
 
@@ -412,6 +412,8 @@ def button_clicked(ui, clicked_button, buttons) -> None:
         ui.command.setText(api.get_button_command(deck_id, _page(ui), button_id))
         ui.keys.setCurrentText(api.get_button_keys(deck_id, _page(ui), button_id))
         ui.write.setPlainText(api.get_button_write(deck_id, _page(ui), button_id))
+        ui.text_font.setCurrentText(api.get_button_font(deck_id, _page(ui), button_id))
+        ui.text_font_size.setValue(api.get_button_font_size(deck_id, _page(ui), button_id))
         ui.change_brightness.setValue(api.get_button_change_brightness(deck_id, _page(ui), button_id))
         ui.switch_page.setValue(api.get_button_switch_page(deck_id, _page(ui), button_id))
         api.reset_dimmer(deck_id)
@@ -424,6 +426,8 @@ def enable_button_configuration(ui, enabled: bool):
     ui.text.setEnabled(enabled)
     ui.command.setEnabled(enabled)
     ui.keys.setEnabled(enabled)
+    ui.text_font.setEnabled(enabled)
+    ui.text_font_size.setEnabled(enabled)
     ui.write.setEnabled(enabled)
     ui.change_brightness.setEnabled(enabled)
     ui.switch_page.setEnabled(enabled)
@@ -443,6 +447,8 @@ def reset_button_configuration(ui):
     ui.text.clear()
     ui.command.clear()
     ui.keys.clearEditText()
+    ui.text_font.clearEditText()
+    ui.text_font_size.setValue(0)
     ui.write.clear()
     ui.change_brightness.setValue(0)
     ui.switch_page.setValue(0)
@@ -631,6 +637,30 @@ class MainWindow(QMainWindow):
         QtWidgets.QMessageBox.about(self, title, "\n".join(body))
 
 
+def update_button_text_font(ui, font: str) -> None:
+    if not selected_button:
+        return
+    deck_id = _deck_id(ui)
+    if deck_id is None:
+        return
+    api.set_button_font(deck_id, _page(ui), selected_button.index, font)  # type: ignore # Index property added
+    icon = api.get_button_icon_pixmap(deck_id, _page(ui), selected_button.index)  # type: ignore # Index property added
+    if icon:
+        selected_button.setIcon(icon)
+
+
+def update_button_text_font_size(ui, font_size: int) -> None:
+    if not selected_button:
+        return
+    deck_id = _deck_id(ui)
+    if deck_id is None:
+        return
+    api.set_button_font_size(deck_id, _page(ui), selected_button.index, font_size)  # type: ignore # Index property added
+    icon = api.get_button_icon_pixmap(deck_id, _page(ui), selected_button.index)  # type: ignore # Index property added
+    if icon:
+        selected_button.setIcon(icon)
+
+
 def queue_update_button_text(ui, text: str) -> None:
     """Instead of directly updating the text (label) associated with
     the button, add a small delay. If this is called before the
@@ -737,6 +767,8 @@ def create_main_window(logo: QIcon, app: QApplication) -> MainWindow:
     ui.keys.currentTextChanged.connect(partial(update_button_keys, ui))
     ui.write.textChanged.connect(partial(update_button_write, ui))
     ui.change_brightness.valueChanged.connect(partial(update_change_brightness, ui))
+    ui.text_font_size.valueChanged.connect(partial(update_button_text_font_size, ui))
+    set_button_text_font_list(ui)
     ui.switch_page.valueChanged.connect(partial(update_switch_page, ui))
     ui.imageButton.clicked.connect(partial(select_image, main_window))
     ui.textButton.clicked.connect(partial(align_text_vertical, main_window))
@@ -751,6 +783,18 @@ def create_main_window(logo: QIcon, app: QApplication) -> MainWindow:
     ui.settingsButton.setEnabled(False)
     enable_button_configuration(ui, False)
     return main_window
+
+
+def set_button_text_font_list(ui: Ui_MainWindow) -> None:
+    """Prepares the font selection combo box with all available fonts"""
+    ui.text_font.currentTextChanged.connect(partial(update_button_text_font, ui))
+    ui.text_font.clear()
+    font_files = [f for f in os.listdir(os.path.join(FONTS_PATH)) if f.endswith(".ttf")]
+
+    ui.text_font.addItem("")
+    for font_file in font_files:
+        # remove extension from font_file
+        ui.text_font.addItem(font_file)
 
 
 def create_tray(logo: QIcon, app: QApplication, main_window: MainWindow) -> QSystemTrayIcon:
