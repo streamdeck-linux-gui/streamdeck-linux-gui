@@ -3,6 +3,7 @@ name = "streamdeck_ui"
 version = "2.0.16"
 description = "A service, Web Interface, and UI for interacting with your computer using a Stream Deck"
 authors = ["Timothy Crosley <timothy.crosley@gmail.com>"]
+maintainers = ["4s3ti <4s3ti@4s3ti.net>"]
 license = "MIT"
 readme = "README.md"
 
@@ -56,5 +57,5 @@ include_reference_documentation = false
 extra_dirs = ["art", "images", "media", "scripts"]
 
 [tool.portray.mkdocs]
-repo_url = "https://github.com/timothycrosley/streamdeck-ui"
+repo_url = "https://github.com/streamdeck-linux-gui/streamdeck-linux-gui"
 edit_uri = "edit/master/"
