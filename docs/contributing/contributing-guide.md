@@ -44,6 +44,6 @@ Thanks for the contribution! It will quickly get reviewed, and, once accepted, w
 I can not tell you how thankful I am for the hard work done by streamdeck_ui contributors like *you*.
 
 Thank you!
-
+#Honory mention to previous core Developer
 ~Timothy Crosley
 

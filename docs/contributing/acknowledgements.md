@@ -1,6 +1,7 @@
 Contributors
 ===================
-
+#
+#Honory mention to previous core Developers
 ## Core Developers
 - Pieter Venter (@dodgyrabbit)
 - Timothy Crosley (@timothycrosley)
@@ -20,5 +21,5 @@ Contributors
 --------------------------------------------
 
 A sincere thanks to everyone who helps make streamdeck_ui into a great Python3 project!
-
+#Honory mention to previous core Developer
 ~Timothy Crosley
