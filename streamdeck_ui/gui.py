@@ -11,13 +11,13 @@ from typing import Dict, Optional
 import pkg_resources
 from PySide6 import QtWidgets
 from PySide6.QtCore import QMimeData, QSignalBlocker, QSize, Qt, QTimer, QUrl
-from PySide6.QtGui import QAction, QDesktopServices, QDrag, QIcon
-from PySide6.QtWidgets import QApplication, QDialog, QFileDialog, QMainWindow, QMenu, QMessageBox, QSizePolicy, QSystemTrayIcon
+from PySide6.QtGui import QAction, QDesktopServices, QDrag, QIcon, QPalette
+from PySide6.QtWidgets import QApplication, QDialog, QFileDialog, QMainWindow, QMenu, QMessageBox, QSizePolicy, \
+    QSystemTrayIcon, QColorDialog
 
 from streamdeck_ui.api import StreamDeckServer
 from streamdeck_ui.cli.server import CLIStreamDeckServer
-from streamdeck_ui.config import LOGO, STATE_FILE
-from streamdeck_ui.config import FONTS_PATH, LOGO, STATE_FILE
+from streamdeck_ui.config import FONTS_PATH, LOGO, STATE_FILE, DEFAULT_FONT_COLOR
 from streamdeck_ui.semaphore import Semaphore, SemaphoreAcquireError
 from streamdeck_ui.ui_main import Ui_MainWindow
 from streamdeck_ui.ui_settings import Ui_SettingsDialog
@@ -437,6 +437,11 @@ def button_clicked(ui, clicked_button, buttons) -> None:
         ui.write.setPlainText(api.get_button_write(deck_id, _page(ui), button_id))
         ui.text_font.setCurrentText(api.get_button_font(deck_id, _page(ui), button_id))
         ui.text_font_size.setValue(api.get_button_font_size(deck_id, _page(ui), button_id))
+        color = api.get_font_color(deck_id, _page(ui), button_id)
+        if color:
+            ui.text_color.setPalette(QPalette(color))
+        else:
+            ui.text_color.setPalette(QPalette(DEFAULT_FONT_COLOR))
         ui.change_brightness.setValue(api.get_button_change_brightness(deck_id, _page(ui), button_id))
         ui.switch_page.setValue(api.get_button_switch_page(deck_id, _page(ui), button_id))
         api.reset_dimmer(deck_id)
@@ -458,6 +463,7 @@ def enable_button_configuration(ui, enabled: bool):
     ui.removeButton.setEnabled(enabled)
     ui.text_h_align.setEnabled(enabled)
     ui.text_v_align.setEnabled(enabled)
+    ui.text_color.setEnabled(enabled)
     ui.label_5.setVisible(pnput_supported)
     ui.keys.setVisible(pnput_supported)
     ui.label_6.setVisible(pnput_supported)
@@ -473,6 +479,7 @@ def reset_button_configuration(ui):
     ui.keys.clearEditText()
     ui.text_font.clearEditText()
     ui.text_font_size.setValue(0)
+    ui.text_color.setPalette(QPalette(DEFAULT_FONT_COLOR))
     ui.write.clear()
     ui.change_brightness.setValue(0)
     ui.switch_page.setValue(0)
@@ -793,6 +800,7 @@ def create_main_window(logo: QIcon, app: QApplication) -> MainWindow:
     ui.change_brightness.valueChanged.connect(partial(update_change_brightness, ui))
     ui.text_font_size.valueChanged.connect(partial(update_button_text_font_size, ui))
     set_button_text_font_list(ui)
+    ui.text_color.clicked.connect(partial(show_color_dialog, ui))
     ui.switch_page.valueChanged.connect(partial(update_switch_page, ui))
     ui.imageButton.clicked.connect(partial(select_image, main_window))
     ui.text_h_align.clicked.connect(partial(align_text_horizontal, main_window))
@@ -820,6 +828,17 @@ def set_button_text_font_list(ui: Ui_MainWindow) -> None:
     for font_file in font_files:
         # remove extension from font_file
         ui.text_font.addItem(font_file)
+
+
+def show_color_dialog(ui: Ui_MainWindow) -> None:
+    current_color = ui.text_color.palette().color(QPalette.ColorRole.Button)
+    color = QColorDialog.getColor(current_color, ui.text_color, "Select text color")
+
+    if color.isValid():
+        ui.text_color.setPalette(QPalette(color))
+        color_hex = color.name()
+        api.set_font_color(_deck_id(ui), _page(ui), _button(ui), color_hex)
+        redraw_buttons(ui)
 
 
 def create_tray(logo: QIcon, app: QApplication, main_window: MainWindow) -> QSystemTrayIcon:

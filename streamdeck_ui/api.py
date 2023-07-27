@@ -11,7 +11,8 @@ from PySide6.QtGui import QImage, QPixmap
 from StreamDeck.Devices import StreamDeck
 from StreamDeck.Transport.Transport import TransportError
 
-from streamdeck_ui.config import CONFIG_FILE_VERSION, DEFAULT_FONT, DEFAULT_FONT_SIZE, FONTS_PATH, STATE_FILE
+from streamdeck_ui.config import CONFIG_FILE_VERSION, DEFAULT_FONT, DEFAULT_FONT_SIZE, FONTS_PATH, STATE_FILE, \
+    DEFAULT_FONT_COLOR
 from streamdeck_ui.dimmer import Dimmer
 from streamdeck_ui.display.display_grid import DisplayGrid
 from streamdeck_ui.display.filter import Filter
@@ -362,6 +363,19 @@ class StreamDeckServer:
             display_handler = self.display_handlers[serial_number]
             display_handler.synchronize()
 
+    def set_font_color(self, serial_number: str, page: int, button: int, color: str) -> None:
+        """Sets the text color associated with a button"""
+        if self.get_font_color(serial_number, page, button) != color:
+            self._button_state(serial_number, page, button)["font_color"] = color
+            self._save_state()
+            self.update_button_filters(serial_number, page, button)
+            display_handler = self.display_handlers[serial_number]
+            display_handler.synchronize()
+
+    def get_font_color(self, serial_number: str, page: int, button: int) -> str:
+        """Returns the text color set for the specified button"""
+        return self._button_state(serial_number, page, button).get("font_color", "")
+
     def get_button_icon_pixmap(self, deck_id: str, page: int, button: int) -> Optional[QPixmap]:
         """Returns the QPixmap value for the given button (streamdeck, page, button)
 
@@ -564,6 +578,7 @@ class StreamDeckServer:
         text = button_settings.get("text")
         font = button_settings.get("font", DEFAULT_FONT)
         font_size = button_settings.get("font_size", DEFAULT_FONT_SIZE)
+        font_color = button_settings.get("font_color", DEFAULT_FONT_COLOR)
         if font == "":
             font = DEFAULT_FONT
         font = os.path.join(FONTS_PATH, font)
@@ -571,6 +586,6 @@ class StreamDeckServer:
         horizontal_align = button_settings.get("text_horizontal_align", "")
 
         if text:
-            filters.append(TextFilter(text, font, font_size, vertical_align, horizontal_align))
+            filters.append(TextFilter(text, font, font_size, font_color, vertical_align, horizontal_align))
 
         display_handler.replace(page, button, filters)

@@ -12,11 +12,12 @@ class TextFilter(Filter):
 
     image: Image
 
-    def __init__(self, text: str, font: str, font_size: int, vertical_align: str, horizontal_align: str):
+    def __init__(self, text: str, font: str, font_size: int, font_color: str, vertical_align: str, horizontal_align: str):
         super(TextFilter, self).__init__()
         self.text = text
         self.vertical_align = vertical_align
         self.horizontal_align = horizontal_align
+        self.font_color = font_color
         self.true_font = ImageFont.truetype(font, font_size)
         # fmt: off
         kernel = [
@@ -32,7 +33,7 @@ class TextFilter(Filter):
         self.image = None
 
         # Hashcode should be created for anything that makes this frame unique
-        self.hashcode = hash((self.__class__, text, font, font_size, vertical_align, horizontal_align))
+        self.hashcode = hash((self.__class__, text, font, font_size, font_color, vertical_align, horizontal_align))
 
     def initialize(self, size: Tuple[int, int]):
         self.image = Image.new("RGBA", size)
@@ -75,7 +76,7 @@ class TextFilter(Filter):
         self.image = self.image.filter(TextFilter.font_blur)
 
         foreground_draw = ImageDraw.Draw(self.image)
-        foreground_draw.text(label_pos, text=self.text, font=self.true_font, fill="white")
+        foreground_draw.text(label_pos, text=self.text, font=self.true_font, fill=self.font_color)
 
     def transform(self, get_input: Callable[[], Image.Image], get_output: Callable[[int], Image.Image], input_changed: bool, time: Fraction) -> Tuple[Image.Image, int]:
         """
