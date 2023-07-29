@@ -5,7 +5,7 @@ This has been tested on Arch with Plasma, in July 2023.
 ``` console
 sudo pacman -S hidapi python-pip qt6-base
 ```
-``` consiole
+``` console
 sudo pacman -S python-pipx
 ```
 ## Set path
