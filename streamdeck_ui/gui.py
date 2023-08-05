@@ -12,12 +12,11 @@ import pkg_resources
 from PySide6 import QtWidgets
 from PySide6.QtCore import QMimeData, QSignalBlocker, QSize, Qt, QTimer, QUrl
 from PySide6.QtGui import QAction, QDesktopServices, QDrag, QIcon, QPalette
-from PySide6.QtWidgets import QApplication, QDialog, QFileDialog, QMainWindow, QMenu, QMessageBox, QSizePolicy, \
-    QSystemTrayIcon, QColorDialog
+from PySide6.QtWidgets import QApplication, QColorDialog, QDialog, QFileDialog, QMainWindow, QMenu, QMessageBox, QSizePolicy, QSystemTrayIcon
 
 from streamdeck_ui.api import StreamDeckServer
 from streamdeck_ui.cli.server import CLIStreamDeckServer
-from streamdeck_ui.config import FONTS_PATH, LOGO, STATE_FILE, DEFAULT_FONT_COLOR
+from streamdeck_ui.config import DEFAULT_FONT_COLOR, FONTS_PATH, LOGO, STATE_FILE
 from streamdeck_ui.semaphore import Semaphore, SemaphoreAcquireError
 from streamdeck_ui.ui_main import Ui_MainWindow
 from streamdeck_ui.ui_settings import Ui_SettingsDialog
@@ -70,7 +69,18 @@ selected_button: Optional[QtWidgets.QToolButton] = None
 text_update_timer: Optional[QTimer] = None
 "Timer used to delay updates to the button text"
 
-dimmer_options = {"Never": 0, "10 Seconds": 10, "1 Minute": 60, "5 Minutes": 300, "10 Minutes": 600, "15 Minutes": 900, "30 Minutes": 1800, "1 Hour": 3600, "5 Hours": 7200, "10 Hours": 36000}
+dimmer_options = {
+    "Never": 0,
+    "10 Seconds": 10,
+    "1 Minute": 60,
+    "5 Minutes": 300,
+    "10 Minutes": 600,
+    "15 Minutes": 900,
+    "30 Minutes": 1800,
+    "1 Hour": 3600,
+    "5 Hours": 7200,
+    "10 Hours": 36000,
+}
 last_image_dir = ""
 
 
@@ -102,9 +112,9 @@ class DraggableButton(QtWidgets.QToolButton):
         serial_number = _deck_id(self.ui)
         page = _page(self.ui)
 
-        index = self.property('index')
+        index = self.property("index")
         if e.source():
-            source_index = e.source().property('index')
+            source_index = e.source().property("index")
             # Ignore drag and drop on yourself
             if source_index == index:
                 return
@@ -123,7 +133,7 @@ class DraggableButton(QtWidgets.QToolButton):
                 self.api.set_button_icon(serial_number, page, index, file_name)
 
         if e.source():
-            source_index = e.source().property('index')
+            source_index = e.source().property("index")
             icon = self.api.get_button_icon_pixmap(serial_number, page, source_index)
             if icon:
                 e.source().setIcon(icon)
@@ -259,9 +269,11 @@ def _page(ui: Ui_MainWindow) -> int:
 
 
 def _button(_ui: Ui_MainWindow) -> int:
-    index = selected_button.property('index')
-    print(f"Button index: {index}")
-    return index
+    if selected_button is not None:
+        index = selected_button.property("index")
+        print(f"Button index: {index}")
+        return index
+    return -1
 
 
 def update_button_text(ui, text: str) -> None:
@@ -402,7 +414,7 @@ def redraw_buttons(ui) -> None:
             # When rebuilding the buttons, we hide the old ones
             # and mark for deletion. They still hang around so
             # ignore them here
-            icon = api.get_button_icon_pixmap(deck_id, _page(ui), button.property('index'))
+            icon = api.get_button_icon_pixmap(deck_id, _page(ui), button.property("index"))
             if icon:
                 button.setIcon(icon)
 
@@ -543,7 +555,7 @@ def build_buttons(ui, tab) -> None:
         for _column in range(deck["layout"][1]):  # type: ignore
             button = DraggableButton(base_widget, ui, api)
             button.setCheckable(True)
-            button.setProperty('index', index)
+            button.setProperty("index", index)
             button.setSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.MinimumExpanding)
             button.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonIconOnly)
             button.setIconSize(QSize(80, 80))
