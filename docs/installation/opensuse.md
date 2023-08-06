@@ -3,7 +3,7 @@ This has been tested on Tumbleweed.
 
 ## Install hidapi
 ``` console
-sudo zypper install libhidapi-libusb0 python310-devel kernel-devel
+sudo zypper install libhidapi-libusb0 python312-devel kernel-devel python311-evdev
 ```
  > `python310-devel` and `kernel-devel` are required because pip is going to have to build `evdev`.
 
@@ -24,14 +24,25 @@ sudo udevadm trigger
 If the software is having problems later to detect the Stream Deck, you can try unplugging/plugging it back in.
 
 ## Install Stream Deck UI
+
+### From Pypi with pip
+```bash
+python3 -m pip install streamdeck-linux-gui --user
 ```
-python3 -m pip install streamdeck-ui --user
+
+### From Surce 
+Please make sure you have followed the steps below untill the **Install Stream Deck UI section** before continuing.
+
+
+The steps to install from source can be found [here](source.md)
+
+### Launch the Streamdeck UI
+Launch with
+```bash
+streamdeck
 ```
 
 See [system tray](../troubleshooting.md#no-system-tray-indicator) installation.
 
-Launch with
-```
-streamdeck
-```
+
 See [troubleshooting](../troubleshooting.md) for tips if you're stuck.

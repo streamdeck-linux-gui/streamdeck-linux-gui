@@ -15,6 +15,7 @@ from PySide6.QtGui import QAction, QDesktopServices, QDrag, QIcon
 from PySide6.QtWidgets import QApplication, QDialog, QFileDialog, QMainWindow, QMenu, QMessageBox, QSizePolicy, QSystemTrayIcon
 
 from streamdeck_ui.api import StreamDeckServer
+from streamdeck_ui.cli.server import CLIStreamDeckServer
 from streamdeck_ui.config import LOGO, STATE_FILE
 from streamdeck_ui.semaphore import Semaphore, SemaphoreAcquireError
 from streamdeck_ui.ui_main import Ui_MainWindow
@@ -163,7 +164,7 @@ def handle_keypress(ui, deck_id: str, key: int, state: bool) -> None:
         command = api.get_button_command(deck_id, page, key)
         if command:
             try:
-                Popen(shlex.split(command))
+                Popen(shlex.split(command))  # nosec, need to allow execution of arbitrary commands
             except Exception as error:
                 print(f"The command '{command}' failed: {error}")
 
@@ -840,7 +841,7 @@ def start(_exit: bool = False) -> None:
         show_ui = False
 
     try:
-        version = pkg_resources.get_distribution("streamdeck_ui").version
+        version = pkg_resources.get_distribution("streamdeck-linux-gui").version
     except pkg_resources.DistributionNotFound:
         version = "devel"
 
@@ -874,6 +875,9 @@ def start(_exit: bool = False) -> None:
 
             api.start()
 
+            cli = CLIStreamDeckServer(api, ui)
+            cli.start()
+
             # Configure signal hanlders
             # https://stackoverflow.com/a/4939113/192815
             timer = QTimer()
@@ -895,6 +899,7 @@ def start(_exit: bool = False) -> None:
             else:
                 app.exec()
                 api.stop()
+                cli.stop()
                 sys.exit()
 
     except SemaphoreAcquireError:
