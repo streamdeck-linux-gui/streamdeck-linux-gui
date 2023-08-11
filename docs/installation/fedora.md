@@ -4,7 +4,7 @@ This has been tested on Fedora 36, 37.
 
 ## Install hidapi
 
-``` bash
+```bash
 sudo dnf install python3-pip python3-devel hidapi
 ```
 
@@ -12,7 +12,7 @@ sudo dnf install python3-pip python3-devel hidapi
 
 You need to upgrade pip, using pip. In my experience, old versions of pip may fail to properly install some of the required Python dependencies.
 
-```
+```bash
 python -m pip install --upgrade pip
 ```
 
@@ -20,13 +20,13 @@ python -m pip install --upgrade pip
 
 The following will create a file called `/etc/udev/rules.d/70-streamdeck.rules` and add the following text to it: `SUBSYSTEM=="usb", ATTRS{idVendor}=="0fd9", TAG+="uaccess"`. Creating this file adds a udev rule that provides your user with access to USB devices created by Elgato.
 
-``` bash
+```bash
 sudo sh -c 'echo "SUBSYSTEM==\"usb\", ATTRS{idVendor}==\"0fd9\", TAG+=\"uaccess\"" > /etc/udev/rules.d/70-streamdeck.rules'
 ```
 
 For the rule to take immediate effect, run the following command:
 
-``` bash
+```bash
 sudo udevadm trigger
 ```
 

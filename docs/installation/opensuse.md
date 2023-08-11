@@ -4,7 +4,7 @@ This has been tested on Tumbleweed.
 
 ## Install hidapi
 
-``` console
+```bash
 sudo zypper install libhidapi-libusb0 python312-devel kernel-devel python311-evdev
 ```
 
@@ -14,7 +14,7 @@ sudo zypper install libhidapi-libusb0 python312-devel kernel-devel python311-evd
 
 You may need to upgrade pip, using pip.
 
-```
+```bash
 python3 -m pip install --upgrade pip
 ```
 
@@ -22,13 +22,13 @@ python3 -m pip install --upgrade pip
 
 The following will create a file called `/etc/udev/rules.d/70-streamdeck.rules` and add the following text to it: `SUBSYSTEM=="usb", ATTRS{idVendor}=="0fd9", TAG+="uaccess"`. Creating this file adds a udev rule that provides your user with access to USB devices created by Elgato.
 
-``` bash
+```bash
 sudo sh -c 'echo "SUBSYSTEM==\"usb\", ATTRS{idVendor}==\"0fd9\", TAG+=\"uaccess\"" > /etc/udev/rules.d/70-streamdeck.rules'
 ```
 
 For the rule to take immediate effect, run the following command:
 
-``` bash
+```bash
 sudo udevadm trigger
 ```
 
