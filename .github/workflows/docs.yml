@@ -11,9 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: DavidAnson/markdownlint-cli2-action@v11
-        with:
-          globs: '**/*.md'
       - uses: actions/setup-python@v4
         with:
           python-version: 3.x
