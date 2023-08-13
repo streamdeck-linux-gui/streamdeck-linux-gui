@@ -120,9 +120,7 @@ class StreamDeckServer:
         """
         self.plugevents.cpu_changed.emit(serial_number, cpu_usage)
 
-    def _key_change_callback(
-        self, deck_id: str, _deck: StreamDeck.StreamDeck, key: int, state: bool
-    ) -> None:
+    def _key_change_callback(self, deck_id: str, _deck: StreamDeck.StreamDeck, key: int, state: bool) -> None:
         """Callback whenever a key is pressed.
 
         Stream Deck key events fire on a background thread. Emit a signal
@@ -153,18 +151,11 @@ class StreamDeckServer:
             config = json.loads(state_file.read())
             file_version = config.get("streamdeck_ui_version", 0)
             if file_version != CONFIG_FILE_VERSION:
-                raise ValueError(
-                    "Incompatible version of config file found: "
-                    f"{file_version} does not match required version "
-                    f"{CONFIG_FILE_VERSION}."
-                )
+                raise ValueError("Incompatible version of config file found: " f"{file_version} does not match required version " f"{CONFIG_FILE_VERSION}.")
 
             self.state = {}
             for deck_id, deck in config["state"].items():
-                deck["buttons"] = {
-                    int(page_id): {int(button_id): button for button_id, button in buttons.items()}
-                    for page_id, buttons in deck.get("buttons", {}).items()
-                }
+                deck["buttons"] = {int(page_id): {int(button_id): button for button_id, button in buttons.items()} for page_id, buttons in deck.get("buttons", {}).items()}
                 self.state[deck_id] = deck
 
     def import_config(self, config_file: str) -> None:
@@ -285,9 +276,7 @@ class StreamDeckServer:
     def swap_buttons(self, deck_id: str, page: int, source_button: int, target_button: int) -> None:
         """Swaps the properties of the source and target buttons"""
         temp = cast(dict, self.state[deck_id]["buttons"])[page][source_button]
-        cast(dict, self.state[deck_id]["buttons"])[page][source_button] = cast(
-            dict, self.state[deck_id]["buttons"]
-        )[page][target_button]
+        cast(dict, self.state[deck_id]["buttons"])[page][source_button] = cast(dict, self.state[deck_id]["buttons"])[page][target_button]
         cast(dict, self.state[deck_id]["buttons"])[page][target_button] = temp
         self._save_state()
 
@@ -348,9 +337,7 @@ class StreamDeckServer:
         """
         return self._button_state(serial_number, page, button).get("text_horizontal_align", "")
 
-    def set_text_horizontal_align(
-        self, serial_number: str, page: int, button: int, alignment: str
-    ) -> None:
+    def set_text_horizontal_align(self, serial_number: str, page: int, button: int, alignment: str) -> None:
         """Gets the vertical text alignment. Values are top, middle, bottom
 
         :param serial_number: The Stream Deck serial number.
@@ -369,9 +356,7 @@ class StreamDeckServer:
             display_handler = self.display_handlers[serial_number]
             display_handler.synchronize()
 
-    def set_text_vertical_align(
-        self, serial_number: str, page: int, button: int, alignment: str
-    ) -> None:
+    def set_text_vertical_align(self, serial_number: str, page: int, button: int, alignment: str) -> None:
         """Gets the vertical text alignment. Values are top, middle, bottom
 
         :param serial_number: The Stream Deck serial number.
@@ -431,9 +416,7 @@ class StreamDeckServer:
         """Returns the icon path for the specified button"""
         return self._button_state(deck_id, page, button).get("icon", "")
 
-    def set_button_change_brightness(
-        self, deck_id: str, page: int, button: int, amount: int
-    ) -> None:
+    def set_button_change_brightness(self, deck_id: str, page: int, button: int, amount: int) -> None:
         """Sets the brightness changing associated with a button"""
         if self.get_button_change_brightness(deck_id, page, button) != amount:
             self._button_state(deck_id, page, button)["brightness_change"] = amount
@@ -453,9 +436,7 @@ class StreamDeckServer:
         """Returns the command set for the specified button"""
         return self._button_state(deck_id, page, button).get("command", "")
 
-    def set_button_switch_page(
-        self, deck_id: str, page: int, button: int, switch_page: int
-    ) -> None:
+    def set_button_switch_page(self, deck_id: str, page: int, button: int, switch_page: int) -> None:
         """Sets the page switch associated with the button"""
         if self.get_button_switch_page(deck_id, page, button) != switch_page:
             self._button_state(deck_id, page, button)["switch_page"] = switch_page
@@ -576,9 +557,7 @@ class StreamDeckServer:
             # the type hinting is defined causes it to believe there *may* not be a list
             pages = len(deck_state["buttons"])  # type: ignore
 
-            display_handler = self.display_handlers.get(
-                serial_number, DisplayGrid(self.lock, deck, pages, self.cpu_usage_callback)
-            )
+            display_handler = self.display_handlers.get(serial_number, DisplayGrid(self.lock, deck, pages, self.cpu_usage_callback))
             display_handler.set_page(self.get_page(deck_id))
             self.display_handlers[serial_number] = display_handler
 
@@ -623,8 +602,6 @@ class StreamDeckServer:
         horizontal_align = button_settings.get("text_horizontal_align", "")
 
         if text:
-            filters.append(
-                TextFilter(text, font, font_size, font_color, vertical_align, horizontal_align)
-            )
+            filters.append(TextFilter(text, font, font_size, font_color, vertical_align, horizontal_align))
 
         display_handler.replace(page, button, filters)
