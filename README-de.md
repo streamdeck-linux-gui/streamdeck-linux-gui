@@ -49,13 +49,13 @@ Um streamdeck_ui unter Linux zu verwenden, müssen einige System-Bibliotheken al
 Die Namen dieser Bibliotheken können, abhängig von ihrem Betriebssystem, variieren.  
 Debian / Ubuntu:
 
-``` console
+```bash
 sudo apt install python3-pip libhidapi-libusb0 libxcb-xinerama0
 ```
 
 Fedora:
 
-``` console
+```bash
 sudo dnf install python3-pip python3-devel hidapi
 ```
 
@@ -65,7 +65,7 @@ Um streamdeck_ui ohne root-Rechte zu benutzen, müssen sie ihrem user vollen Zug
 
 Fügen sie die folgenden udev rules mit Hilfe ihres Editors hinzu:
 
-``` console
+```bash
 sudoedit /etc/udev/rules.d/70-streamdeck.rules
 # Wenn das nicht funktioniert, versuchen sie:
 sudo nano /etc/udev/rules.d/70-streamdeck.rules
@@ -73,26 +73,26 @@ sudo nano /etc/udev/rules.d/70-streamdeck.rules
 
 Fügen sie die folgenden Zeilen ein:
 
-``` console
+```ini
 SUBSYSTEM=="usb", ATTRS{idVendor}=="0fd9", TAG+="uaccess"
 ```
 
 Aktivieren sie die Regeln:
 
-``` console
+```bash
 sudo udevadm trigger
 ```
 
 Die Installation der Anwendung selbst erfolgt via pip:
 
-``` console
+```bash
 pip3 install streamdeck-ui --user
 ```
 
 Stellen sie sicher, dass `$HOME/.local/bin` in ihrem PATH enthalten ist.  
 Wenn das nicht der Fall ist, fügen sie
 
-``` console
+```ini
 PATH=$PATH:$HOME/.local/bin
 ```
 
@@ -100,7 +100,7 @@ an das Ende ihrer shell Konfigurationsdatei (wahrscheinlich .bashrc in ihrem hom
 
 Jetzt können sie `streamdeck` starten um mit der Konfiguration zu beginnen.
 
-``` console
+```bash
 streamdeck
 ```
 
@@ -111,7 +111,7 @@ Es wird empfohlen `streamdeck` in die Autostart-Liste ihrer Fenster-Umgebung auf
 Auf anderen Betriebssystemen müssen sie die benötigten [Abhängigkeiten](https://github.com/abcminiuser/python-elgato-streamdeck#package-dependencies) der Bibliothek installieren.
 Danach verwenden sie pip zur Installation der Anwendung:
 
-``` console
+```bash
 pip3 install streamdeck-ui --user
 streamdeck
 ```
@@ -137,7 +137,7 @@ Sie können ein tool wie `xdotool` verwenden, um mit anderen Programmen zu inter
 
 Finden sie das Fenster, das mit `Meet -` beginnt, und setzen sie den Fokus darauf. Das hilft ihnen, wenn sie eine Google Meet Sitzung auf irgend einem Tab haben, die aber hinter anderen Fenstern verloren gegangen ist.
 
-``` console
+```bash
 xdotool search --name '^Meet - .+$' windowactivate 
 ```
 
@@ -145,19 +145,19 @@ xdotool search --name '^Meet - .+$' windowactivate
 
 Finden sie das Fenster, das mit `Meet -` beginnt, und senden sie `ctrl+d` dorthin. Das bewirkt das Umschalten der Stummschaltung (mute button) in Google Meet.
 
-``` console
+```bash
 xdotool search --name '^Meet - .+$' windowactivate --sync key ctrl+d
 ```
 
 Drehen sie die System-Lautstärke um einen gewissen Prozentsatz hoch (oder runter). Wir nehmen an, sie verwenden PulseAudio/Alsa Mixer.
 
-``` console
+```bash
 amixer -D pulse sset Master 20%+
 ```
 
 Wenn sie einen Befehl abgeben wollen der shell-script spezifische Dinge wie `&&` oder `|` enthält, dann starten sie ihn via bash. Dieser Befehl wird de Fokus auf Firefox setzen, indem es `wmctrl` nutzt, und dann den Fokus auf den ersten Tab verschieben:
 
-``` console
+```bash
 bash -c "wmctrl -a firefox  && xdotool key alt+1"
 ```
 
@@ -177,7 +177,7 @@ Sie können auch einen Tasten-Code im hex Format verwenden, `0x74` ist zum Beisp
 
 #### Beispiele
 
-- `F11` - drückt F11. Wenn der Fokus auf einem Browser ist, schaltet das zwischen Vollbild und Normalbild hin und her.
+* `F11` - drückt F11. Wenn der Fokus auf einem Browser ist, schaltet das zwischen Vollbild und Normalbild hin und her.
 * `alt+F4` - schließt das aktuelle Fenster.
 * `ctrl+w` - schließt den aktuellen Browser-Tab.
 * `cmd+left` - verkleinert das Fenster auf seine linke Hälfte. Achtung, `cmd` ist die **super** Taste (entsprechend der Windows Taste).
@@ -194,7 +194,7 @@ Die Standardliste der Tasten finden sie [im source-code](https://pynput.readthed
 
 Die `super` Taste (Windows-Taste) kann bei einigen Linux-Versionen problematisch sein. Statt der Tastendruck-Funktion können sie dann die Befehls-Funktion wie folgt benutzen. In diesem Beispiel wollen wir die `Super` Taste und `4` drücken, was die Anwendung Nummer 4 ihrer Favoriten startet (Ubuntu).
 
-```
+```bash
 xdotool key "Super_L+4"
 ```
 
@@ -205,7 +205,7 @@ hier keine Spezial-(Modifikations-)Tasten akzeptiert werden. Wenn sie jedoch Ent
 
 #### Beispiele
 
-```
+```console
 Unfortunately that's a hard no.
 Kind regards,
 Joe
