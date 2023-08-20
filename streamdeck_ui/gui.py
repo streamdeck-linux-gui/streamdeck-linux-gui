@@ -154,7 +154,7 @@ class DraggableButton(QtWidgets.QToolButton):
 
 
 def _replace_special_keys_numpad(key):
-    number_base = int(0xffb0)
+    number_base = int(0xFFB0)
     # if numpad_{code} is a number
     if key[7:].isdigit():
         return f"{hex(int(key[7:], 16) + number_base)}"
