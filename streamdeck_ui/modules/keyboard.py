@@ -99,6 +99,12 @@ class Keyboard:
                 raise Controller.InvalidCharacterException(i, character)
 
     def keys(self, string: str):
+        """
+        Presses and releases a series of keys.
+
+        This method will send all key presses and releases necessary to type
+        a combination of keys. including modifiers.
+        """
         if not self.pynput_supported:
             raise Exception("Virtual keyboard functionality is not supported on this system.")
 
