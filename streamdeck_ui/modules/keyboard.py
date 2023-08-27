@@ -57,6 +57,7 @@ class Keyboard:
     pynput_supported: bool
     keyboard: Controller
 
+    # fmt: off
     _CONTROL_CODES = {
         '\n': Key.enter,
         '\r': Key.enter,
@@ -67,6 +68,7 @@ class Keyboard:
         'plus': '+',
         'comma': ','
     }
+    # fmt: on
 
     def __init__(self):
         if pynput_supported:
