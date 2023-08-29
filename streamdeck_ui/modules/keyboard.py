@@ -11,12 +11,8 @@ except ImportError as pynput_error:
     print("*** Warning ***")
     print("---------------")
     print("Virtual keyboard functionality has been disabled.")
-    print(
-        "You can still run Stream Deck UI, however you will not be able to emulate key presses or text typing."
-    )
-    print(
-        "The most likely reason you are seeing this message is because you don't have an X server running"
-    )
+    print("You can still run Stream Deck UI, however you will not be able to emulate key presses or text typing.")
+    print("The most likely reason you are seeing this message is because you don't have an X server running")
     print("and your operating system uses Wayland.")
     print("")
     print(f"For troubleshooting purposes, the actual error is: \n{pynput_error}")
