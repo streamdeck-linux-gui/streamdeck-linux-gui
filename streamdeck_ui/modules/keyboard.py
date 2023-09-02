@@ -5,15 +5,15 @@ pynput_supported: bool = True
 try:
     from pynput.keyboard import Controller, Key, KeyCode
 except ImportError as pynput_error:
-
-    class Controller:
+    # the following are dummy classes to allow the program to run without pynput
+    class Controller:  # type: ignore[no-redef]
         pass
 
-    class Key:
+    class Key:  # type: ignore[no-redef]
         enter = None
         tab = None
 
-    class KeyCode(int):
+    class KeyCode(int):  # type: ignore[no-redef]
         pass
 
     pynput_supported = False
