@@ -8,18 +8,14 @@ from streamdeck_ui.modules.keyboard import Keyboard
 def test_write_without_pynput_supported():
     keyboard = Keyboard()
     keyboard.pynput_supported = False
-    with pytest.raises(
-        Exception, match="Virtual keyboard functionality is not supported on this system."
-    ):
+    with pytest.raises(Exception, match="Virtual keyboard functionality is not supported on this system."):
         keyboard.write("test")
 
 
 def test_keys_without_pynput_supported():
     keyboard = Keyboard()
     keyboard.pynput_supported = False
-    with pytest.raises(
-        Exception, match="Virtual keyboard functionality is not supported on this system."
-    ):
+    with pytest.raises(Exception, match="Virtual keyboard functionality is not supported on this system."):
         keyboard.keys("ctrl+1")
 
 
