@@ -5,7 +5,9 @@ pynput_supported: bool = True
 try:
     from pynput.keyboard import Controller, Key, KeyCode
 except ImportError as pynput_error:
-    Controller = None
+
+    class Controller:
+        pass
 
     class Key:
         enter = None
@@ -70,8 +72,7 @@ class Keyboard:
     _DEFAULT_KEY_DELAY = 0.5
 
     def __init__(self, controller=None):
-        if pynput_supported:
-            self.keyboard = controller if controller else Controller()
+        self.keyboard = controller if controller else Controller()
         self.pynput_supported = pynput_supported
 
     def _replace_special_keys(self, key):
