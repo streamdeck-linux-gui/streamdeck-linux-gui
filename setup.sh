@@ -1,4 +1,23 @@
 #!/bin/bash
+# Add source Argument, this does expect the user to have already installed any and all Dependencies
+# Check if "source" argument is provided
+if [ "$1" = "source" ]; then
+    echo "Installing a development release"
+    
+    # Prompt the user to enter the development release URL
+    read -p "Enter the URL of the .zip asset for the development release: " release_url
+    
+    if [ -z "$release_url" ]; then
+        echo "URL cannot be empty."
+        exit 1
+    fi
+    
+    # Download and install the specified release.zip using pipx
+    pipx install "$release_url"
+    
+    echo "Installation complete."
+    exit 0
+fi
 
 # add uninstall argument as we can now handle this aswell since pipx is the ONLY form of install we are using
 # Check if "uninstall" argument is provided
