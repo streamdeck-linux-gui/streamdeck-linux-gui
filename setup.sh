@@ -62,7 +62,7 @@ elif [ -f /etc/centos-release ]; then
     # Install Python 3.8
     sudo yum -y groupinstall "Development Tools"
     # Changed your Python3 install to use the package that SHOULD be available by default on CentOS
-    sudo yum -y install openssl-devel bzip2-devel libffi-devel python3-pip
+    sudo yum -y install openssl-devel bzip2-devel libffi-devel python3-pip python3-devel gcc
     # Leaving original in the event that someone who uses CentOS cannot install using this method
     # wget https://www.python.org/ftp/python/3.8.9/Python-3.8.9.tgz
     # tar xvf Python-3.8.9.tgz
@@ -90,7 +90,7 @@ elif [ -f /etc/fedora-release ]; then
 
     # Added pipx as this appears to be simply available on Fedora in my VM which will let us use this
     # Install hidapi
-    sudo dnf install python3-pip python3-devel hidapi pipx
+    sudo dnf gcc install python3-pip python3-devel hidapi pipx
 
     # No Need to upgrade pip if we arent using pip
     # Upgrade pip
@@ -110,7 +110,7 @@ elif [ -f /etc/os-release ] && grep -qi 'opensuse' /etc/os-release; then
     echo "Installing on openSUSE"
 
     # Install hidapi
-    sudo zypper install libhidapi-libusb0 python312-devel kernel-devel python311-evdev python3-pipx
+    sudo zypper install libhidapi-libusb0 python312-devel kernel-devel python311-devel python311-evdev python3-pipx
     # No Need to upgrade pip if we arent using pip
     # Upgrade pip
     # python3 -m pip install --upgrade pip
@@ -129,7 +129,7 @@ elif [ -f /etc/debian_version ]; then
     echo "Installing on Debian or Ubuntu derivatives"
 
     # Install hidapi and pipx
-    sudo apt install libhidapi-libusb0 pipx
+    sudo apt install python3-dev gcc libhidapi-libusb0 pipx
 
     # Set path
     echo 'PATH=$PATH:$HOME/.local/bin' >> ~/.bashrc
