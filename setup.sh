@@ -47,7 +47,7 @@ if [ -f /etc/arch-release ]; then
     sudo udevadm trigger
 
     # Install Streamdeck
-    sudo pacman -S python-pipx
+    sudo pacman -S python-pipx python-pip
     pipx install streamdeck-linux-gui
 
 elif [ -f /etc/centos-release ]; then
