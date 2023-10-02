@@ -1,9 +1,9 @@
 # Installing on Arch
 
 This has been tested on:
-- Arch with Plasma (July 2023)
-- Arch with Cinnamon (October 2023)
-- Arch with Gnome (Per every release, thanks to dhtseany)
+* Arch with Plasma (July 2023)
+* Arch with Cinnamon (October 2023)
+* Arch with Gnome (Per every release, thanks to dhtseany)
 
 ## Install Dependencies
 
