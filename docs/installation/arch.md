@@ -1,6 +1,6 @@
 # Installing on Arch
 
-This has been tested on Arch with Plasma, in July 2023 and Arch with Cinnamon, in October 2023. 
+This has been tested on Arch with Plasma, in July 2023 and Arch with Cinnamon, in October 2023.
 
 ## Install Dependencies
 
