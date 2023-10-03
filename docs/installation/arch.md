@@ -75,7 +75,7 @@ sudo pacman -U streamdeck-ui-3.1.0-1-any.pkg.tar.zst
 yay -S streamdeck-ui
 ```
 
-> For both yay and the AUR you can also install the [Development branch](https://aur.archlinux.org/packages/streamdeck-ui-develop) if you want to stay up to date with improvements.
+> For both yay and the AUR you can also install the [Development branch](https://aur.archlinux.org/packages/streamdeck-ui-develop) if you want to stay on the bleeding edge or help with testing.
 
 ## Launch the Streamdeck UI
 
