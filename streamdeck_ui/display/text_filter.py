@@ -2,6 +2,7 @@ from fractions import Fraction
 from typing import Callable, Tuple
 
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
+from pilmoji import Pilmoji
 
 from streamdeck_ui.config import DEFAULT_FONT_FALLBACK_PATH
 from streamdeck_ui.display.filter import Filter
@@ -18,8 +19,8 @@ class TextFilter(Filter):
     ):
         super(TextFilter, self).__init__()
         self.text = text
-        self.vertical_align = vertical_align
-        self.horizontal_align = horizontal_align
+        self.vertical_align = vertical_align or "bottom"
+        self.horizontal_align = horizontal_align or "center"
         self.font_color = font_color
         self.fallback_font = ImageFont.truetype(DEFAULT_FONT_FALLBACK_PATH, font_size)
         self.true_font = ImageFont.truetype(font, font_size)
@@ -41,6 +42,70 @@ class TextFilter(Filter):
 
     def initialize(self, size: Tuple[int, int]):
         self.image = Image.new("RGBA", size)
+        try:
+            self.initialize_emoji(size)
+        except OSError:
+            self.initialize_legacy_text(size)
+
+    def initialize_emoji(self, size: Tuple[int, int]):
+        with Pilmoji(self.image) as pilmoji:
+            # Split the text by newline to determine label height
+            # then grab the longest word to determine label width
+            text_split_newline = sorted(self.text.split("\n"), key=len)
+            # Calculate the height and width of the text we're drawing, using the font itself Previously we counted
+            # the number of characters to determine the width, but if the font wasn't a fixed width the horizontal
+            # alignment would be off.
+            label_w, _ = pilmoji.getsize(text=self.text, font=self.true_font)
+            # Calculate dimensions for text that include ascender (above the line)
+            # and below the line  (descender) characters. This is used to adjust the
+            # font placement and should allow for button text to horizontally align
+            # across buttons. Basically we want to figure out what is the tallest
+            # text we will need to draw.
+            _, label_h = pilmoji.getsize("\n".join(["lLpgyL|"] * len(text_split_newline)), font=self.true_font)
+
+            label_pos = self.get_pos(
+                vertical_align=self.vertical_align,
+                horizontal_align=self.horizontal_align,
+                size=size,
+                label_h=label_h,
+                label_w=label_w,
+            )
+            pilmoji.text(
+                label_pos,
+                text=self.text,
+                font=self.true_font,
+                fill=self.font_color,
+                align=self.horizontal_align,
+                spacing=0,
+                stroke_fill="black",
+                stroke_width=2,
+            )
+
+    def get_pos(self, vertical_align, horizontal_align, size, label_h, label_w) -> Tuple[int, int]:
+        gap = (size[1] - 5 * label_h) // 4
+
+        if vertical_align == "top":
+            label_y = 0
+        elif vertical_align == "middle-top":
+            label_y = gap + label_h
+        elif vertical_align == "middle":
+            label_y = size[1] // 2 - (label_h // 2)
+        elif vertical_align == "middle-bottom":
+            label_y = (gap + label_h) * 3
+        else:
+            label_y = size[1] - label_h
+            # Default or "bottom"
+
+        if horizontal_align == "left":
+            label_x = 0
+        elif horizontal_align == "right":
+            label_x = size[0] - label_w
+        else:
+            label_x = (size[0] - label_w) // 2
+            # Default or "center"
+        return label_x, label_y
+
+    def initialize_legacy_text(self, size: Tuple[int, int]):
         foreground_draw = ImageDraw.Draw(self.image)
         # Split the text by newline to determine label height
         # then grab the longest word to determine label width
@@ -58,30 +123,13 @@ class TextFilter(Filter):
             (0, 0), "\n".join(["lLpgyL|"] * len(text_split_newline)), font=self.true_font
         )
 
-        gap = (size[1] - 5 * label_h) // 4
-
-        if self.vertical_align == "top":
-            label_y = 0
-        elif self.vertical_align == "middle-top":
-            label_y = gap + label_h
-        elif self.vertical_align == "middle":
-            label_y = size[1] // 2 - (label_h // 2)
-        elif self.vertical_align == "middle-bottom":
-            label_y = (gap + label_h) * 3
-        else:
-            label_y = size[1] - label_h
-            # Default or "bottom"
-
-        if self.horizontal_align == "left":
-            label_x = 0
-        elif self.horizontal_align == "right":
-            label_x = size[0] - label_w
-        else:
-            self.horizontal_align = "center"
-            label_x = (size[0] - label_w) // 2
-            # Default or "center"
-
-        label_pos = (label_x, label_y)
+        label_pos = self.get_pos(
+            vertical_align=self.vertical_align,
+            horizontal_align=self.horizontal_align,
+            size=size,
+            label_h=label_h,
+            label_w=label_w,
+        )
 
         try:
             foreground_draw.multiline_text(

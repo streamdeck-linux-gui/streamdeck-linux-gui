@@ -21,6 +21,7 @@ CairoSVG = "^2.5.2"
 filetype = "^1.0.10"
 python-xlib = "^0.33"
 importlib-metadata = "^6.8.0"
+pilmoji = { git = "https://github.com/enterFaisal/pilmoji", rev = "74035818b02f6481ba58b0863805ee2dca306818" }
 
 [tool.poetry.group.dev.dependencies]
 vulture = ">=1.0"
