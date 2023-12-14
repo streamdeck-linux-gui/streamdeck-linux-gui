@@ -30,6 +30,7 @@ from streamdeck_ui.display.text_filter import TextFilter
 from streamdeck_ui.logger import logger
 from streamdeck_ui.model import ButtonMultiState, ButtonState, DeckState
 from streamdeck_ui.stream_deck_monitor import StreamDeckMonitor
+from streamdeck_ui.plugins import BasePlugin, stop_all_plugins, prepare_plugin
 
 
 class KeySignalEmitter(QObject):
@@ -308,6 +309,8 @@ class StreamDeckServer:
         except TransportError:
             pass
 
+        stop_all_plugins(self, serial_number)
+
         del self.decks_by_serial[serial_number]
         del self.decks_map_id_to_serial[deck_id]
 
@@ -378,6 +381,36 @@ class StreamDeckServer:
                 self._update_button_filters(serial_number, page, button)
                 display_handler = self.display_handlers[serial_number]
                 display_handler.synchronize()
+
+    def set_button_plugin_path(self, deck_id: str, page: int, button: int, plugin_path: str) -> None:
+        """Sets plugin path"""
+        if self.get_button_plugin_path(deck_id, page, button) != plugin_path:
+            self._button_state(deck_id, page, button).plugin_path = plugin_path
+            self._save_state()
+
+    def get_button_plugin_path(self, serial_number: str, page: int, button: int):
+        """Returns the plugin set for the specified button"""
+        return self._button_state(serial_number, page, button).plugin_path
+
+    def set_button_plugin(self, deck_id: str, page: int, button: int, plugin: BasePlugin) -> None:
+        if self.get_button_plugin(deck_id, page, button) != plugin:
+            self._button_state(deck_id, page, button).plugin = plugin
+            self._save_state()
+
+    def get_button_plugin(self, deck_id: str, page: int, button: int) -> BasePlugin:
+        return self._button_state(deck_id, page, button).plugin
+
+    def set_button_plugin_from_path(self, deck_id: str, page: int, button: int, plugin_path: str) -> None:
+        plugin_args = {
+            'api': self,
+            'serial_number': deck_id,
+            'page': page,
+            'button_id': button,
+            'plugin_path': plugin_path
+        }
+        plugin = prepare_plugin(**plugin_args)
+        self._button_state(deck_id, page, button).plugin = plugin
+        self._save_state()
 
     def get_button_switch_state(self, serial_number: str, page: int, button: int) -> int:
         """Returns the state switch set for the specified button. 0 implies no state switch."""
@@ -697,5 +730,17 @@ class StreamDeckServer:
                     button_settings.text_horizontal_align,
                 )
             )
+
+        if button_settings.plugin_path:
+            plugin_args = {
+                'api': self,
+                'serial_number': serial_number,
+                'page': page,
+                'button_id': button,
+                'plugin_path': button_settings.plugin_path
+            }
+            plugin = prepare_plugin(**plugin_args)
+            if plugin is not None:
+                filters.extend(plugin.get_filters())
 
         display_handler.replace(page, button, filters)

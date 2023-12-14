@@ -371,6 +371,15 @@ class Ui_ButtonForm(object):
 
         self.formLayout.setWidget(10, QFormLayout.FieldRole, self.write)
 
+        self.label_11 = QLabel(ButtonForm)
+        self.label_11.setObjectName(u"label_11")
+
+        self.formLayout.setWidget(11, QFormLayout.LabelRole, self.label_11)
+
+        self.plugin_path = QLineEdit(ButtonForm)
+        self.plugin_path.setObjectName(u"plugin_path")
+
+        self.formLayout.setWidget(11, QFormLayout.FieldRole, self.plugin_path)
 
         self.retranslateUi(ButtonForm)
 
@@ -420,5 +429,6 @@ class Ui_ButtonForm(object):
         self.label_10.setText(QCoreApplication.translate("ButtonForm", u"Switch state", None))
         self.label_7.setText(QCoreApplication.translate("ButtonForm", u"Brightness +/-:", None))
         self.label_6.setText(QCoreApplication.translate("ButtonForm", u"Write Text:", None))
+        self.label_11.setText(QCoreApplication.translate("ButtonForm", u"Plugin Path:", None))
     # retranslateUi
 

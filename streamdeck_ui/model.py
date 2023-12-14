@@ -1,6 +1,8 @@
 from dataclasses import dataclass, field
 from typing import Dict
 
+from streamdeck_ui.plugins import BasePlugin
+
 
 @dataclass
 class ButtonState:
@@ -32,6 +34,9 @@ class ButtonState:
     """Font size of the text on the button"""
     background_color: str = ""
     """Background color of the button"""
+    plugin_path: str = ""
+    """Path to the plugin"""
+    plugin: BasePlugin = None
 
 
 @dataclass

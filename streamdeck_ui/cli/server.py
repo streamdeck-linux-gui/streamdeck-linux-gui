@@ -159,6 +159,14 @@ def execute():
         metavar="VALUE",
     )
 
+    parser.add_option(
+        "--plugin_path",
+        type="string",
+        dest="plugin_path",
+        help="Path to plugin. used with SET_PLUGIN_PATH",
+        metavar="VALUE"
+    )
+
     (options, args) = parser.parse_args(sys.argv)
     sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
     tmpdir = tempfile.gettempdir()
@@ -286,6 +294,20 @@ def execute():
                 "page": options.page_index,
                 "button": options.button_index,
                 "state": options.state_index,
+            }
+        elif action_name == "set_plugin_path":
+            if options.plugin_path is None:
+                print("error: --plugin_path not set...")
+                return
+            if options.button_index is None:
+                print("error: --button not set...")
+                return
+            data = {
+                "command": "set_plugin_path",
+                "deck": options.deck_index,
+                "page": options.page_index,
+                "button": options.button_index,
+                "plugin_path": options.plugin_path,
             }
 
     if data is not None:

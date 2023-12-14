@@ -2,6 +2,7 @@ import typing as tp
 
 from streamdeck_ui.api import StreamDeckServer
 from streamdeck_ui.ui_main import Ui_MainWindow
+from streamdeck_ui.plugins import prepare_plugin
 
 
 class Command(tp.Protocol):
@@ -148,6 +149,44 @@ class ClearButtonIconCommand:
         api.set_button_icon(deck_id, self.page_index, self.button_index, "")
 
 
+class SetButtonPluginPathCommand:
+    def __init__(self, cfg):
+        self.deck_index = cfg["deck"]
+        self.page_index = cfg["page"]
+        self.button_index = cfg["button"]
+        self.plugin_path = cfg["plugin_path"]
+
+    def execute(self, api: StreamDeckServer, ui):
+        deck_id = ui.device_list.itemData(ui.device_list.currentIndex()) if self.deck_index is None else self.deck_index
+        if self.page_index is None:
+            self.page_index = api.get_page(deck_id)
+        api.set_button_plugin_path(deck_id, self.page_index, self.button_index, self.plugin_path)
+
+
+class SetButtonPlugin:
+    def __init__(self, cfg):
+        self.deck_index = cfg["deck"]
+        self.page_index = cfg["page"]
+        self.button_index = cfg["button"]
+        self.plugin_path = cfg["plugin_path"]
+
+    def execute(self, api: StreamDeckServer, ui):
+        deck_id = ui.device_list.itemData(ui.device_list.currentIndex()) if self.deck_index is None else self.deck_index
+        if self.page_index is None:
+            self.page_index = api.get_page(deck_id)
+
+        plugin_args = {
+            'api': api,
+            'serial_number': deck_id,
+            'page': self.page_index,
+            'button_id': self.button_index,
+            'plugin_path': api.get_button_plugin_path(deck_id, self.page_index, self.button_index)
+        }
+
+        plugin = prepare_plugin(**plugin_args)
+        if plugin is not None:
+            api.set_button_plugin(deck_id, self.page_index, self.button_index, plugin)
+
 def create_command(cfg: dict) -> Command | None:
     if cfg["command"] == "set_page":
         return SetPageCommand(cfg)
@@ -169,4 +208,8 @@ def create_command(cfg: dict) -> Command | None:
         return ClearButtonIconCommand(cfg)
     elif cfg["command"] == "set_state":
         return SetButtonStateCommand(cfg)
+    elif cfg["command"] == "set_plugin_path":
+        return SetButtonPluginPathCommand(cfg)
+    elif cfg["command"] == "set_plugin":
+        return SetButtonPlugin(cfg)
     return None

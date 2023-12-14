@@ -49,6 +49,7 @@ from streamdeck_ui.semaphore import Semaphore, SemaphoreAcquireError
 from streamdeck_ui.ui_button import Ui_ButtonForm
 from streamdeck_ui.ui_main import Ui_MainWindow
 from streamdeck_ui.ui_settings import Ui_SettingsDialog
+from streamdeck_ui.plugins import prepare_plugin
 
 # this ignore is just a workaround to set api with something
 # and be able to test
@@ -190,6 +191,8 @@ def handle_keypress(ui, deck_id: str, key: int, state: bool) -> None:
         brightness_change = api.get_button_change_brightness(deck_id, page, key)
         switch_page = api.get_button_switch_page(deck_id, page, key)
         switch_state = api.get_button_switch_state(deck_id, page, key)
+        plugin_path = api.get_button_plugin_path(deck_id, page, key)
+        plugin = api.get_button_plugin(deck_id, page, key)
 
         if command:
             try:
@@ -250,6 +253,17 @@ def handle_keypress(ui, deck_id: str, key: int, state: bool) -> None:
                 show_tray_warning_message(
                     f"Unable to perform switch button state, the button state {switch_state} does not exist in your current settings"
                 )
+
+        plugin_args = {
+            'api': api,
+            'serial_number': deck_id,
+            'page': page,
+            'button_id': key,
+            'plugin_path': plugin_path
+        }
+
+        if plugin:
+            plugin.handle_keypress(**plugin_args)
 
 
 def _deck() -> Optional[str]:
@@ -612,6 +626,7 @@ def build_button_state_form(tab) -> None:
     tab_ui.change_brightness.setValue(button_state.brightness_change)
     tab_ui.switch_page.setValue(button_state.switch_page)
     tab_ui.switch_state.setValue(button_state.switch_state)
+    tab_ui.plugin_path.setText(button_state.plugin_path)
 
     font_family, font_style = find_font_info(button_state.font or DEFAULT_FONT_FALLBACK_PATH)
     prepare_button_state_form_text_font_list(tab_ui, font_family)
@@ -634,6 +649,8 @@ def build_button_state_form(tab) -> None:
     tab_ui.remove_image.clicked.connect(show_button_state_remove_image_dialog)
     tab_ui.text_h_align.clicked.connect(partial(update_align_text_horizontal))
     tab_ui.text_v_align.clicked.connect(partial(update_align_text_vertical))
+    tab_ui.plugin_path.textChanged.connect(partial(debounced_update_button_attribute, "plugin_path"))
+    tab_ui.plugin_path.editingFinished.connect(partial(lambda: update_button_attribute("plugin_from_path", tab_ui.plugin_path.text())))
 
 
 def enable_button_configuration(ui: Ui_ButtonForm, enabled: bool):
@@ -653,6 +670,7 @@ def enable_button_configuration(ui: Ui_ButtonForm, enabled: bool):
     ui.text_v_align.setEnabled(enabled)
     ui.text_color.setEnabled(enabled)
     ui.background_color.setEnabled(enabled)
+    ui.plugin_path.setEnabled(enabled)
     # default black color looks like it's enabled even when it's not
     # we set it to white when disabled to make it more obvious
     if enabled:
@@ -861,6 +879,7 @@ def _reset_build_button_state_form(ui: Ui_ButtonForm):
     ui.change_brightness.setValue(0)
     ui.switch_page.setValue(0)
     ui.switch_state.setValue(0)
+    ui.plugin_path.clear()
 
 
 def browse_documentation():
