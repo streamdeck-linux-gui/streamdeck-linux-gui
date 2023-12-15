@@ -410,7 +410,29 @@ class StreamDeckServer:
         }
         plugin = prepare_plugin(**plugin_args)
         self._button_state(deck_id, page, button).plugin = plugin
+        self._button_state(deck_id, page, button).plugin_path = plugin_path
         self._save_state()
+
+    def set_button_plugin_args(self, deck_id: str, page: int, button: int, plugin_args: str) -> None:
+        """Sets the plugin args with error handling"""
+        args = plugin_args.split(';')
+        plugin_args_dict: Dict[str, str] = {}
+
+        for arg in args:
+            try:
+                key, value = arg.split('=')
+                plugin_args_dict[key] = value
+            except ValueError:
+                # Handle the error (e.g., print a warning, log it, or skip the invalid entry)
+                print(f"Invalid argument: {arg}. Skipping.")
+
+        if self.get_button_plugin_args(deck_id, page, button) != plugin_args_dict:
+            self._button_state(deck_id, page, button).plugin_args = plugin_args_dict
+            self._save_state()
+
+    def get_button_plugin_args(self, deck_id: str, page: int, button: int) -> Dict[str, str]:
+        """Returns all the input plugin args."""
+        return self._button_state(deck_id, page, button).plugin_args
 
     def get_button_switch_state(self, serial_number: str, page: int, button: int) -> int:
         """Returns the state switch set for the specified button. 0 implies no state switch."""

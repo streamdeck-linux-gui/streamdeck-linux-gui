@@ -381,6 +381,16 @@ class Ui_ButtonForm(object):
 
         self.formLayout.setWidget(11, QFormLayout.FieldRole, self.plugin_path)
 
+        self.label_12 = QLabel(ButtonForm)
+        self.label_12.setObjectName(u"label_12")
+
+        self.formLayout.setWidget(12, QFormLayout.LabelRole, self.label_12)
+
+        self.plugin_args = QLineEdit(ButtonForm)
+        self.plugin_args.setObjectName(u"plugin_args")
+
+        self.formLayout.setWidget(12, QFormLayout.FieldRole, self.plugin_args)
+
         self.retranslateUi(ButtonForm)
 
         QMetaObject.connectSlotsByName(ButtonForm)
@@ -430,5 +440,6 @@ class Ui_ButtonForm(object):
         self.label_7.setText(QCoreApplication.translate("ButtonForm", u"Brightness +/-:", None))
         self.label_6.setText(QCoreApplication.translate("ButtonForm", u"Write Text:", None))
         self.label_11.setText(QCoreApplication.translate("ButtonForm", u"Plugin Path:", None))
+        self.label_12.setText(QCoreApplication.translate("ButtonForm", u"Plugin Args:", None))
     # retranslateUi
 

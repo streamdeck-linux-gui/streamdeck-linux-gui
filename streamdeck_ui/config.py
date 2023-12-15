@@ -1,7 +1,7 @@
 """Defines shared configuration variables for the streamdeck_ui project"""
 import json
 import os
-from typing import Dict
+from typing import Dict, List
 
 from streamdeck_ui.model import ButtonMultiState, ButtonState, DeckState, DeckStateV1
 
@@ -186,7 +186,8 @@ def _to_button_state(button: dict) -> ButtonState:
         font_color=button.get("font_color", ""),
         font_size=button.get("font_size", 0),
         background_color=button.get("background_color", ""),
-        plugin_path=button.get("plugin_path", "")
+        plugin_path=button.get("plugin_path", ""),
+        plugin_args=button.get("plugin_args", {}),
     )
 
 
@@ -234,7 +235,8 @@ def _to_button_config(button: ButtonState) -> dict:
         "font_color": button.font_color,
         "font_size": button.font_size,
         "background_color": button.background_color,
-        "plugin_path": button.plugin_path
+        "plugin_path": button.plugin_path,
+        "plugin_args": button.plugin_args,
     }
 
 

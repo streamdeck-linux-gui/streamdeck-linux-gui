@@ -49,7 +49,6 @@ from streamdeck_ui.semaphore import Semaphore, SemaphoreAcquireError
 from streamdeck_ui.ui_button import Ui_ButtonForm
 from streamdeck_ui.ui_main import Ui_MainWindow
 from streamdeck_ui.ui_settings import Ui_SettingsDialog
-from streamdeck_ui.plugins import prepare_plugin
 
 # this ignore is just a workaround to set api with something
 # and be able to test
@@ -193,6 +192,7 @@ def handle_keypress(ui, deck_id: str, key: int, state: bool) -> None:
         switch_state = api.get_button_switch_state(deck_id, page, key)
         plugin_path = api.get_button_plugin_path(deck_id, page, key)
         plugin = api.get_button_plugin(deck_id, page, key)
+        plugin_args = api.get_button_plugin_args(deck_id, page, key)
 
         if command:
             try:
@@ -259,7 +259,8 @@ def handle_keypress(ui, deck_id: str, key: int, state: bool) -> None:
             'serial_number': deck_id,
             'page': page,
             'button_id': key,
-            'plugin_path': plugin_path
+            'plugin_path': plugin_path,
+            'plugin_args': plugin_args,
         }
 
         if plugin:
@@ -628,6 +629,11 @@ def build_button_state_form(tab) -> None:
     tab_ui.switch_state.setValue(button_state.switch_state)
     tab_ui.plugin_path.setText(button_state.plugin_path)
 
+    if not button_state.plugin_args:
+        tab_ui.plugin_args.setText("")
+    else:
+        tab_ui.plugin_args.setText(';'.join([f"{key}={value}" for key, value in button_state.plugin_args.items()]))
+
     font_family, font_style = find_font_info(button_state.font or DEFAULT_FONT_FALLBACK_PATH)
     prepare_button_state_form_text_font_list(tab_ui, font_family)
     prepare_button_state_form_text_font_style_list(tab_ui, font_family, font_style)
@@ -650,7 +656,8 @@ def build_button_state_form(tab) -> None:
     tab_ui.text_h_align.clicked.connect(partial(update_align_text_horizontal))
     tab_ui.text_v_align.clicked.connect(partial(update_align_text_vertical))
     tab_ui.plugin_path.textChanged.connect(partial(debounced_update_button_attribute, "plugin_path"))
-    tab_ui.plugin_path.editingFinished.connect(partial(lambda: update_button_attribute("plugin_from_path", tab_ui.plugin_path.text())))
+    tab_ui.plugin_path.textChanged.connect(partial(debounced_update_button_attribute, "plugin_from_path"))
+    tab_ui.plugin_args.textChanged.connect(partial(debounced_update_button_attribute, "plugin_args"))
 
 
 def enable_button_configuration(ui: Ui_ButtonForm, enabled: bool):
@@ -671,6 +678,7 @@ def enable_button_configuration(ui: Ui_ButtonForm, enabled: bool):
     ui.text_color.setEnabled(enabled)
     ui.background_color.setEnabled(enabled)
     ui.plugin_path.setEnabled(enabled)
+    ui.plugin_args.setEnabled(enabled)
     # default black color looks like it's enabled even when it's not
     # we set it to white when disabled to make it more obvious
     if enabled:
@@ -880,6 +888,7 @@ def _reset_build_button_state_form(ui: Ui_ButtonForm):
     ui.switch_page.setValue(0)
     ui.switch_state.setValue(0)
     ui.plugin_path.clear()
+    ui.plugin_args.clear()
 
 
 def browse_documentation():

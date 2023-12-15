@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Dict
+from typing import Dict, List
 
 from streamdeck_ui.plugins import BasePlugin
 
@@ -37,6 +37,9 @@ class ButtonState:
     plugin_path: str = ""
     """Path to the plugin"""
     plugin: BasePlugin = None
+    """The actual plugin instance"""
+    plugin_args: Dict[str, str] = field(default_factory=dict)
+    """Args that get passed to the plugin"""
 
 
 @dataclass
