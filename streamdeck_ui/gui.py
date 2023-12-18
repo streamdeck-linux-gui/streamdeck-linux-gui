@@ -1319,7 +1319,7 @@ def streamdeck_detached(ui, serial_number):
         build_device(ui)
 
 
-def configure_signals(app: QApplication):
+def configure_signals(app: QApplication, cli: CLIStreamDeckServer):
     """Configures the termination signals for the application."""
     # Configure signal handlers
     # https://stackoverflow.com/a/4939113/192815
@@ -1328,15 +1328,16 @@ def configure_signals(app: QApplication):
     timer.timeout.connect(lambda: None)  # type: ignore [attr-defined] # Let interpreter run to handle signal
 
     # Handle SIGTERM so we release semaphore and shutdown API gracefully
-    signal.signal(signal.SIGTERM, partial(sigterm_handler, app))
+    signal.signal(signal.SIGTERM, partial(sigterm_handler, app, cli))
 
     # Handle <ctrl+c>
-    signal.signal(signal.SIGINT, partial(sigterm_handler, app))
+    signal.signal(signal.SIGINT, partial(sigterm_handler, app, cli))
 
 
-def sigterm_handler(app, signal_value, frame):
+def sigterm_handler(app, cli, signal_value, frame):
     print("Received signal", signal_value, frame)
     api.stop()
+    cli.stop()
     app.quit()
     if signal_value == signal.SIGTERM:
         # Indicate to systemd that it was a clean termination
@@ -1379,8 +1380,6 @@ def start(_exit: bool = False) -> None:
             main_window = create_main_window(api, app)
             create_tray(logo, app)
 
-            configure_signals(app)
-
             # check if we want to continue with the configuration migrate
             show_migration_config_warning_and_check(app)
 
@@ -1391,6 +1390,8 @@ def start(_exit: bool = False) -> None:
 
             cli = CLIStreamDeckServer(api, main_window.ui)
             cli.start()
+
+            configure_signals(app, cli)
 
             main_window.tray.show()
             if show_ui:
