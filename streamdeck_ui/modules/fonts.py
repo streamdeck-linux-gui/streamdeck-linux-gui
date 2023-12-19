@@ -16,19 +16,15 @@ def get_fonts():
     """Populates a font dictionary in the form: font_dictionary[font_family][font_style] = font_file"""
     system_fonts_dict = get_system_fonts()
     fallback_fonts_dict = get_fallback_fonts()
-    if len(system_fonts_dict) == 0:
-        return reorder_font_styles(fallback_fonts_dict)
-    else:
-        # check if fallback/default fonts are in system fonts, if not add them
-        for fallback_font_family in fallback_fonts_dict:
-            if fallback_font_family in system_fonts_dict.keys():
-                for fallback_font_style in fallback_fonts_dict[fallback_font_family].keys():
-                    if fallback_font_style not in system_fonts_dict[fallback_font_family].keys():
-                        fallback_font_file = fallback_fonts_dict[fallback_font_family][fallback_font_style]
-                        system_fonts_dict[fallback_font_family][fallback_font_style] = fallback_font_file
-            else:
-                system_fonts_dict[fallback_font_family] = fallback_fonts_dict[fallback_font_family]
-        return reorder_font_styles(system_fonts_dict)
+
+    # Overwrite system fonts dict with the fallback fonts
+    # this ensures the default font gets pulled in with the appropriate file name
+    for fallback_font_family in fallback_fonts_dict:
+        for fallback_font_style in fallback_fonts_dict[fallback_font_family].keys():
+            fallback_font_file = fallback_fonts_dict[fallback_font_family][fallback_font_style]
+            system_fonts_dict[fallback_font_family][fallback_font_style] = fallback_font_file
+
+    return reorder_font_styles(system_fonts_dict)
 
 
 def get_system_fonts():
