@@ -57,6 +57,7 @@ _MODIFIER_KEYS = {
     "win": e.KEY_LEFTMETA,
 }
 
+_BAD_ECODES = ['KEY_MAX', 'KEY_CNT']
 _KEY_MAPPING = {
     'a': e.KEY_A,
     'b': e.KEY_B,
@@ -206,8 +207,12 @@ _SHIFT_KEY_MAPPING = {
     'Z': e.KEY_Z,
 }
 # we remove KEY_ from the key names to make it easier to type
-_SUPPORTED_KEYS = [key.replace("KEY_", "").lower() for key in dir(e) if key.startswith("KEY_")]
+_SUPPORTED_KEYS = [key.replace("KEY_", "").lower() for key in dir(e) if key.startswith("KEY_") and key not in _BAD_ECODES]
 # fmt: on
+
+
+def _initialize_uinput():
+    return UInput({e.EV_KEY : _SUPPORTED_KEYS})
 
 
 def parse_keys_as_keycodes(keys: str) -> List[List[str]]:
@@ -247,7 +252,7 @@ def parse_keys_as_keycodes(keys: str) -> List[List[str]]:
 
 
 def keyboard_write(string: str):
-    _ui = UInput()
+    _ui = _initialize_uinput()
     caps_lock_is_on = check_caps_lock()
     for char in string:
         if char in _KEY_MAPPING:
@@ -278,7 +283,7 @@ def keyboard_write(string: str):
 
 
 def keyboard_press_keys(keys: str):
-    _ui = UInput()
+    _ui = _initialize_uinput()
     sections = parse_keys_as_keycodes(keys)
     for section_of_keycodes in sections:
         for keycode in section_of_keycodes:
