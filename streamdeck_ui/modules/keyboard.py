@@ -212,7 +212,7 @@ _SUPPORTED_KEYS = [key.replace("KEY_", "").lower() for key in dir(e) if key.star
 
 
 def _initialize_uinput():
-    return UInput({e.EV_KEY : _SUPPORTED_KEYS})
+    return UInput({e.EV_KEY: _SUPPORTED_KEYS})
 
 
 def parse_keys_as_keycodes(keys: str) -> List[List[str]]:
