@@ -20,6 +20,8 @@ def get_fonts():
     # Overwrite system fonts dict with the fallback fonts
     # this ensures the default font gets pulled in with the appropriate file name
     for fallback_font_family in fallback_fonts_dict:
+        if fallback_font_family not in system_fonts_dict:
+            system_fonts_dict[fallback_font_family] = {}
         for fallback_font_style in fallback_fonts_dict[fallback_font_family].keys():
             fallback_font_file = fallback_fonts_dict[fallback_font_family][fallback_font_style]
             system_fonts_dict[fallback_font_family][fallback_font_style] = fallback_font_file
