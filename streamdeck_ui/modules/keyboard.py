@@ -208,11 +208,12 @@ _SHIFT_KEY_MAPPING = {
 }
 # we remove KEY_ from the key names to make it easier to type
 _SUPPORTED_KEYS = [key.replace("KEY_", "").lower() for key in dir(e) if key.startswith("KEY_") and key not in _BAD_ECODES]
+_SUPPORTED_KEY_CONSTANTS = [value for name, value in vars(e).items() if name.startswith('KEY_') and name not in _BAD_ECODES]
 # fmt: on
 
 
 def _initialize_uinput():
-    return UInput({e.EV_KEY: _SUPPORTED_KEYS})
+    return UInput({e.EV_KEY: _SUPPORTED_KEY_CONSTANTS})
 
 
 def parse_keys_as_keycodes(keys: str) -> List[List[str]]:
