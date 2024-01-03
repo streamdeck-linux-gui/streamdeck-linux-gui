@@ -12,8 +12,8 @@ packages = [
 
 
 [tool.poetry.dependencies]
-python = ">=3.8,<3.12"
-streamdeck = "^0.9.3"
+python = ">=3.8,<=3.12"
+streamdeck = "^0.9.5"
 pillow = "10.1.0"
 pyside6 = "^6.4.2"
 CairoSVG = "^2.5.2"

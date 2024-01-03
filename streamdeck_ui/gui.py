@@ -230,7 +230,7 @@ def handle_keypress(ui, deck_id: str, key: int, state: bool) -> None:
                             break
             else:
                 show_tray_warning_message(
-                    f"Unable to perform switch page, the page {switch_page} does not exist in your current settings"
+                    f"Unable to perform switch page, the page {switch_page} does not exist in your current settings"  # noqa: E713
                 )
 
         if switch_state:
@@ -246,7 +246,7 @@ def handle_keypress(ui, deck_id: str, key: int, state: bool) -> None:
                     redraw_button(key)
             else:
                 show_tray_warning_message(
-                    f"Unable to perform switch button state, the button state {switch_state} does not exist in your current settings"
+                    f"Unable to perform switch button state, the button state {switch_state} does not exist in your current settings"  # noqa: E713
                 )
 
 
