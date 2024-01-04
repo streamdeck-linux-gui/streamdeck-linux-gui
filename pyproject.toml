@@ -18,7 +18,6 @@ pillow = "10.1.0"
 pyside6 = "^6.4.2"
 CairoSVG = "^2.5.2"
 filetype = "^1.0.10"
-python-xlib = "^0.33"
 importlib-metadata = "^6.8.0"
 evdev = "^1.6.1"
 
