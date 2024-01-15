@@ -211,9 +211,8 @@ _SUPPORTED_KEYS = [key.replace("KEY_", "").lower() for key in dir(e) if key.star
 _SUPPORTED_KEY_CONSTANTS = [value for name, value in vars(e).items() if name.startswith('KEY_') and name not in _BAD_ECODES]
 # fmt: on
 
-
-def _initialize_uinput():
-    return UInput({e.EV_KEY: _SUPPORTED_KEY_CONSTANTS})
+# Initialize UInput in a global variable so that we don't initialize each time a key is pressed
+_UINPUT = UInput({e.EV_KEY: _SUPPORTED_KEY_CONSTANTS})
 
 
 def parse_keys_as_keycodes(keys: str) -> List[List[str]]:
@@ -253,7 +252,7 @@ def parse_keys_as_keycodes(keys: str) -> List[List[str]]:
 
 
 def keyboard_write(string: str):
-    _ui = _initialize_uinput()
+    _ui = _UINPUT
     caps_lock_is_on = check_caps_lock()
     for char in string:
         if char in _KEY_MAPPING:
@@ -284,7 +283,7 @@ def keyboard_write(string: str):
 
 
 def keyboard_press_keys(keys: str):
-    _ui = _initialize_uinput()
+    _ui = _UINPUT
     sections = parse_keys_as_keycodes(keys)
     for section_of_keycodes in sections:
         for keycode in section_of_keycodes:
