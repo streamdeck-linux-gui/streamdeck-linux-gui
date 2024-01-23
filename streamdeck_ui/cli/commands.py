@@ -15,7 +15,9 @@ class SetPageCommand:
         self.page_index = cfg["page"]
 
     def execute(self, api: StreamDeckServer, ui):
-        deck_id = ui.device_list.itemData(ui.device_list.currentIndex()) if self.deck_index is None else self.deck_index
+        deck_id = ui.device_list.itemData(ui.device_list.currentIndex())
+        if self.deck_index is not None and ui.device_list.itemData(self.deck_index) is not None:
+            deck_id = ui.device_list.itemData(self.deck_index)
         if api.get_page(deck_id) == self.page_index:
             return
         api.set_page(deck_id, self.page_index)
@@ -30,7 +32,9 @@ class SetButtonStateCommand:
         self.button_state_index = cfg["state"]
 
     def execute(self, api: StreamDeckServer, ui: Ui_MainWindow):
-        deck_id = ui.device_list.itemData(ui.device_list.currentIndex()) if self.deck_index is None else self.deck_index
+        deck_id = ui.device_list.itemData(ui.device_list.currentIndex())
+        if self.deck_index is not None and ui.device_list.itemData(self.deck_index) is not None:
+            deck_id = ui.device_list.itemData(self.deck_index)
         page_id = api.get_page(deck_id) if self.page_index is None else self.page_index
         if api.get_button_state(deck_id, page_id, self.button_index) == self.button_state_index:
             return
@@ -45,7 +49,9 @@ class SetBrightnessCommand:
         self.brightness = cfg["value"]
 
     def execute(self, api: StreamDeckServer, ui):
-        deck_id = ui.device_list.itemData(ui.device_list.currentIndex()) if self.deck_index is None else self.deck_index
+        deck_id = ui.device_list.itemData(ui.device_list.currentIndex())
+        if self.deck_index is not None and ui.device_list.itemData(self.deck_index) is not None:
+            deck_id = ui.device_list.itemData(self.deck_index)
         api.set_brightness(deck_id, self.brightness)
 
 
@@ -57,7 +63,9 @@ class SetButtonTextCommand:
         self.button_text = cfg["text"]
 
     def execute(self, api: StreamDeckServer, ui):
-        deck_id = ui.device_list.itemData(ui.device_list.currentIndex()) if self.deck_index is None else self.deck_index
+        deck_id = ui.device_list.itemData(ui.device_list.currentIndex())
+        if self.deck_index is not None and ui.device_list.itemData(self.deck_index) is not None:
+            deck_id = ui.device_list.itemData(self.deck_index)
         if self.page_index is None:
             self.page_index = api.get_page(deck_id)
         api.set_button_text(deck_id, self.page_index, self.button_index, self.button_text)
@@ -71,7 +79,9 @@ class SetButtonTextAlignmentCommand:
         self.button_text_alignment = cfg["alignment"]
 
     def execute(self, api: StreamDeckServer, ui):
-        deck_id = ui.device_list.itemData(ui.device_list.currentIndex()) if self.deck_index is None else self.deck_index
+        deck_id = ui.device_list.itemData(ui.device_list.currentIndex())
+        if self.deck_index is not None and ui.device_list.itemData(self.deck_index) is not None:
+            deck_id = ui.device_list.itemData(self.deck_index)
         if self.page_index is None:
             self.page_index = api.get_page(deck_id)
         api.set_button_text_vertical_align(deck_id, self.page_index, self.button_index, self.button_text_alignment)
@@ -85,7 +95,9 @@ class SetButtonWriteCommand:
         self.button_write = cfg["write"]
 
     def execute(self, api: StreamDeckServer, ui):
-        deck_id = ui.device_list.itemData(ui.device_list.currentIndex()) if self.deck_index is None else self.deck_index
+        deck_id = ui.device_list.itemData(ui.device_list.currentIndex())
+        if self.deck_index is not None and ui.device_list.itemData(self.deck_index) is not None:
+            deck_id = ui.device_list.itemData(self.deck_index)
         if self.page_index is None:
             self.page_index = api.get_page(deck_id)
         api.set_button_write(deck_id, self.page_index, self.button_index, self.button_write)
@@ -100,7 +112,9 @@ class SetButtonCmdCommand:
 
     def execute(self, api: StreamDeckServer, ui):
         print(self.button_cmd)
-        deck_id = ui.device_list.itemData(ui.device_list.currentIndex()) if self.deck_index is None else self.deck_index
+        deck_id = ui.device_list.itemData(ui.device_list.currentIndex())
+        if self.deck_index is not None and ui.device_list.itemData(self.deck_index) is not None:
+            deck_id = ui.device_list.itemData(self.deck_index)
         if self.page_index is None:
             self.page_index = api.get_page(deck_id)
         api.set_button_command(deck_id, self.page_index, self.button_index, self.button_cmd)
@@ -115,7 +129,9 @@ class SetButtonKeysCommand:
 
     def execute(self, api: StreamDeckServer, ui):
         print(self.button_keys)
-        deck_id = ui.device_list.itemData(ui.device_list.currentIndex()) if self.deck_index is None else self.deck_index
+        deck_id = ui.device_list.itemData(ui.device_list.currentIndex())
+        if self.deck_index is not None and ui.device_list.itemData(self.deck_index) is not None:
+            deck_id = ui.device_list.itemData(self.deck_index)
         if self.page_index is None:
             self.page_index = api.get_page(deck_id)
         api.set_button_keys(deck_id, self.page_index, self.button_index, self.button_keys)
@@ -129,7 +145,9 @@ class SetButtonIconCommand:
         self.icon_path = cfg["icon"]
 
     def execute(self, api: StreamDeckServer, ui):
-        deck_id = ui.device_list.itemData(ui.device_list.currentIndex()) if self.deck_index is None else self.deck_index
+        deck_id = ui.device_list.itemData(ui.device_list.currentIndex())
+        if self.deck_index is not None and ui.device_list.itemData(self.deck_index) is not None:
+            deck_id = ui.device_list.itemData(self.deck_index)
         if self.page_index is None:
             self.page_index = api.get_page(deck_id)
         api.set_button_icon(deck_id, self.page_index, self.button_index, self.icon_path)
@@ -142,7 +160,9 @@ class ClearButtonIconCommand:
         self.button_index = cfg["button"]
 
     def execute(self, api: StreamDeckServer, ui):
-        deck_id = ui.device_list.itemData(ui.device_list.currentIndex()) if self.deck_index is None else self.deck_index
+        deck_id = ui.device_list.itemData(ui.device_list.currentIndex())
+        if self.deck_index is not None and ui.device_list.itemData(self.deck_index) is not None:
+            deck_id = ui.device_list.itemData(self.deck_index)
         if self.page_index is None:
             self.page_index = api.get_page(deck_id)
         api.set_button_icon(deck_id, self.page_index, self.button_index, "")

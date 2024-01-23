@@ -18,9 +18,11 @@ def test_set_page():
     api = MagicMock()
     ui = MagicMock()
 
+    deck_id = ui.device_list.itemData(cmd.deck_index)
+
     cmd.execute(api, ui)
 
-    api.set_page.assert_called_once_with(0, 0)
+    api.set_page.assert_called_once_with(deck_id, 0)
 
 
 def test_set_brightness():
@@ -38,9 +40,11 @@ def test_set_brightness():
     api = MagicMock()
     ui = MagicMock()
 
+    deck_id = ui.device_list.itemData(cmd.deck_index)
+
     cmd.execute(api, ui)
 
-    api.set_brightness.assert_called_once_with(0, 0)
+    api.set_brightness.assert_called_once_with(deck_id, 0)
 
 
 def test_set_button_text():
@@ -62,9 +66,11 @@ def test_set_button_text():
     api = MagicMock()
     ui = MagicMock()
 
+    deck_id = ui.device_list.itemData(cmd.deck_index)
+
     cmd.execute(api, ui)
 
-    api.set_button_text.assert_called_once_with(0, 0, 0, "test")
+    api.set_button_text.assert_called_once_with(deck_id, 0, 0, "test")
 
 
 def test_set_button_write():
@@ -86,9 +92,11 @@ def test_set_button_write():
     api = MagicMock()
     ui = MagicMock()
 
+    deck_id = ui.device_list.itemData(cmd.deck_index)
+
     cmd.execute(api, ui)
 
-    api.set_button_write.assert_called_once_with(0, 0, 0, "test")
+    api.set_button_write.assert_called_once_with(deck_id, 0, 0, "test")
 
 
 def test_set_alignment():
@@ -110,9 +118,11 @@ def test_set_alignment():
     api = MagicMock()
     ui = MagicMock()
 
+    deck_id = ui.device_list.itemData(cmd.deck_index)
+
     cmd.execute(api, ui)
 
-    api.set_button_text_vertical_align.assert_called_once_with(0, 0, 0, "test")
+    api.set_button_text_vertical_align.assert_called_once_with(deck_id, 0, 0, "test")
 
 
 def test_set_button_cmd():
@@ -134,9 +144,11 @@ def test_set_button_cmd():
     api = MagicMock()
     ui = MagicMock()
 
+    deck_id = ui.device_list.itemData(cmd.deck_index)
+
     cmd.execute(api, ui)
 
-    api.set_button_command.assert_called_once_with(0, 0, 0, "test")
+    api.set_button_command.assert_called_once_with(deck_id, 0, 0, "test")
 
 
 def test_set_button_keys():
@@ -158,9 +170,11 @@ def test_set_button_keys():
     api = MagicMock()
     ui = MagicMock()
 
+    deck_id = ui.device_list.itemData(cmd.deck_index)
+
     cmd.execute(api, ui)
 
-    api.set_button_keys.assert_called_once_with(0, 0, 0, "test")
+    api.set_button_keys.assert_called_once_with(deck_id, 0, 0, "test")
 
 
 def test_set_button_icon():
@@ -182,9 +196,11 @@ def test_set_button_icon():
     api = MagicMock()
     ui = MagicMock()
 
+    deck_id = ui.device_list.itemData(cmd.deck_index)
+
     cmd.execute(api, ui)
 
-    api.set_button_icon.assert_called_once_with(0, 0, 0, "test")
+    api.set_button_icon.assert_called_once_with(deck_id, 0, 0, "test")
 
 
 def test_clear_button_icon():
@@ -204,9 +220,11 @@ def test_clear_button_icon():
     api = MagicMock()
     ui = MagicMock()
 
+    deck_id = ui.device_list.itemData(cmd.deck_index)
+
     cmd.execute(api, ui)
 
-    api.set_button_icon.assert_called_once_with(0, 0, 0, "")
+    api.set_button_icon.assert_called_once_with(deck_id, 0, 0, "")
 
 
 def test_set_state():
@@ -228,9 +246,11 @@ def test_set_state():
     api = MagicMock()
     ui = MagicMock()
 
+    deck_id = ui.device_list.itemData(cmd.deck_index)
+
     cmd.execute(api, ui)
 
-    api.set_button_state.assert_called_once_with(0, 0, 0, 0)
+    api.set_button_state.assert_called_once_with(deck_id, 0, 0, 0)
 
 
 def test_unknown_command():
