@@ -1,5 +1,5 @@
 {
-    "app-id": "com.timothycrosley.streamdeck-ui",
+    "app-id": "com.streamdeck-linux-gui",
     "runtime": "org.freedesktop.Platform",
     "runtime-version": "23.08",
     "sdk": "org.freedesktop.Sdk",
