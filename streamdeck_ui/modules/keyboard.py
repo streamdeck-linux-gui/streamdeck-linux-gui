@@ -255,6 +255,12 @@ def keyboard_write(string: str):
     _ui = _UINPUT
     caps_lock_is_on = check_caps_lock()
     for char in string:
+        is_unicode = False
+        unicode_bytes = char.encode("unicode_escape")
+        # \\u or \\U
+        if unicode_bytes[0] == 92 and unicode_bytes[1] in [85, 117]:
+            is_unicode = True
+
         if char in _KEY_MAPPING:
             keycode = _KEY_MAPPING[char]
             need_shift = False
@@ -269,15 +275,38 @@ def keyboard_write(string: str):
                 _ui.write(e.EV_KEY, e.KEY_LEFTSHIFT, 1)
 
             _ui.write(e.EV_KEY, keycode, 1)
-            _ui.syn()
             _ui.write(e.EV_KEY, keycode, 0)
-            _ui.syn()
 
             if need_shift:
                 _ui.write(e.EV_KEY, e.KEY_LEFTSHIFT, 0)
-                _ui.syn()
 
+            # send keys
+            _ui.syn()
             time.sleep(_DEFAULT_KEY_PRESS_DELAY)
+        elif is_unicode:
+            unicode_hex = hex(int(unicode_bytes[2:], 16))
+            unicode_hex_keys = unicode_hex[2:]
+
+            # hold shift + ctrl
+            _ui.write(e.EV_KEY, e.KEY_LEFTSHIFT, 1)
+            _ui.write(e.EV_KEY, e.KEY_LEFTCTRL, 1)
+
+            # press 'U' to initiate unicode sequence
+            _ui.write(e.EV_KEY, e.KEY_U, 1)
+            _ui.write(e.EV_KEY, e.KEY_U, 0)
+
+            # press unicode codepoint keys
+            for hex_char in unicode_hex_keys:
+                keycode = _KEY_MAPPING[hex_char]
+                _ui.write(e.EV_KEY, keycode, 1)
+                _ui.write(e.EV_KEY, keycode, 0)
+
+            # release shift + ctrl
+            _ui.write(e.EV_KEY, e.KEY_LEFTSHIFT, 0)
+            _ui.write(e.EV_KEY, e.KEY_LEFTCTRL, 0)
+
+            # send keys
+            _ui.syn()
         else:
             print(f"Unsupported character: {char}")
 
@@ -289,7 +318,6 @@ def keyboard_press_keys(keys: str):
         for keycode in section_of_keycodes:
             _ui.write(e.EV_KEY, keycode, 1)
             _ui.syn()
-
         time.sleep(_DEFAULT_KEY_PRESS_DELAY)
 
         for keycode in reversed(section_of_keycodes):
