@@ -5,14 +5,26 @@ This has been tested on:
 * Arch with Plasma (July 2023)
 * Arch with Cinnamon (October 2023)
 * Arch with Gnome (Per every release, thanks to dhtseany)
+* Arch with Sway ans wayland
 
-## Install Dependencies
+## AUR 
+
+On Arch Linux, its recommended installing from AUR repositorues. there are two AUR packages available:
+
+1. `streamdeck-ui`: This package targets official and stable releases.
+2. `streamdeck-ui-git`: This package targets the git repository's master branch. It provides you with the latest updates but may be unstable at times.
+
+The AUR packages install all the necessary dependencies and udev rules, so you do not need to continue further in this document.
+
+## Manual / source install
+
+### Install Dependencies
 
 ```bash
 sudo pacman -S hidapi qt6-base
 ```
 
-## Set path
+### Set path
 
 You need to add `~/.local/bin` to your path. Be sure to add this to your `.bashrc` (or equivalent) file, so it automatically sets it for you in the future.
 
@@ -20,13 +32,23 @@ You need to add `~/.local/bin` to your path. Be sure to add this to your `.bashr
 PATH=$PATH:$HOME/.local/bin
 ```
 
-## Configure access to Elgato devices
+### Configure access to Elgato devices (udev rules)
 
-The following will create a file called `/etc/udev/rules.d/70-streamdeck.rules` and add the following text to it: `SUBSYSTEM=="usb", ATTRS{idVendor}=="0fd9", TAG+="uaccess"`. Creating this file adds a udev rule that provides your user with access to USB devices created by Elgato.
+The following will create a file called `/etc/udev/rules.d/60-streamdeck.rules` with all the necessary udev rules that provides your user with access to USB devices created by Elgato.
 
 ```bash
-sudo sh -c 'echo "SUBSYSTEM==\"usb\", ATTRS{idVendor}==\"0fd9\", TAG+=\"uaccess\"" > /etc/udev/rules.d/70-streamdeck.rules'
-sudo sh -c 'echo "KERNEL==\"uinput\", SUBSYSTEM==\"misc\", TAG+=\"uaccess\"" >> /etc/udev/rules.d/70-streamdeck.rules'
+sudo wget https://raw.githubusercontent.com/streamdeck-linux-gui/streamdeck-linux-gui/main/udev/60-streamdeck.rules -O /etc/udev/rules.d/60-streamdeck.rules
+```
+
+alternatively to grabbing the file directly from the repository you can use the following command:
+
+```bash
+sh -c "echo -e 'SUBSYSTEM==\"usb\", ATTRS{idVendor}==\"0fd9\", ATTRS{idProduct}==\"0060\", TAG+=\"uaccess\"\\n'\
+'SUBSYSTEM==\"usb\", ATTRS{idVendor}==\"0fd9\", ATTRS{idProduct}==\"0063\", TAG+=\"uaccess\"\\n'\
+'SUBSYSTEM==\"usb\", ATTRS{idVendor}==\"0fd9\", ATTRS{idProduct}==\"006c\", TAG+=\"uaccess\"\\n'\
+'SUBSYSTEM==\"usb\", ATTRS{idVendor}==\"0fd9\", ATTRS{idProduct}==\"006d\", TAG+=\"uaccess\"\\n'\
+'SUBSYSTEM==\"usb\", ATTRS{idVendor}==\"0fd9\", ATTRS{idProduct}==\"0080\", TAG+=\"uaccess\"\\n'\
+'KERNEL==\"uinput\", SUBSYSTEM==\"misc\", OPTIONS+=\"static_node=uinput\", TAG+=\"uaccess\", GROUP=\"input\", MODE=\"0660\"' > /etc/udev/rules.d/60-streamdeck.rules"
 ```
 
 For the rule to take immediate effect, run the following command:
@@ -37,9 +59,9 @@ sudo udevadm trigger
 
 If the software is having problems later to detect the Stream Deck, you can try unplugging/plugging it back in.
 
-## Install Streamdeck
+### Install Streamdeck
 
-### From Pypi with pipx
+#### From Pypi with pipx
 
 ```bash
 sudo pacman -S python-pipx
@@ -49,34 +71,12 @@ sudo pacman -S python-pipx
 pipx install  streamdeck-linux-gui
 ```
 
-### From Source
+#### From Source
 
 Please make sure you have followed [Install dependencies](#install-dependencies) and [Configure access to Elgato devices](#configure-access-to-elgato-devices) before continuing.
 
 The steps to install from source can be found [here](source.md)
 
-### Install with the AUR
-
-The AUR currently has an [easy install script](https://aur.archlinux.org/packages/streamdeck-ui) that is being maintained by dhtseany.
-> Additional packages may be required before the script will finish, once those have been installed the script will finish installing.
-
-``` bash
-cd Downloads
-git clone https://aur.archlinux.org/streamdeck-ui.git
-cd streamdeck-ui
-makepkg
-sudo pacman -U streamdeck-ui-3.1.0-1-any.pkg.tar.zst
-```
-
-### Install with yay
-
-[yay is a Pacman wrapper and AUR helper](https://aur.archlinux.org/packages/yay) that will download and install all of the prerequisites for you, along with the StreamDeck UI app itself.
-
-``` bash
-yay -S streamdeck-ui
-```
-
-> For both yay and the AUR you can also install the [Development branch](https://aur.archlinux.org/packages/streamdeck-ui-develop) if you want to stay on the bleeding edge or help with testing.
 
 ## Launch the Streamdeck UI
 
