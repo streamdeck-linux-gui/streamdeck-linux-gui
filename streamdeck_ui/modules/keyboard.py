@@ -211,8 +211,21 @@ _SUPPORTED_KEYS = [key.replace("KEY_", "").lower() for key in dir(e) if key.star
 _SUPPORTED_KEY_CONSTANTS = [value for name, value in vars(e).items() if name.startswith('KEY_') and name not in _BAD_ECODES]
 # fmt: on
 
+
 # Initialize UInput in a global variable so that we don't initialize each time a key is pressed
-_UINPUT = UInput({e.EV_KEY: _SUPPORTED_KEY_CONSTANTS})
+class UInputWrapper:
+    def __init__(self):
+        self.initialized = False
+        self.device = None
+
+    def initialize(self):
+        if not self.initialized:
+            print("Initializing UInput...")
+            self.device = UInput({e.EV_KEY: _SUPPORTED_KEY_CONSTANTS})
+            self.initialized = True
+
+
+_UINPUT = UInputWrapper()
 
 
 def parse_keys_as_keycodes(keys: str) -> List[List[str]]:
@@ -252,13 +265,14 @@ def parse_keys_as_keycodes(keys: str) -> List[List[str]]:
 
 
 def keyboard_write(string: str):
-    _ui = _UINPUT
+    _UINPUT.initialize()
+    _ui = _UINPUT.device
     caps_lock_is_on = check_caps_lock()
     for char in string:
         is_unicode = False
         unicode_bytes = char.encode("unicode_escape")
-        # \\u or \\U
-        if unicode_bytes[0] == 92 and unicode_bytes[1] in [85, 117]:
+        # '\u' or '\U' for unicode, or '\x' for UTF-8
+        if unicode_bytes[0] == 92 and unicode_bytes[1] in [85, 117, 120]:
             is_unicode = True
 
         if char in _KEY_MAPPING:
@@ -312,7 +326,8 @@ def keyboard_write(string: str):
 
 
 def keyboard_press_keys(keys: str):
-    _ui = _UINPUT
+    _UINPUT.initialize()
+    _ui = _UINPUT.device
     sections = parse_keys_as_keycodes(keys)
     for section_of_keycodes in sections:
         for keycode in section_of_keycodes:
