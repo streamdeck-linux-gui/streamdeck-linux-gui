@@ -3,7 +3,7 @@ import os
 import threading
 from copy import deepcopy
 from functools import partial
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Dict, List, Optional, Tuple
 
 from PIL.ImageQt import ImageQt
 from PySide6.QtCore import QObject, Signal
@@ -30,7 +30,7 @@ from streamdeck_ui.display.text_filter import TextFilter
 from streamdeck_ui.logger import logger
 from streamdeck_ui.model import ButtonMultiState, ButtonState, DeckState
 from streamdeck_ui.stream_deck_monitor import StreamDeckMonitor
-from streamdeck_ui.plugins import BasePlugin, stop_all_plugins, prepare_plugin
+from streamdeck_ui.plugins import Plugin, prepare_plugin
 
 
 class KeySignalEmitter(QObject):
@@ -309,8 +309,6 @@ class StreamDeckServer:
         except TransportError:
             pass
 
-        stop_all_plugins(self, serial_number)
-
         del self.decks_by_serial[serial_number]
         del self.decks_map_id_to_serial[deck_id]
 
@@ -381,58 +379,6 @@ class StreamDeckServer:
                 self._update_button_filters(serial_number, page, button)
                 display_handler = self.display_handlers[serial_number]
                 display_handler.synchronize()
-
-    def set_button_plugin_path(self, deck_id: str, page: int, button: int, plugin_path: str) -> None:
-        """Sets plugin path"""
-        if self.get_button_plugin_path(deck_id, page, button) != plugin_path:
-            self._button_state(deck_id, page, button).plugin_path = plugin_path
-            self._save_state()
-
-    def get_button_plugin_path(self, serial_number: str, page: int, button: int):
-        """Returns the plugin set for the specified button"""
-        return self._button_state(serial_number, page, button).plugin_path
-
-    def set_button_plugin(self, deck_id: str, page: int, button: int, plugin: BasePlugin) -> None:
-        if self.get_button_plugin(deck_id, page, button) != plugin:
-            self._button_state(deck_id, page, button).plugin = plugin
-            self._save_state()
-
-    def get_button_plugin(self, deck_id: str, page: int, button: int) -> BasePlugin:
-        return self._button_state(deck_id, page, button).plugin
-
-    def set_button_plugin_from_path(self, deck_id: str, page: int, button: int, plugin_path: str) -> None:
-        plugin_args = {
-            'api': self,
-            'serial_number': deck_id,
-            'page': page,
-            'button_id': button,
-            'plugin_path': plugin_path
-        }
-        plugin = prepare_plugin(**plugin_args)
-        self._button_state(deck_id, page, button).plugin = plugin
-        self._button_state(deck_id, page, button).plugin_path = plugin_path
-        self._save_state()
-
-    def set_button_plugin_args(self, deck_id: str, page: int, button: int, plugin_args: str) -> None:
-        """Sets the plugin args with error handling"""
-        args = plugin_args.split(';')
-        plugin_args_dict: Dict[str, str] = {}
-
-        for arg in args:
-            try:
-                key, value = arg.split('=')
-                plugin_args_dict[key] = value
-            except ValueError:
-                # Handle the error (e.g., print a warning, log it, or skip the invalid entry)
-                print(f"Invalid argument: {arg}. Skipping.")
-
-        if self.get_button_plugin_args(deck_id, page, button) != plugin_args_dict:
-            self._button_state(deck_id, page, button).plugin_args = plugin_args_dict
-            self._save_state()
-
-    def get_button_plugin_args(self, deck_id: str, page: int, button: int) -> Dict[str, str]:
-        """Returns all the input plugin args."""
-        return self._button_state(deck_id, page, button).plugin_args
 
     def get_button_switch_state(self, serial_number: str, page: int, button: int) -> int:
         """Returns the state switch set for the specified button. 0 implies no state switch."""
@@ -639,6 +585,21 @@ class StreamDeckServer:
         """Returns the text to be produced when the specified button is pressed"""
         return self._button_state(serial_number, page, button).write
 
+    def get_button_plugin(self, serial_number: str, page: int, button: int) -> Plugin:
+        """Gets the plugin for the button"""
+        return self._button_state(serial_number, page, button).plugin
+
+    def get_button_plugin_path(self, serial_number: str, page: int, button: int) -> str:
+        """Returns the path of the plugin for the button"""
+        return self._button_state(serial_number, page, button).plugin_path
+
+    def set_button_plugin(self, serial_number: str, page: int, button: int, plugin_path: str) -> None:
+        """Sets the plugin via the plugin path"""
+        if self._button_state(serial_number, page, button).plugin_path != plugin_path:
+            self._button_state(serial_number, page, button).plugin = prepare_plugin(plugin_path)
+            self._button_state(serial_number, page, button).plugin_path = plugin_path
+            self._save_state()
+
     def set_brightness(self, serial_number: str, brightness: int) -> None:
         """Sets the brightness for every button on the deck"""
         if self.get_brightness(serial_number) != brightness:
@@ -689,6 +650,16 @@ class StreamDeckServer:
         display_handler.set_page(page)
         # Wait for at least one cycle
         display_handler.synchronize()
+
+    def load_all_plugins(self, serial_number: str) -> None:
+        """Loads all plugins"""
+        state = self.state[serial_number]
+        for page_id in state.buttons:
+            for button_id in state.buttons[page_id]:
+                plugin_path = self.get_button_plugin_path(serial_number, page_id, button_id)
+                plugin = prepare_plugin(plugin_path)
+                self._button_state(serial_number, page_id, button_id).plugin = plugin
+        self._save_state()
 
     def _update_streamdeck_filters(self, serial_number: str):
         """Updates the filters for all the StreamDeck buttons.
@@ -752,17 +723,5 @@ class StreamDeckServer:
                     button_settings.text_horizontal_align,
                 )
             )
-
-        if button_settings.plugin_path:
-            plugin_args = {
-                'api': self,
-                'serial_number': serial_number,
-                'page': page,
-                'button_id': button,
-                'plugin_path': button_settings.plugin_path
-            }
-            plugin = prepare_plugin(**plugin_args)
-            if plugin is not None:
-                filters.extend(plugin.get_filters())
 
         display_handler.replace(page, button, filters)

@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from typing import Dict, List
 
-from streamdeck_ui.plugins import BasePlugin
+from streamdeck_ui.plugins import Plugin
 
 
 @dataclass
@@ -34,12 +34,10 @@ class ButtonState:
     """Font size of the text on the button"""
     background_color: str = ""
     """Background color of the button"""
+    plugin: Plugin = None
+    """The actual instance of the plugin, doesnt get saved in the .json"""
     plugin_path: str = ""
-    """Path to the plugin"""
-    plugin: BasePlugin = None
-    """The actual plugin instance"""
-    plugin_args: Dict[str, str] = field(default_factory=dict)
-    """Args that get passed to the plugin"""
+    """Path to the plugin file"""
 
 
 @dataclass

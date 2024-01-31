@@ -25,6 +25,7 @@ from PySide6.QtWidgets import (
     QToolButton,
     QVBoxLayout,
     QWidget,
+    QLabel,
 )
 
 from streamdeck_ui.api import StreamDeckServer
@@ -59,6 +60,9 @@ main_window: "MainWindow"
 
 last_image_dir: str = ""
 "Stores the last direction where user selected an image from"
+
+last_plugin_dir: str = ""
+"Stores the last plugin directory where user selected an plugin from"
 
 selected_button: Optional[QToolButton] = None
 "A reference to the currently selected button"
@@ -190,9 +194,6 @@ def handle_keypress(ui, deck_id: str, key: int, state: bool) -> None:
         brightness_change = api.get_button_change_brightness(deck_id, page, key)
         switch_page = api.get_button_switch_page(deck_id, page, key)
         switch_state = api.get_button_switch_state(deck_id, page, key)
-        plugin_path = api.get_button_plugin_path(deck_id, page, key)
-        plugin = api.get_button_plugin(deck_id, page, key)
-        plugin_args = api.get_button_plugin_args(deck_id, page, key)
 
         if command:
             try:
@@ -253,18 +254,6 @@ def handle_keypress(ui, deck_id: str, key: int, state: bool) -> None:
                 show_tray_warning_message(
                     f"Unable to perform switch button state, the button state {switch_state} does not exist in your current settings"
                 )
-
-        plugin_args = {
-            'api': api,
-            'serial_number': deck_id,
-            'page': page,
-            'button_id': key,
-            'plugin_path': plugin_path,
-            'plugin_args': plugin_args,
-        }
-
-        if plugin:
-            plugin.handle_keypress(**plugin_args)
 
 
 def _deck() -> Optional[str]:
@@ -616,6 +605,13 @@ def build_button_state_form(tab) -> None:
     enable_button_configuration(tab_ui, True)
     button_state = api.get_button_state_object(deck_id, page_id, button_id, button_state_id)
 
+    # load plugin ui if existing
+    plugin = api.get_button_plugin(deck_id, page_id, button_id)
+
+    if plugin is not None:
+        plugin.create_ui(tab_ui.PluginForm)
+        tab_ui.add_plugin.setText(plugin.__class__.__name__)
+
     tab_ui.text.setText(button_state.text)
     tab_ui.command.setText(button_state.command)
     tab_ui.keys.setCurrentText(button_state.keys)
@@ -627,12 +623,6 @@ def build_button_state_form(tab) -> None:
     tab_ui.change_brightness.setValue(button_state.brightness_change)
     tab_ui.switch_page.setValue(button_state.switch_page)
     tab_ui.switch_state.setValue(button_state.switch_state)
-    tab_ui.plugin_path.setText(button_state.plugin_path)
-
-    if not button_state.plugin_args:
-        tab_ui.plugin_args.setText("")
-    else:
-        tab_ui.plugin_args.setText(';'.join([f"{key}={value}" for key, value in button_state.plugin_args.items()]))
 
     font_family, font_style = find_font_info(button_state.font or DEFAULT_FONT_FALLBACK_PATH)
     prepare_button_state_form_text_font_list(tab_ui, font_family)
@@ -655,9 +645,12 @@ def build_button_state_form(tab) -> None:
     tab_ui.remove_image.clicked.connect(show_button_state_remove_image_dialog)
     tab_ui.text_h_align.clicked.connect(partial(update_align_text_horizontal))
     tab_ui.text_v_align.clicked.connect(partial(update_align_text_vertical))
-    tab_ui.plugin_path.textChanged.connect(partial(debounced_update_button_attribute, "plugin_path"))
-    tab_ui.plugin_path.textChanged.connect(partial(debounced_update_button_attribute, "plugin_from_path"))
-    tab_ui.plugin_args.textChanged.connect(partial(debounced_update_button_attribute, "plugin_args"))
+    tab_ui.add_plugin.clicked.connect(partial(show_button_state_plugin_dialog))
+    tab_ui.remove_plugin.clicked.connect(partial(show_button_state_remove_plugin_dialog))
+
+    #update_button_attribute
+
+    #Todo: Add some connections between the plugin and the actual ui or other stuff
 
 
 def enable_button_configuration(ui: Ui_ButtonForm, enabled: bool):
@@ -677,8 +670,9 @@ def enable_button_configuration(ui: Ui_ButtonForm, enabled: bool):
     ui.text_v_align.setEnabled(enabled)
     ui.text_color.setEnabled(enabled)
     ui.background_color.setEnabled(enabled)
-    ui.plugin_path.setEnabled(enabled)
-    ui.plugin_args.setEnabled(enabled)
+    ui.add_plugin.setEnabled(enabled)
+    ui.remove_plugin.setEnabled(enabled)
+
     # default black color looks like it's enabled even when it's not
     # we set it to white when disabled to make it more obvious
     if enabled:
@@ -790,6 +784,52 @@ def show_button_state_remove_image_dialog() -> None:
             update_displayed_button_attribute("icon", "")
 
 
+def show_button_state_plugin_dialog() -> None:
+    global last_plugin_dir
+    deck_id = _deck()
+    page_id = _page()
+    button_id = _button()
+
+    if deck_id is None or page_id is None or button_id is None:
+        return
+
+    plugin_file = api.get_button_plugin_path(deck_id, page_id, button_id)
+
+    if not plugin_file:
+        if not last_plugin_dir:
+            plugin_file = os.path.expanduser("~")
+        else:
+            plugin_file = last_plugin_dir
+
+    file_name = QFileDialog.getOpenFileName(
+        main_window, "Select Plugin", plugin_file, "Plugin Files (*.py)"
+    )[0]
+
+    if file_name:
+        last_plugin_dir = os.path.dirname(file_name)
+        update_button_attribute("plugin", file_name)
+
+
+def show_button_state_remove_plugin_dialog() -> None:
+    deck_id = _deck()
+    page_id = _page()
+    button_id = _button()
+
+    if deck_id is None or page_id is None or button_id is None:
+        return
+
+    plugin = api.get_button_plugin(deck_id, page_id, button_id)
+    if plugin is not None:
+        confirm = QMessageBox(main_window)
+        confirm.setWindowTitle("Remove Plugin")
+        confirm.setText("Are you sure you want to remove the Plugin for this button?")
+        confirm.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+        confirm.setIcon(QMessageBox.Icon.Question)
+        button = confirm.exec()
+        if button == QMessageBox.StandardButton.Yes:
+            update_button_attribute("plugin", "")
+
+
 def update_align_text_vertical() -> None:
     deck_id = _deck()
     page_id = _page()
@@ -887,8 +927,6 @@ def _reset_build_button_state_form(ui: Ui_ButtonForm):
     ui.change_brightness.setValue(0)
     ui.switch_page.setValue(0)
     ui.switch_state.setValue(0)
-    ui.plugin_path.clear()
-    ui.plugin_args.clear()
 
 
 def browse_documentation():

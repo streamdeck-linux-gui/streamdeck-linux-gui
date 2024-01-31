@@ -1,36 +1,8 @@
-import os.path
+import inspect
+import os
 import runpy
 import threading
-import traceback
 from abc import ABC, abstractmethod
-from typing import List, Type
-
-from streamdeck_ui.display.filter import Filter
-
-
-def prepare_plugin(**kwargs):
-    api = kwargs.get("api", None)
-    serial_number = kwargs.get('serial_number', None)
-    page = kwargs.get('page', None)
-    button_id = kwargs.get('button_id', None)
-    plugin_path = kwargs.get('plugin_path', None)
-    plugin: Type[BasePlugin] = None
-
-    if api.get_button_plugin_path(serial_number, page, button_id) is not None:
-        try:
-            full_path = os.path.expanduser(os.path.expandvars(plugin_path))
-            result = runpy.run_path(full_path)
-            if 'initialize_plugin' in result and callable(result['initialize_plugin']):
-                api.set_button_plugin_path(serial_number, page, button_id, plugin_path)
-                plugin = result['initialize_plugin'](**kwargs)
-                api.set_button_plugin(serial_number, page, button_id, plugin)
-            elif kwargs.get('non_optional', False):
-                print(f"Function initialize_plugin not found in {plugin_path}")
-        except Exception as error:
-            print(f"Error while calling initialize_plugin in {plugin_path}: {error}")
-            return None
-    return api.get_button_plugin(serial_number, page, button_id)
-
 
 def stop_all_plugins(api, serial_number):
     state = api.state[serial_number]
@@ -42,32 +14,47 @@ def stop_all_plugins(api, serial_number):
             api.set_button_plugin(serial_number, page_id, button_id, None)
 
 
-class BasePlugin(ABC):
-    lock: threading.Lock = threading.Lock()
+class Plugin(ABC):
+    lock: threading.Lock
+    _autostart: bool = False
 
-    def __init__(self, **kwargs):
-        self.api = kwargs.get("api", None)
-        self.page = kwargs.get("page", None)
-        self.serial_number = kwargs.get("serial_number", None)
-        self.button_id = kwargs.get("button_id", None)
-        self.filters: List[Filter] = []
-        self.actions = []
+    def __init__(self):
+        if self._autostart:
+            self.start()
+
+    def start(self):
+        if self.lock is None:
+            self.lock = threading.Lock()
 
     def stop(self):
         self.lock.acquire()
         self.lock.release()
 
-    def get_button_state(self):
-        return self.api.get_button_state(self.serial_number, self.page, self.button_id)
-
-    def synchronize(self, button_state):
-        self.api._update_button_filters(button_state, self.serial_number, self.page, self.button_id)
-
-    def handle_keypress(self, **kwargs):
+    @abstractmethod
+    def create_ui(self, pluginForm):
         pass
 
-    def get_filters(self, **kwargs) -> List[Filter]:
-        return self.filters
+    @abstractmethod
+    def handle_keypress(self):
+        pass
 
-    def get_actions(self, **kwargs):
-        return self.actions
+    @staticmethod
+    @abstractmethod
+    def initialize_plugin():
+        return None
+
+
+def prepare_plugin(plugin_path: str) -> Plugin:
+    plugin = None
+    try:
+        full_path = os.path.expanduser(os.path.expandvars(plugin_path))
+        result = runpy.run_path(full_path)
+        for name, obj in result.items():
+            if inspect.isclass(obj) and issubclass(obj, Plugin) and hasattr(obj, 'initialize_plugin') and callable(getattr(obj, 'initialize_plugin')) and obj != Plugin:
+                plugin = obj.initialize_plugin()
+                break
+        if plugin is None:
+            print("No valid plugin class found in the module.")
+    except Exception as e:
+        print(f"Error while calling initialize_plugin in {plugin_path}: {e}")
+    return plugin

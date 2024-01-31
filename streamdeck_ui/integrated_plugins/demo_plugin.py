@@ -1,13 +1,16 @@
-from streamdeck_ui.plugins import BasePlugin
+from PySide6.QtWidgets import QLabel
+
+from streamdeck_ui.plugins import Plugin
 
 
-class DemoPlugin(BasePlugin):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+class DemoPlugin(Plugin):
+    def create_ui(self, pluginForm):
+        label = QLabel(pluginForm)
+        label.setText("THIS IF FINALLY WORKING!!!")
 
-    def handle_keypress(self, **kwargs):
-        print("I'm Just a demo plugin")
+    def handle_keypress(self):
+        pass
 
-
-def initialize_plugin(**kwargs) -> DemoPlugin:
-    return DemoPlugin(**kwargs)
+    @staticmethod
+    def initialize_plugin():
+        return DemoPlugin()

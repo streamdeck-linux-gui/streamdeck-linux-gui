@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'button.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.5.2
+## Created by: Qt User Interface Compiler version 6.6.1
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -19,13 +19,18 @@ from PySide6.QtWidgets import (QApplication, QComboBox, QFormLayout, QHBoxLayout
     QLabel, QLineEdit, QPlainTextEdit, QPushButton,
     QSizePolicy, QSpinBox, QTextEdit, QVBoxLayout,
     QWidget)
-from . import resources_rc
+import resources_rc
 
 class Ui_ButtonForm(object):
     def setupUi(self, ButtonForm):
         if not ButtonForm.objectName():
             ButtonForm.setObjectName(u"ButtonForm")
-        ButtonForm.resize(434, 778)
+        ButtonForm.resize(400, 748)
+        sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(ButtonForm.sizePolicy().hasHeightForWidth())
+        ButtonForm.setSizePolicy(sizePolicy)
         self.formLayout = QFormLayout(ButtonForm)
         self.formLayout.setObjectName(u"formLayout")
         self.label = QLabel(ButtonForm)
@@ -43,11 +48,11 @@ class Ui_ButtonForm(object):
 
         self.remove_image = QPushButton(ButtonForm)
         self.remove_image.setObjectName(u"remove_image")
-        sizePolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.remove_image.sizePolicy().hasHeightForWidth())
-        self.remove_image.setSizePolicy(sizePolicy)
+        sizePolicy1 = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
+        sizePolicy1.setHorizontalStretch(0)
+        sizePolicy1.setVerticalStretch(0)
+        sizePolicy1.setHeightForWidth(self.remove_image.sizePolicy().hasHeightForWidth())
+        self.remove_image.setSizePolicy(sizePolicy1)
         self.remove_image.setMaximumSize(QSize(30, 16777215))
         icon = QIcon()
         icon.addFile(u":/icons/icons/cross.png", QSize(), QIcon.Normal, QIcon.Off)
@@ -65,11 +70,11 @@ class Ui_ButtonForm(object):
 
         self.background_color = QPushButton(ButtonForm)
         self.background_color.setObjectName(u"background_color")
-        sizePolicy1 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
-        sizePolicy1.setHorizontalStretch(0)
-        sizePolicy1.setVerticalStretch(0)
-        sizePolicy1.setHeightForWidth(self.background_color.sizePolicy().hasHeightForWidth())
-        self.background_color.setSizePolicy(sizePolicy1)
+        sizePolicy2 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
+        sizePolicy2.setHorizontalStretch(0)
+        sizePolicy2.setVerticalStretch(0)
+        sizePolicy2.setHeightForWidth(self.background_color.sizePolicy().hasHeightForWidth())
+        self.background_color.setSizePolicy(sizePolicy2)
         self.background_color.setMaximumSize(QSize(16777215, 16777215))
         palette = QPalette()
         brush = QBrush(QColor(0, 0, 0, 255))
@@ -156,6 +161,7 @@ class Ui_ButtonForm(object):
 
         self.verticalLayout_4 = QVBoxLayout()
         self.verticalLayout_4.setObjectName(u"verticalLayout_4")
+        self.verticalLayout_4.setContentsMargins(-1, -1, 0, -1)
         self.text_v_align = QPushButton(ButtonForm)
         self.text_v_align.setObjectName(u"text_v_align")
         self.text_v_align.setMinimumSize(QSize(40, 30))
@@ -190,11 +196,11 @@ class Ui_ButtonForm(object):
         self.horizontalLayout.setObjectName(u"horizontalLayout")
         self.text_font = QComboBox(ButtonForm)
         self.text_font.setObjectName(u"text_font")
-        sizePolicy2 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
-        sizePolicy2.setHorizontalStretch(0)
-        sizePolicy2.setVerticalStretch(0)
-        sizePolicy2.setHeightForWidth(self.text_font.sizePolicy().hasHeightForWidth())
-        self.text_font.setSizePolicy(sizePolicy2)
+        sizePolicy3 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
+        sizePolicy3.setHorizontalStretch(0)
+        sizePolicy3.setVerticalStretch(0)
+        sizePolicy3.setHeightForWidth(self.text_font.sizePolicy().hasHeightForWidth())
+        self.text_font.setSizePolicy(sizePolicy3)
 
         self.horizontalLayout.addWidget(self.text_font)
 
@@ -205,11 +211,11 @@ class Ui_ButtonForm(object):
 
         self.text_font_size = QSpinBox(ButtonForm)
         self.text_font_size.setObjectName(u"text_font_size")
-        sizePolicy3 = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        sizePolicy3.setHorizontalStretch(0)
-        sizePolicy3.setVerticalStretch(0)
-        sizePolicy3.setHeightForWidth(self.text_font_size.sizePolicy().hasHeightForWidth())
-        self.text_font_size.setSizePolicy(sizePolicy3)
+        sizePolicy4 = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        sizePolicy4.setHorizontalStretch(0)
+        sizePolicy4.setVerticalStretch(0)
+        sizePolicy4.setHeightForWidth(self.text_font_size.sizePolicy().hasHeightForWidth())
+        self.text_font_size.setSizePolicy(sizePolicy4)
         self.text_font_size.setMinimum(12)
         self.text_font_size.setMaximum(72)
 
@@ -217,11 +223,11 @@ class Ui_ButtonForm(object):
 
         self.text_color = QPushButton(ButtonForm)
         self.text_color.setObjectName(u"text_color")
-        sizePolicy4 = QSizePolicy(QSizePolicy.Maximum, QSizePolicy.Maximum)
-        sizePolicy4.setHorizontalStretch(0)
-        sizePolicy4.setVerticalStretch(0)
-        sizePolicy4.setHeightForWidth(self.text_color.sizePolicy().hasHeightForWidth())
-        self.text_color.setSizePolicy(sizePolicy4)
+        sizePolicy5 = QSizePolicy(QSizePolicy.Maximum, QSizePolicy.Maximum)
+        sizePolicy5.setHorizontalStretch(0)
+        sizePolicy5.setVerticalStretch(0)
+        sizePolicy5.setHeightForWidth(self.text_color.sizePolicy().hasHeightForWidth())
+        self.text_color.setSizePolicy(sizePolicy5)
         self.text_color.setMaximumSize(QSize(16777215, 16777215))
         palette1 = QPalette()
         palette1.setBrush(QPalette.Active, QPalette.WindowText, brush)
@@ -292,17 +298,17 @@ class Ui_ButtonForm(object):
         self.label_3 = QLabel(ButtonForm)
         self.label_3.setObjectName(u"label_3")
 
-        self.formLayout.setWidget(5, QFormLayout.LabelRole, self.label_3)
+        self.formLayout.setWidget(4, QFormLayout.LabelRole, self.label_3)
 
         self.command = QLineEdit(ButtonForm)
         self.command.setObjectName(u"command")
 
-        self.formLayout.setWidget(5, QFormLayout.FieldRole, self.command)
+        self.formLayout.setWidget(4, QFormLayout.FieldRole, self.command)
 
         self.label_5 = QLabel(ButtonForm)
         self.label_5.setObjectName(u"label_5")
 
-        self.formLayout.setWidget(6, QFormLayout.LabelRole, self.label_5)
+        self.formLayout.setWidget(5, QFormLayout.LabelRole, self.label_5)
 
         self.keys = QComboBox(ButtonForm)
         self.keys.addItem(u"")
@@ -324,12 +330,12 @@ class Ui_ButtonForm(object):
         self.keys.setObjectName(u"keys")
         self.keys.setEditable(True)
 
-        self.formLayout.setWidget(6, QFormLayout.FieldRole, self.keys)
+        self.formLayout.setWidget(5, QFormLayout.FieldRole, self.keys)
 
         self.label_8 = QLabel(ButtonForm)
         self.label_8.setObjectName(u"label_8")
 
-        self.formLayout.setWidget(7, QFormLayout.LabelRole, self.label_8)
+        self.formLayout.setWidget(6, QFormLayout.LabelRole, self.label_8)
 
         self.switch_page = QSpinBox(ButtonForm)
         self.switch_page.setObjectName(u"switch_page")
@@ -337,59 +343,80 @@ class Ui_ButtonForm(object):
         self.switch_page.setMaximum(999999999)
         self.switch_page.setValue(0)
 
-        self.formLayout.setWidget(7, QFormLayout.FieldRole, self.switch_page)
+        self.formLayout.setWidget(6, QFormLayout.FieldRole, self.switch_page)
 
         self.label_10 = QLabel(ButtonForm)
         self.label_10.setObjectName(u"label_10")
 
-        self.formLayout.setWidget(8, QFormLayout.LabelRole, self.label_10)
+        self.formLayout.setWidget(7, QFormLayout.LabelRole, self.label_10)
 
         self.switch_state = QSpinBox(ButtonForm)
         self.switch_state.setObjectName(u"switch_state")
         self.switch_state.setMaximum(999999999)
 
-        self.formLayout.setWidget(8, QFormLayout.FieldRole, self.switch_state)
+        self.formLayout.setWidget(7, QFormLayout.FieldRole, self.switch_state)
 
         self.label_7 = QLabel(ButtonForm)
         self.label_7.setObjectName(u"label_7")
 
-        self.formLayout.setWidget(9, QFormLayout.LabelRole, self.label_7)
+        self.formLayout.setWidget(8, QFormLayout.LabelRole, self.label_7)
+
+        self.label_6 = QLabel(ButtonForm)
+        self.label_6.setObjectName(u"label_6")
+
+        self.formLayout.setWidget(9, QFormLayout.LabelRole, self.label_6)
+
+        self.write = QPlainTextEdit(ButtonForm)
+        self.write.setObjectName(u"write")
+        sizePolicy6 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        sizePolicy6.setHorizontalStretch(0)
+        sizePolicy6.setVerticalStretch(0)
+        sizePolicy6.setHeightForWidth(self.write.sizePolicy().hasHeightForWidth())
+        self.write.setSizePolicy(sizePolicy6)
+
+        self.formLayout.setWidget(9, QFormLayout.FieldRole, self.write)
+
+        self.PluginForm = QWidget(ButtonForm)
+        self.PluginForm.setObjectName(u"PluginForm")
+        sizePolicy7 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        sizePolicy7.setHorizontalStretch(0)
+        sizePolicy7.setVerticalStretch(0)
+        sizePolicy7.setHeightForWidth(self.PluginForm.sizePolicy().hasHeightForWidth())
+        self.PluginForm.setSizePolicy(sizePolicy7)
+        self.PluginForm.setMinimumSize(QSize(0, 0))
+
+        self.formLayout.setWidget(11, QFormLayout.FieldRole, self.PluginForm)
 
         self.change_brightness = QSpinBox(ButtonForm)
         self.change_brightness.setObjectName(u"change_brightness")
         self.change_brightness.setMinimum(-99)
 
-        self.formLayout.setWidget(9, QFormLayout.FieldRole, self.change_brightness)
+        self.formLayout.setWidget(8, QFormLayout.FieldRole, self.change_brightness)
 
-        self.label_6 = QLabel(ButtonForm)
-        self.label_6.setObjectName(u"label_6")
+        self.horizontalLayout_4 = QHBoxLayout()
+        self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
+        self.add_plugin = QPushButton(ButtonForm)
+        self.add_plugin.setObjectName(u"add_plugin")
 
-        self.formLayout.setWidget(10, QFormLayout.LabelRole, self.label_6)
+        self.horizontalLayout_4.addWidget(self.add_plugin)
 
-        self.write = QPlainTextEdit(ButtonForm)
-        self.write.setObjectName(u"write")
+        self.remove_plugin = QPushButton(ButtonForm)
+        self.remove_plugin.setObjectName(u"remove_plugin")
+        sizePolicy1.setHeightForWidth(self.remove_plugin.sizePolicy().hasHeightForWidth())
+        self.remove_plugin.setSizePolicy(sizePolicy1)
+        self.remove_plugin.setMaximumSize(QSize(30, 16777215))
+        self.remove_plugin.setIcon(icon)
 
-        self.formLayout.setWidget(10, QFormLayout.FieldRole, self.write)
+        self.horizontalLayout_4.addWidget(self.remove_plugin)
+
+
+        self.formLayout.setLayout(10, QFormLayout.FieldRole, self.horizontalLayout_4)
 
         self.label_11 = QLabel(ButtonForm)
         self.label_11.setObjectName(u"label_11")
 
-        self.formLayout.setWidget(11, QFormLayout.LabelRole, self.label_11)
+        self.formLayout.setWidget(10, QFormLayout.LabelRole, self.label_11)
 
-        self.plugin_path = QLineEdit(ButtonForm)
-        self.plugin_path.setObjectName(u"plugin_path")
-
-        self.formLayout.setWidget(11, QFormLayout.FieldRole, self.plugin_path)
-
-        self.label_12 = QLabel(ButtonForm)
-        self.label_12.setObjectName(u"label_12")
-
-        self.formLayout.setWidget(12, QFormLayout.LabelRole, self.label_12)
-
-        self.plugin_args = QLineEdit(ButtonForm)
-        self.plugin_args.setObjectName(u"plugin_args")
-
-        self.formLayout.setWidget(12, QFormLayout.FieldRole, self.plugin_args)
 
         self.retranslateUi(ButtonForm)
 
@@ -439,7 +466,8 @@ class Ui_ButtonForm(object):
         self.label_10.setText(QCoreApplication.translate("ButtonForm", u"Switch state", None))
         self.label_7.setText(QCoreApplication.translate("ButtonForm", u"Brightness +/-:", None))
         self.label_6.setText(QCoreApplication.translate("ButtonForm", u"Write Text:", None))
-        self.label_11.setText(QCoreApplication.translate("ButtonForm", u"Plugin Path:", None))
-        self.label_12.setText(QCoreApplication.translate("ButtonForm", u"Plugin Args:", None))
+        self.add_plugin.setText(QCoreApplication.translate("ButtonForm", u"Plugin...", None))
+        self.remove_plugin.setText("")
+        self.label_11.setText(QCoreApplication.translate("ButtonForm", u"Plugin:", None))
     # retranslateUi
 
