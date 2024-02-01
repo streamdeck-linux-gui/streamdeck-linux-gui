@@ -3,7 +3,7 @@ import os
 import threading
 from copy import deepcopy
 from functools import partial
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Dict, List, Optional, Tuple
 
 from PIL.ImageQt import ImageQt
 from PySide6.QtCore import QObject, Signal
@@ -30,6 +30,7 @@ from streamdeck_ui.display.text_filter import TextFilter
 from streamdeck_ui.logger import logger
 from streamdeck_ui.model import ButtonMultiState, ButtonState, DeckState
 from streamdeck_ui.stream_deck_monitor import StreamDeckMonitor
+from streamdeck_ui.plugins import Plugin, prepare_plugin
 
 
 class KeySignalEmitter(QObject):
@@ -584,6 +585,21 @@ class StreamDeckServer:
         """Returns the text to be produced when the specified button is pressed"""
         return self._button_state(serial_number, page, button).write
 
+    def get_button_plugin(self, serial_number: str, page: int, button: int) -> Plugin:
+        """Gets the plugin for the button"""
+        return self._button_state(serial_number, page, button).plugin
+
+    def get_button_plugin_path(self, serial_number: str, page: int, button: int) -> str:
+        """Returns the path of the plugin for the button"""
+        return self._button_state(serial_number, page, button).plugin_path
+
+    def set_button_plugin(self, serial_number: str, page: int, button: int, plugin_path: str) -> None:
+        """Sets the plugin via the plugin path"""
+        if self._button_state(serial_number, page, button).plugin_path != plugin_path:
+            self._button_state(serial_number, page, button).plugin = prepare_plugin(plugin_path)
+            self._button_state(serial_number, page, button).plugin_path = plugin_path
+            self._save_state()
+
     def set_brightness(self, serial_number: str, brightness: int) -> None:
         """Sets the brightness for every button on the deck"""
         if self.get_brightness(serial_number) != brightness:
@@ -634,6 +650,16 @@ class StreamDeckServer:
         display_handler.set_page(page)
         # Wait for at least one cycle
         display_handler.synchronize()
+
+    def load_all_plugins(self, serial_number: str) -> None:
+        """Loads all plugins"""
+        state = self.state[serial_number]
+        for page_id in state.buttons:
+            for button_id in state.buttons[page_id]:
+                plugin_path = self.get_button_plugin_path(serial_number, page_id, button_id)
+                plugin = prepare_plugin(plugin_path)
+                self._button_state(serial_number, page_id, button_id).plugin = plugin
+        self._save_state()
 
     def _update_streamdeck_filters(self, serial_number: str):
         """Updates the filters for all the StreamDeck buttons.
