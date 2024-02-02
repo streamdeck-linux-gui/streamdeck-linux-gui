@@ -29,8 +29,8 @@ from streamdeck_ui.display.image_filter import ImageFilter
 from streamdeck_ui.display.text_filter import TextFilter
 from streamdeck_ui.logger import logger
 from streamdeck_ui.model import ButtonMultiState, ButtonState, DeckState
-from streamdeck_ui.stream_deck_monitor import StreamDeckMonitor
 from streamdeck_ui.plugins import Plugin, prepare_plugin
+from streamdeck_ui.stream_deck_monitor import StreamDeckMonitor
 
 
 class KeySignalEmitter(QObject):
@@ -596,7 +596,7 @@ class StreamDeckServer:
     def set_button_plugin(self, serial_number: str, page: int, button: int, plugin_path: str) -> None:
         """Sets the plugin via the plugin path"""
         if self._button_state(serial_number, page, button).plugin_path != plugin_path:
-            self._button_state(serial_number, page, button).plugin = prepare_plugin(plugin_path)
+            self._button_state(serial_number, page, button).plugin = prepare_plugin(self, plugin_path, serial_number, page, button)
             self._button_state(serial_number, page, button).plugin_path = plugin_path
             self._save_state()
 
@@ -660,6 +660,7 @@ class StreamDeckServer:
                 plugin = prepare_plugin(plugin_path)
                 self._button_state(serial_number, page_id, button_id).plugin = plugin
         self._save_state()
+
 
     def _update_streamdeck_filters(self, serial_number: str):
         """Updates the filters for all the StreamDeck buttons.
@@ -725,3 +726,13 @@ class StreamDeckServer:
             )
 
         display_handler.replace(page, button, filters)
+
+    # Definition of all event "slots" that can be called
+    def on_update_button_text(self, serial_number: str, page: int, button: int, text: str) -> None:
+        self.set_button_text(serial_number, page, button, text)
+
+    def on_update_button_background_color(self, serial_number: str, page: int, button: int, color: str):
+        self.set_button_background_color(serial_number, page, button, color)
+
+    def on_update_button_icon(self, serial_number: str, page: int, button: int, icon_path: str):
+        self.set_button_icon(serial_number, page, button, icon_path)

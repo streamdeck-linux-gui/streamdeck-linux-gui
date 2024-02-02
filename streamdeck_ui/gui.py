@@ -194,6 +194,7 @@ def handle_keypress(ui, deck_id: str, key: int, state: bool) -> None:
         brightness_change = api.get_button_change_brightness(deck_id, page, key)
         switch_page = api.get_button_switch_page(deck_id, page, key)
         switch_state = api.get_button_switch_state(deck_id, page, key)
+        plugin = api.get_button_plugin(deck_id, page, key)
 
         if command:
             try:
@@ -254,6 +255,9 @@ def handle_keypress(ui, deck_id: str, key: int, state: bool) -> None:
                 show_tray_warning_message(
                     f"Unable to perform switch button state, the button state {switch_state} does not exist in your current settings"
                 )
+
+        if plugin:
+            plugin.handle_keypress(deck_id, page, key)
 
 
 def _deck() -> Optional[str]:
@@ -566,7 +570,6 @@ def build_button_state_pages():
     finally:
         blocker.unblock()
 
-
 def build_button_state_form(tab) -> None:
     global selected_button
     global main_window
@@ -605,13 +608,6 @@ def build_button_state_form(tab) -> None:
     enable_button_configuration(tab_ui, True)
     button_state = api.get_button_state_object(deck_id, page_id, button_id, button_state_id)
 
-    # load plugin ui if existing
-    plugin = api.get_button_plugin(deck_id, page_id, button_id)
-
-    if plugin is not None:
-        plugin.create_ui(tab_ui.PluginForm)
-        tab_ui.add_plugin.setText(plugin.__class__.__name__)
-
     tab_ui.text.setText(button_state.text)
     tab_ui.command.setText(button_state.command)
     tab_ui.keys.setCurrentText(button_state.keys)
@@ -623,6 +619,8 @@ def build_button_state_form(tab) -> None:
     tab_ui.change_brightness.setValue(button_state.brightness_change)
     tab_ui.switch_page.setValue(button_state.switch_page)
     tab_ui.switch_state.setValue(button_state.switch_state)
+
+    create_plugin_ui(tab_ui)
 
     font_family, font_style = find_font_info(button_state.font or DEFAULT_FONT_FALLBACK_PATH)
     prepare_button_state_form_text_font_list(tab_ui, font_family)
@@ -645,12 +643,23 @@ def build_button_state_form(tab) -> None:
     tab_ui.remove_image.clicked.connect(show_button_state_remove_image_dialog)
     tab_ui.text_h_align.clicked.connect(partial(update_align_text_horizontal))
     tab_ui.text_v_align.clicked.connect(partial(update_align_text_vertical))
-    tab_ui.add_plugin.clicked.connect(partial(show_button_state_plugin_dialog))
+    tab_ui.add_plugin.clicked.connect(partial(show_button_state_plugin_dialog, tab_ui))
     tab_ui.remove_plugin.clicked.connect(partial(show_button_state_remove_plugin_dialog))
 
-    #update_button_attribute
-
     #Todo: Add some connections between the plugin and the actual ui or other stuff
+
+
+def create_plugin_ui(tab_ui):
+    deck_id = _deck()
+    page_id = _page()
+    button_id = _button()
+
+    # load plugin ui if existing
+    plugin = api.get_button_plugin(deck_id, page_id, button_id)
+
+    if plugin is not None:
+        plugin.create_ui(tab_ui.PluginForm)
+        tab_ui.add_plugin.setText(plugin.__class__.__name__)
 
 
 def enable_button_configuration(ui: Ui_ButtonForm, enabled: bool):
@@ -784,7 +793,7 @@ def show_button_state_remove_image_dialog() -> None:
             update_displayed_button_attribute("icon", "")
 
 
-def show_button_state_plugin_dialog() -> None:
+def show_button_state_plugin_dialog(ui: Ui_ButtonForm) -> None:
     global last_plugin_dir
     deck_id = _deck()
     page_id = _page()
@@ -808,6 +817,8 @@ def show_button_state_plugin_dialog() -> None:
     if file_name:
         last_plugin_dir = os.path.dirname(file_name)
         update_button_attribute("plugin", file_name)
+        create_plugin_ui(ui)
+        build_button_state_pages()
 
 
 def show_button_state_remove_plugin_dialog() -> None:
@@ -828,6 +839,7 @@ def show_button_state_remove_plugin_dialog() -> None:
         button = confirm.exec()
         if button == QMessageBox.StandardButton.Yes:
             update_button_attribute("plugin", "")
+            build_button_state_pages()
 
 
 def update_align_text_vertical() -> None:
@@ -927,6 +939,7 @@ def _reset_build_button_state_form(ui: Ui_ButtonForm):
     ui.change_brightness.setValue(0)
     ui.switch_page.setValue(0)
     ui.switch_state.setValue(0)
+    ui.add_plugin.setText("Plugin...")
 
 
 def browse_documentation():
