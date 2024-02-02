@@ -220,6 +220,8 @@ class StreamDeckServer:
             }
         )
 
+        self.load_all_plugins(serial_number)
+
     def set_default_state(self, serial_number: str, deck_type: str):
         if serial_number in self.state:
             return
@@ -657,10 +659,11 @@ class StreamDeckServer:
         for page_id in state.buttons:
             for button_id in state.buttons[page_id]:
                 plugin_path = self.get_button_plugin_path(serial_number, page_id, button_id)
-                plugin = prepare_plugin(plugin_path)
-                self._button_state(serial_number, page_id, button_id).plugin = plugin
-        self._save_state()
 
+                if plugin_path:
+                    plugin = prepare_plugin(self, plugin_path, serial_number, page_id, button_id)
+                    self._button_state(serial_number, page_id, button_id).plugin = plugin
+        self._save_state()
 
     def _update_streamdeck_filters(self, serial_number: str):
         """Updates the filters for all the StreamDeck buttons.
@@ -728,6 +731,7 @@ class StreamDeckServer:
         display_handler.replace(page, button, filters)
 
     # Definition of all event "slots" that can be called
+    # Moved to extra functions to de-couple it with the actual functions
     def on_update_button_text(self, serial_number: str, page: int, button: int, text: str) -> None:
         self.set_button_text(serial_number, page, button, text)
 

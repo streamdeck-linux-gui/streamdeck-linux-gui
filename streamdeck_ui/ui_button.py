@@ -25,7 +25,7 @@ class Ui_ButtonForm(object):
     def setupUi(self, ButtonForm):
         if not ButtonForm.objectName():
             ButtonForm.setObjectName(u"ButtonForm")
-        ButtonForm.resize(400, 748)
+        ButtonForm.resize(400, 874)
         sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -376,17 +376,6 @@ class Ui_ButtonForm(object):
 
         self.formLayout.setWidget(9, QFormLayout.FieldRole, self.write)
 
-        self.PluginForm = QWidget(ButtonForm)
-        self.PluginForm.setObjectName(u"PluginForm")
-        sizePolicy7 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        sizePolicy7.setHorizontalStretch(0)
-        sizePolicy7.setVerticalStretch(0)
-        sizePolicy7.setHeightForWidth(self.PluginForm.sizePolicy().hasHeightForWidth())
-        self.PluginForm.setSizePolicy(sizePolicy7)
-        self.PluginForm.setMinimumSize(QSize(0, 0))
-
-        self.formLayout.setWidget(11, QFormLayout.FieldRole, self.PluginForm)
-
         self.change_brightness = QSpinBox(ButtonForm)
         self.change_brightness.setObjectName(u"change_brightness")
         self.change_brightness.setMinimum(-99)
@@ -416,6 +405,17 @@ class Ui_ButtonForm(object):
         self.label_11.setObjectName(u"label_11")
 
         self.formLayout.setWidget(10, QFormLayout.LabelRole, self.label_11)
+
+        self.PluginForm = QWidget(ButtonForm)
+        self.PluginForm.setObjectName(u"PluginForm")
+        sizePolicy7 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        sizePolicy7.setHorizontalStretch(0)
+        sizePolicy7.setVerticalStretch(0)
+        sizePolicy7.setHeightForWidth(self.PluginForm.sizePolicy().hasHeightForWidth())
+        self.PluginForm.setSizePolicy(sizePolicy7)
+        self.PluginForm.setMinimumSize(QSize(0, 0))
+
+        self.formLayout.setWidget(11, QFormLayout.SpanningRole, self.PluginForm)
 
 
         self.retranslateUi(ButtonForm)

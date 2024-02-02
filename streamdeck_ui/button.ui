@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>748</height>
+    <height>874</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -1281,22 +1281,6 @@
      </property>
     </widget>
    </item>
-   <item row="11" column="1">
-    <widget class="QWidget" name="PluginForm" native="true">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>0</height>
-      </size>
-     </property>
-    </widget>
-   </item>
    <item row="8" column="1">
     <widget class="QSpinBox" name="change_brightness">
      <property name="minimum">
@@ -1342,6 +1326,22 @@
     <widget class="QLabel" name="label_11">
      <property name="text">
       <string>Plugin:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="11" column="0" colspan="2">
+    <widget class="QWidget" name="PluginForm" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
      </property>
     </widget>
    </item>
