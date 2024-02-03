@@ -187,7 +187,8 @@ def _to_button_state(button: dict) -> ButtonState:
         font_size=button.get("font_size", 0),
         background_color=button.get("background_color", ""),
         plugin=button.get("plugin", None),
-        plugin_path=button.get("plugin_path", "")
+        plugin_path=button.get("plugin_path", ""),
+        plugin_config=button.get("plugin_config", ""),
     )
 
 
@@ -236,6 +237,7 @@ def _to_button_config(button: ButtonState) -> dict:
         "font_size": button.font_size,
         "background_color": button.background_color,
         "plugin_path": button.plugin_path,
+        "plugin_config": button.plugin_config
     }
 
 

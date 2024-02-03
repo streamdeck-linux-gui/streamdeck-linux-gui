@@ -1,18 +1,45 @@
+import json
+from dataclasses import dataclass, asdict
 from PySide6.QtCore import QSize, QCoreApplication
 from PySide6.QtGui import Qt
 from PySide6.QtWidgets import QLabel, QWidget, QPushButton, QSizePolicy, QFormLayout, QComboBox, QHBoxLayout, \
     QRadioButton, QSlider, QVBoxLayout
 
-from streamdeck_ui.plugins import Plugin
+from streamdeck_ui.plugins import Plugin, PluginConfig
+
+
+@dataclass
+class DemoPluginConfig(PluginConfig):
+    test: bool = False
+
+    @property
+    def json(self):
+        return json.dumps(asdict(self))
+
+    @classmethod
+    def from_json(cls, json_str):
+        try:
+            json_data = json.loads(json_str)
+            return cls(**json_data)
+        except:
+            return None
 
 
 class DemoPlugin(Plugin):
     toggled = False
+    config: DemoPluginConfig
 
-    def __init__(self, serial_number: str, page_id: int, button_id: int):
+    def __init__(self, serial_number: str, page_id: int, button_id: int, plugin_config: str = ""):
         super().__init__(serial_number, page_id, button_id)
+        self.config = DemoPluginConfig.from_json(plugin_config)
+        if self.config is None:
+            self.config = DemoPluginConfig()
 
     def create_ui(self, plugin_form: QWidget):
+        print(self.config.test)
+        self.config.test = not self.config.test
+        self.plugin_change_config(self.serial_number, self.page_id, self.button_id)
+        print(self.config.test)
         # Creates a vertical layout for the plugin_form so that everything stretches nicely
         verticalLayout = QVBoxLayout(plugin_form)
         VolumeControl = QWidget(plugin_form)
@@ -164,7 +191,7 @@ class DemoPlugin(Plugin):
             self.volume_slider.setVisible(False)
 
     def volume_slider_value_change(self, value):
-        self.volume_slider.setToolTip(QCoreApplication.translate("VolumeControl", u""+str(value), None))
+        self.volume_slider.setToolTip(QCoreApplication.translate("VolumeControl", u"" + str(value), None))
 
     def populate_device_select(self):
         self.device_select.addItem("DEMO DEVICE")
@@ -181,5 +208,5 @@ class DemoPlugin(Plugin):
         pass
 
     @staticmethod
-    def initialize_plugin(serial_number: str, page_id: int, button_id: int):
-        return DemoPlugin(serial_number, page_id, button_id)
+    def initialize_plugin(serial_number: str, page_id: int, button_id: int, plugin_config: str = ""):
+        return DemoPlugin(serial_number, page_id, button_id, plugin_config)

@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
-from typing import Dict, List
+from typing import Dict, List, Callable
 
-from streamdeck_ui.plugins import Plugin
+from streamdeck_ui.plugins import Plugin, PluginConfig
 
 
 @dataclass
@@ -38,6 +38,8 @@ class ButtonState:
     """The actual instance of the plugin, doesnt get saved in the .json"""
     plugin_path: str = ""
     """Path to the plugin file"""
+    plugin_config: str = ""
+    t: PluginConfig = None
 
 
 @dataclass

@@ -29,7 +29,7 @@ from streamdeck_ui.display.image_filter import ImageFilter
 from streamdeck_ui.display.text_filter import TextFilter
 from streamdeck_ui.logger import logger
 from streamdeck_ui.model import ButtonMultiState, ButtonState, DeckState
-from streamdeck_ui.plugins import Plugin, prepare_plugin
+from streamdeck_ui.plugins import Plugin, prepare_plugin, PluginConfig
 from streamdeck_ui.stream_deck_monitor import StreamDeckMonitor
 
 
@@ -595,12 +595,29 @@ class StreamDeckServer:
         """Returns the path of the plugin for the button"""
         return self._button_state(serial_number, page, button).plugin_path
 
+    def get_button_plugin_config(self, serial_number: str, page: int, button: int) -> str:
+        return self._button_state(serial_number, page, button).plugin_config
+
     def set_button_plugin(self, serial_number: str, page: int, button: int, plugin_path: str) -> None:
         """Sets the plugin via the plugin path"""
         if self._button_state(serial_number, page, button).plugin_path != plugin_path:
             self._button_state(serial_number, page, button).plugin = prepare_plugin(self, plugin_path, serial_number, page, button)
             self._button_state(serial_number, page, button).plugin_path = plugin_path
+
+            if self._button_state(serial_number, page, button).plugin:
+                self._button_state(serial_number, page, button).plugin_config = self._button_state(serial_number, page, button).plugin.config.json
+            else:
+                self._button_state(serial_number, page, button).plugin_config = ""
+
             self._save_state()
+
+    def set_button_plugin_config(self, serial_number: str, page: int, button: int) -> None:
+        plugin = self._button_state(serial_number, page, button).plugin
+        if plugin is not None:
+            self._button_state(serial_number, page, button).plugin_config = plugin.config.json
+            self._save_state()
+        else:
+            self._button_state(serial_number, page, button).plugin_config = ""
 
     def set_brightness(self, serial_number: str, brightness: int) -> None:
         """Sets the brightness for every button on the deck"""
@@ -675,7 +692,6 @@ class StreamDeckServer:
         # if deck is not attached then do nothing
         if serial_number not in self.decks_by_serial:
             return
-
         pages = self.get_pages(serial_number)
         display_handler = self.display_handlers.get(
             serial_number, DisplayGrid(self.lock, self.decks_by_serial[serial_number], pages, self._cpu_usage_callback)
@@ -740,3 +756,6 @@ class StreamDeckServer:
 
     def on_update_button_icon(self, serial_number: str, page: int, button: int, icon_path: str):
         self.set_button_icon(serial_number, page, button, icon_path)
+
+    def on_update_button_plugin_config(self, serial_number: str, page: int, button: int):
+        self.set_button_plugin_config(serial_number, page, button)

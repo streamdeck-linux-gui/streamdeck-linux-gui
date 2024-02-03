@@ -1,17 +1,33 @@
 import inspect
+import json
 import os
 import runpy
 import threading
 from abc import ABC, abstractmethod
+from dataclasses import dataclass, asdict
 from typing import Callable
+from json import dumps
 
 from PySide6.QtWidgets import QWidget
-from PySide6.QtCore import Signal, Slot, SIGNAL, SLOT
+
+
+@dataclass
+class PluginConfig(ABC):
+    @property
+    @abstractmethod
+    def json(self):
+        pass
+
+    @classmethod
+    @abstractmethod
+    def from_json(cls, json_str):
+        pass
 
 
 class Plugin(ABC):
     lock: threading.Lock
     _autostart: bool = False
+    config: PluginConfig = None
 
     button_change_text: Callable[[str, int, int, str], None]
     """Function that gets overridden"""
@@ -27,6 +43,8 @@ class Plugin(ABC):
         - button (int): The identifier of the button whose icon needs to be changed.
         - path (str): The path to the new icon image.
     """
+
+    plugin_change_config: Callable[[str, int, int], None]
 
     @property
     def serial_number(self):
@@ -75,25 +93,27 @@ class Plugin(ABC):
 
     @staticmethod
     @abstractmethod
-    def initialize_plugin(serial_number: str, page_id: int, button_id: int):
+    def initialize_plugin(serial_number: str, page_id: int, button_id: int, plugin_config: str = ""):
         """Initializes the plugin, MUST be replaced with an override and MUST return the Plugin"""
         return None
 
 
 def prepare_plugin(api, plugin_path: str, serial_number: str, page_id: int, button_id: int) -> Plugin:
     plugin = None
+    plugin_config = api.get_button_plugin_config(serial_number, page_id, button_id)
     try:
         full_path = os.path.expanduser(os.path.expandvars(plugin_path))
         result = runpy.run_path(full_path)
         for name, obj in result.items():
             if inspect.isclass(obj) and issubclass(obj, Plugin) and hasattr(obj, 'initialize_plugin') and callable(
                     getattr(obj, 'initialize_plugin')) and obj != Plugin:
-                plugin = obj.initialize_plugin(serial_number, page_id, button_id)
+                plugin = obj.initialize_plugin(serial_number, page_id, button_id, plugin_config)
 
                 # Connects event functions to the api
                 plugin.button_change_text = api.on_update_button_text
                 plugin.button_change_background = api.on_update_button_background_color
                 plugin.button_change_icon = api.on_update_button_icon
+                plugin.plugin_change_config = api.on_update_button_plugin_config
 
                 break
         if plugin is None:
