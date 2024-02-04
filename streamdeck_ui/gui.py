@@ -322,9 +322,9 @@ def handle_change_button_state() -> None:
     page_id = _page()
     button_id = _button()
     button_state_id = _button_state()
-    plugin = api.get_button_plugin(deck_id, page_id, button_id)
     if deck_id is not None and page_id is not None and button_id is not None and button_state_id is not None:
         api.set_button_state(deck_id, page_id, button_id, button_state_id)
+        plugin = api.get_button_plugin(deck_id, page_id, button_id)
         if plugin is not None:
             plugin.handle_change_button_state(deck_id, page_id, button_id, button_state_id)
         redraw_button(button_id)
