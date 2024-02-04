@@ -545,10 +545,9 @@ def build_button_state_pages():
                 label = _build_tab_label("State", button_state_id)
                 tab_index = ui.button_states.addTab(page, label)
                 page_tab = ui.button_states.widget(tab_index)
-
+                build_button_state_form(page_tab)
                 if button_state_id == current_state:
                     active_tab_index = tab_index
-                build_button_state_form(page_tab)
         else:
             # add text "No button selected"
             page = QWidget()
@@ -837,7 +836,6 @@ def show_button_state_plugin_dialog(ui: Ui_ButtonForm) -> None:
             plugin.create_ui(ui.PluginForm)
             ui.add_plugin.setText(plugin.__class__.__name__)
 
-        #create_plugin_ui(ui)
         build_button_state_pages()
 
 

@@ -603,7 +603,7 @@ class StreamDeckServer:
     def set_button_plugin(self, serial_number: str, page: int, button: int, plugin_path: str) -> None:
         """Sets the plugin via the plugin path"""
         if (self._button_state(serial_number, page, button).plugin_path != plugin_path or
-                self._button_state(serial_number, page, button).plugin_config is None):
+                self._button_state(serial_number, page, button).plugin is None):
             self._button_state(serial_number, page, button).plugin = self.prepare_plugin(serial_number, page, button, plugin_path)
             self._button_state(serial_number, page, button).plugin_path = plugin_path
 
