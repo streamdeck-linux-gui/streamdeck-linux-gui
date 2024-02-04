@@ -734,7 +734,7 @@ def show_button_state_image_dialog() -> None:
             image_file = last_image_dir
 
     file_name = QFileDialog.getOpenFileName(
-        main_window, "Open Image", image_file, "Image Files (*.png *.jpg *.bmp *.svg *.gif)"
+        main_window, "Open Image", image_file, "Image Files (*.png *.jpg *.jpeg *.bmp *.svg *.gif)"
     )[0]
 
     if file_name:
