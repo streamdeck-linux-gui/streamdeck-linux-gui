@@ -1,12 +1,10 @@
 import inspect
-import json
 import os
 import runpy
 import threading
 from abc import ABC, abstractmethod
-from dataclasses import dataclass, asdict
-from typing import Callable
-from json import dumps
+from dataclasses import dataclass
+from typing import Callable, Union
 
 from PySide6.QtWidgets import QWidget
 
@@ -26,25 +24,12 @@ class PluginConfig(ABC):
 
 class Plugin(ABC):
     lock: threading.Lock
-    _autostart: bool = False
     config: PluginConfig = None
 
-    button_change_text: Callable[[str, int, int, str], None]
-    """Function that gets overridden"""
-
-    button_change_background: Callable[[str, int, int, str], None]
-    """Changes the background color on the button in the format: #000000"""
-
-    button_change_icon: Callable[[str, int, int, str], None]
-    """
-    Change the icon of a button on a specific page identified by its serial number.
-        - serial_number (str): The serial number of the device containing the button.
-        - page (int): The page number where the button is located.
-        - button (int): The identifier of the button whose icon needs to be changed.
-        - path (str): The path to the new icon image.
-    """
-
-    plugin_change_config: Callable[[str, int, int], None]
+    _button_change_text_callback: Callable[[str, int, int, str], None] = None
+    _button_change_background_callback: Callable[[str, int, int, str], None] = None
+    _button_change_icon_callback: Callable[[str, int, int, str], None] = None
+    _plugin_change_config_callback: Callable[[str, int, int], None] = None
 
     @property
     def serial_number(self):
@@ -65,8 +50,7 @@ class Plugin(ABC):
         self._page_id = page_id
         self._button_id = button_id
 
-        if self._autostart:
-            self.start()
+        #self.start()
 
     def start(self):
         if self.lock is None:
@@ -97,30 +81,51 @@ class Plugin(ABC):
         """Initializes the plugin, MUST be replaced with an override and MUST return the Plugin"""
         return None
 
+    # === Event Properties ===
+    # These events are going out from the Plugin and get handled by the api
+    @property
+    def change_text_callback(self) -> Callable[[str, int, int, str], None]:
+        if self._button_change_text_callback is None:
+            return lambda _, __, ___, ____: None
+        return self._button_change_text_callback
 
-def prepare_plugin(api, plugin_path: str, serial_number: str, page_id: int, button_id: int) -> Plugin:
-    plugin = None
-    plugin_config = api.get_button_plugin_config(serial_number, page_id, button_id)
-    try:
-        full_path = os.path.expanduser(os.path.expandvars(plugin_path))
-        result = runpy.run_path(full_path)
-        for name, obj in result.items():
-            if inspect.isclass(obj) and issubclass(obj, Plugin) and hasattr(obj, 'initialize_plugin') and callable(
-                    getattr(obj, 'initialize_plugin')) and obj != Plugin:
-                plugin = obj.initialize_plugin(serial_number, page_id, button_id, plugin_config)
+    @change_text_callback.setter
+    def change_text_callback(self, callback: Callable[[str, int, int, str], None]) -> None:
+        if self._button_change_text_callback is None:
+            self._button_change_text_callback = callback
 
-                # Connects event functions to the api
-                plugin.button_change_text = api.on_update_button_text
-                plugin.button_change_background = api.on_update_button_background_color
-                plugin.button_change_icon = api.on_update_button_icon
-                plugin.plugin_change_config = api.on_update_button_plugin_config
+    @property
+    def change_background_callback(self) -> Callable[[str, int, int, str], None]:
+        if self._button_change_background_callback is None:
+            return lambda _, __, ___, ____: None
+        return self._button_change_background_callback
 
-                break
-        if plugin is None:
-            print("No valid plugin class found in the module.")
-    except Exception as e:
-        print(f"Error while calling initialize_plugin in {plugin_path}: {e}")
-    return plugin
+    @change_background_callback.setter
+    def change_background_callback(self, callback: Callable[[str, int, int, str], None]) -> None:
+        if self._button_change_background_callback is None:
+            self._button_change_background_callback = callback
+
+    @property
+    def change_icon_callback(self) -> Callable[[str, int, int, str], None]:
+        if self._button_change_icon_callback is None:
+            return lambda _, __, ___, ____: None
+        return self._button_change_icon_callback
+
+    @change_icon_callback.setter
+    def change_icon_callback(self, callback: Callable[[str, int, int, str], None]) -> None:
+        if self.change_icon_callback is None:
+            self._button_change_icon_callback = callback
+
+    @property
+    def change_config_callback(self) -> Callable[[str, int, int], None]:
+        if self._plugin_change_config_callback is None:
+            return lambda _, __, ___: None
+        return self._plugin_change_config_callback
+
+    @change_config_callback.setter
+    def change_config_callback(self, callback: Callable[[str, int, int], None]) -> None:
+        if self.change_config_callback is None:
+            self._plugin_change_config_callback = callback
 
 
 def stop_all_plugins(api, serial_number):

@@ -39,7 +39,6 @@ class ButtonState:
     plugin_path: str = ""
     """Path to the plugin file"""
     plugin_config: str = ""
-    t: PluginConfig = None
 
 
 @dataclass

@@ -33,6 +33,8 @@ TEST_CONFIG_STATE = {
                             "font_color": "",
                             "font_size": 0,
                             "background_color": "",
+                            "plugin_path": "",
+                            "plugin_config": ""
                         }
                     },
                 }
@@ -63,6 +65,8 @@ TEST_CONFIG_STATE_V1 = {
                     "font_color": "",
                     "font_size": 0,
                     "background_color": "",
+                    "plugin_path": "",
+                    "plugin_config": ""
                 }
             }
         },

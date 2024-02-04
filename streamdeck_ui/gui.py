@@ -1,3 +1,5 @@
+# Todo: FIX NOT BEING ABLE TO DELETE STATES!!!! IDK WHY IT EVENT HAPPENED; HELP
+
 """Defines the QT powered interface for configuring Stream Decks"""
 import os
 import shlex
@@ -322,8 +324,11 @@ def handle_change_button_state() -> None:
     page_id = _page()
     button_id = _button()
     button_state_id = _button_state()
+    plugin = api.get_button_plugin(deck_id, page_id, button_id)
     if deck_id is not None and page_id is not None and button_id is not None and button_state_id is not None:
         api.set_button_state(deck_id, page_id, button_id, button_state_id)
+        if plugin is not None:
+            plugin.handle_change_button_state(deck_id, page_id, button_id, button_state_id)
         redraw_button(button_id)
         api.reset_dimmer(deck_id)
 
@@ -540,9 +545,10 @@ def build_button_state_pages():
                 label = _build_tab_label("State", button_state_id)
                 tab_index = ui.button_states.addTab(page, label)
                 page_tab = ui.button_states.widget(tab_index)
-                build_button_state_form(page_tab)
+
                 if button_state_id == current_state:
                     active_tab_index = tab_index
+                build_button_state_form(page_tab)
         else:
             # add text "No button selected"
             page = QWidget()
@@ -569,6 +575,7 @@ def build_button_state_pages():
             ui.add_button_state.setEnabled(False)
     finally:
         blocker.unblock()
+
 
 def build_button_state_form(tab) -> None:
     global selected_button
@@ -620,7 +627,8 @@ def build_button_state_form(tab) -> None:
     tab_ui.switch_page.setValue(button_state.switch_page)
     tab_ui.switch_state.setValue(button_state.switch_state)
 
-    create_plugin_ui(tab_ui)
+    #create_plugin_ui(tab_ui)
+    create_plugin_ui_state(tab_ui, button_state.plugin)
 
     font_family, font_style = find_font_info(button_state.font or DEFAULT_FONT_FALLBACK_PATH)
     prepare_button_state_form_text_font_list(tab_ui, font_family)
@@ -646,8 +654,6 @@ def build_button_state_form(tab) -> None:
     tab_ui.add_plugin.clicked.connect(partial(show_button_state_plugin_dialog, tab_ui))
     tab_ui.remove_plugin.clicked.connect(partial(show_button_state_remove_plugin_dialog))
 
-    #Todo: Add some connections between the plugin and the actual ui or other stuff
-
 
 def create_plugin_ui(tab_ui):
     deck_id = _deck()
@@ -657,6 +663,12 @@ def create_plugin_ui(tab_ui):
     # load plugin ui if existing
     plugin = api.get_button_plugin(deck_id, page_id, button_id)
 
+    if plugin is not None:
+        plugin.create_ui(tab_ui.PluginForm)
+        tab_ui.add_plugin.setText(plugin.__class__.__name__)
+
+
+def create_plugin_ui_state(tab_ui, plugin):
     if plugin is not None:
         plugin.create_ui(tab_ui.PluginForm)
         tab_ui.add_plugin.setText(plugin.__class__.__name__)
@@ -817,7 +829,15 @@ def show_button_state_plugin_dialog(ui: Ui_ButtonForm) -> None:
     if file_name:
         last_plugin_dir = os.path.dirname(file_name)
         update_button_attribute("plugin", file_name)
-        create_plugin_ui(ui)
+
+        # load plugin ui if existing
+        plugin = api.get_button_plugin(deck_id, page_id, button_id)
+
+        if plugin is not None:
+            plugin.create_ui(ui.PluginForm)
+            ui.add_plugin.setText(plugin.__class__.__name__)
+
+        #create_plugin_ui(ui)
         build_button_state_pages()
 
 

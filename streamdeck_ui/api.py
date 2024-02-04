@@ -1,9 +1,11 @@
 """Defines the Python API for interacting with the StreamDeck Configuration UI"""
+import inspect
 import os
+import runpy
 import threading
 from copy import deepcopy
 from functools import partial
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple, Union
 
 from PIL.ImageQt import ImageQt
 from PySide6.QtCore import QObject, Signal
@@ -29,7 +31,7 @@ from streamdeck_ui.display.image_filter import ImageFilter
 from streamdeck_ui.display.text_filter import TextFilter
 from streamdeck_ui.logger import logger
 from streamdeck_ui.model import ButtonMultiState, ButtonState, DeckState
-from streamdeck_ui.plugins import Plugin, prepare_plugin, PluginConfig
+from streamdeck_ui.plugins import Plugin, PluginConfig
 from streamdeck_ui.stream_deck_monitor import StreamDeckMonitor
 
 
@@ -329,7 +331,7 @@ class StreamDeckServer:
     def _button_state(self, serial_number: str, page: int, button: int, state: Optional[int] = None) -> ButtonState:
         multi_state = self._button_multi_state(serial_number, page, button)
         # if no state is specified, use the current state
-        choose_state = state or multi_state.state
+        choose_state = state if state is not None else multi_state.state
         # if the choose state is not in the states dict, add it
         multi_state.states[choose_state] = multi_state.states.setdefault(choose_state, ButtonState())
         return multi_state.states[choose_state]
@@ -600,8 +602,9 @@ class StreamDeckServer:
 
     def set_button_plugin(self, serial_number: str, page: int, button: int, plugin_path: str) -> None:
         """Sets the plugin via the plugin path"""
-        if self._button_state(serial_number, page, button).plugin_path != plugin_path:
-            self._button_state(serial_number, page, button).plugin = prepare_plugin(self, plugin_path, serial_number, page, button)
+        if (self._button_state(serial_number, page, button).plugin_path != plugin_path or
+                self._button_state(serial_number, page, button).plugin_config is None):
+            self._button_state(serial_number, page, button).plugin = self.prepare_plugin(serial_number, page, button, plugin_path)
             self._button_state(serial_number, page, button).plugin_path = plugin_path
 
             if self._button_state(serial_number, page, button).plugin:
@@ -673,13 +676,16 @@ class StreamDeckServer:
     def load_all_plugins(self, serial_number: str) -> None:
         """Loads all plugins"""
         state = self.state[serial_number]
+
         for page_id in state.buttons:
             for button_id in state.buttons[page_id]:
-                plugin_path = self.get_button_plugin_path(serial_number, page_id, button_id)
+                for state_id in state.buttons[page_id][button_id].states:
+                    state_object = self._button_state(serial_number, page_id, button_id, state_id)
+                    plugin_path = state_object.plugin_path
 
-                if plugin_path:
-                    plugin = prepare_plugin(self, plugin_path, serial_number, page_id, button_id)
-                    self._button_state(serial_number, page_id, button_id).plugin = plugin
+                    if plugin_path:
+                        plugin = self.prepare_plugin(serial_number, page_id, button_id, plugin_path)
+                        self._button_state(serial_number, page_id, button_id, state_id).plugin = plugin
         self._save_state()
 
     def _update_streamdeck_filters(self, serial_number: str):
@@ -745,6 +751,30 @@ class StreamDeckServer:
             )
 
         display_handler.replace(page, button, filters)
+
+    def prepare_plugin(self, serial_number: str, page_id: int, button_id: int, plugin_path: str) -> Union[Plugin, None]:
+        plugin = None
+        plugin_config = self.get_button_plugin_config(serial_number, page_id, button_id)
+        try:
+            full_path = os.path.expanduser(os.path.expandvars(plugin_path))
+            result = runpy.run_path(full_path)
+            for name, obj in result.items():
+                if inspect.isclass(obj) and issubclass(obj, Plugin) and hasattr(obj, 'initialize_plugin') and callable(
+                        getattr(obj, 'initialize_plugin')) and obj != Plugin:
+                    plugin = obj.initialize_plugin(serial_number, page_id, button_id, plugin_config)
+
+                    # Connects event functions to the api
+                    plugin.change_text_callback = self.on_update_button_text
+                    plugin.change_background_callback = self.on_update_button_background_color
+                    plugin.change_icon_callback = self.on_update_button_icon
+                    plugin.change_config_callback = self.on_update_button_plugin_config
+
+                    break
+            if plugin is None:
+                print("No valid plugin class found in the module.")
+        except Exception as e:
+            print(f"Error while calling initialize_plugin in {plugin_path}: {e}")
+        return plugin
 
     # Definition of all event "slots" that can be called
     # Moved to extra functions to de-couple it with the actual functions
