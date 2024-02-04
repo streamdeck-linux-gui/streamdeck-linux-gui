@@ -6,15 +6,9 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>874</height>
+    <width>568</width>
+    <height>804</height>
    </rect>
-  </property>
-  <property name="sizePolicy">
-   <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-    <horstretch>0</horstretch>
-    <verstretch>0</verstretch>
-   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>Form</string>
@@ -552,9 +546,6 @@
      </item>
      <item>
       <layout class="QVBoxLayout" name="verticalLayout_4">
-       <property name="rightMargin">
-        <number>0</number>
-       </property>
        <item>
         <widget class="QPushButton" name="text_v_align">
          <property name="minimumSize">
@@ -1137,91 +1128,7 @@
     </widget>
    </item>
    <item row="5" column="1">
-    <widget class="QComboBox" name="keys">
-     <property name="editable">
-      <bool>true</bool>
-     </property>
-     <item>
-      <property name="text">
-       <string notr="true"/>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string notr="true">F11</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string notr="true">alt+F4</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string notr="true">ctrl+w</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string notr="true">cmd+left</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string notr="true">alt+plus</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string notr="true">alt+delay+F3</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string notr="true">backspace</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string notr="true">right</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string notr="true">page_up</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string notr="true">media_volume_up</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string notr="true">media_volume_down</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string notr="true">media_volume_mute</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string notr="true">media_previous</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string notr="true">media_next</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string notr="true">media_play_pause</string>
-      </property>
-     </item>
-    </widget>
+    <widget class="QLineEdit" name="keys"/>
    </item>
    <item row="6" column="0">
     <widget class="QLabel" name="label_8">
@@ -1264,6 +1171,13 @@
      </property>
     </widget>
    </item>
+   <item row="8" column="1">
+    <widget class="QSpinBox" name="change_brightness">
+     <property name="minimum">
+      <number>-99</number>
+     </property>
+    </widget>
+   </item>
    <item row="9" column="0">
     <widget class="QLabel" name="label_6">
      <property name="text">
@@ -1272,21 +1186,7 @@
     </widget>
    </item>
    <item row="9" column="1">
-    <widget class="QPlainTextEdit" name="write">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="1">
-    <widget class="QSpinBox" name="change_brightness">
-     <property name="minimum">
-      <number>-99</number>
-     </property>
-    </widget>
+    <widget class="QPlainTextEdit" name="write"/>
    </item>
    <item row="10" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_4">
@@ -1336,12 +1236,6 @@
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>0</height>
-      </size>
      </property>
     </widget>
    </item>
