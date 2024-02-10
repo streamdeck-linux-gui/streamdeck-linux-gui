@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-          # Bub report
+          # Bug report
            Thank you for taking the time to report a bug. Please fill in as much of the template below as you're able.
 
            If you are not entirely sure that this is a bug, please open a [discussion](https://github.com/streamdeck-linux-gui/streamdeck-linux-gui/discussions/new/choose)
