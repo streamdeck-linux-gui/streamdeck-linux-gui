@@ -200,7 +200,7 @@ def handle_keypress(ui, deck_id: str, key: int, state: bool) -> None:
 
         if keys:
             try:
-                keyboard_press_keys(keys)
+                keyboard_press_keys(keys, state)
             except Exception as error:
                 print(f"Could not press keys '{keys}': {error}")
                 show_tray_warning_message(f"Unable to perform key press action. {error}")
@@ -248,7 +248,15 @@ def handle_keypress(ui, deck_id: str, key: int, state: bool) -> None:
                 show_tray_warning_message(
                     f"Unable to perform switch button state, the button state {switch_state} does not exist in your current settings"  # noqa: E713
                 )
-
+    else:
+        page = api.get_page(deck_id)
+        keys = api.get_button_keys(deck_id, page, key)
+        if keys:
+            try:
+                keyboard_press_keys(keys, state)
+            except Exception as error:
+                print(f"Could not press keys '{keys}': {error}")
+                show_tray_warning_message(f"Unable to perform key press action. {error}")
 
 def _deck() -> Optional[str]:
     """Returns the currently selected Stream Deck serial number"""

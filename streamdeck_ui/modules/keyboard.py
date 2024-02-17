@@ -311,23 +311,49 @@ def keyboard_write(string: str):
             print(f"Unsupported character: {char}")
 
 
-def keyboard_press_keys(keys: str):
+def keyboard_press_keys(keys: str, state=True):
     _ui = _UINPUT
     sections = parse_keys_as_keycodes(keys)
-    for section_of_keycodes in sections:
-        for keycode in section_of_keycodes:
-            _ui.write(e.EV_KEY, keycode, 1)
-            _ui.syn()
-        time.sleep(_DEFAULT_KEY_PRESS_DELAY)
 
-        for keycode in reversed(section_of_keycodes):
-            _ui.write(e.EV_KEY, keycode, 0)
-            _ui.syn()
+    if not len(sections) == 1:
+        for section_of_keycodes in sections:
+            for keycode in section_of_keycodes:
+                _ui.write(e.EV_KEY, keycode, 1)
+                _ui.syn()
+            time.sleep(_DEFAULT_KEY_PRESS_DELAY)
 
-        # add some delay between sections, only if there are more than one
-        if len(section_of_keycodes) > 1:
-            time.sleep(_DEFAULT_KEY_SECTION_DELAY)
+            for keycode in reversed(section_of_keycodes):
+                _ui.write(e.EV_KEY, keycode, 0)
+                _ui.syn()
 
+            # add some delay between sections, only if there are more than one
+            if len(section_of_keycodes) > 1:
+                time.sleep(_DEFAULT_KEY_SECTION_DELAY)
+    else:
+        if state:
+            keyboard_key_down(keys)
+        else:
+            keyboard_key_up(keys)
+
+def keyboard_key_down(keys: str):
+    _ui = _UINPUT
+    sections = parse_keys_as_keycodes(keys)
+    # Checked we only passed a single section
+    if len(sections) == 1:
+        for section_of_keycodes in sections:
+            for keycode in section_of_keycodes:
+                _ui.write(e.EV_KEY, keycode, 1)
+                _ui.syn()
+
+def keyboard_key_up(keys: str):
+    _ui = _UINPUT
+    sections = parse_keys_as_keycodes(keys)
+    # Checked we only passed a single section
+    if len(sections) == 1:
+        for section_of_keycodes in sections:
+            for keycode in reversed(section_of_keycodes):
+                _ui.write(e.EV_KEY, keycode, 0)
+                _ui.syn()
 
 def get_valid_key_names() -> List[str]:
     """Returns a list of valid key names."""
