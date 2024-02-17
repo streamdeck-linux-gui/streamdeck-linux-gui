@@ -80,8 +80,6 @@ text_update_timer: Optional[QTimer] = None
 
 dimmer_options = {"Never": 0, "10 Seconds": 10, "1 Minute": 60, "5 Minutes": 300, "10 Minutes": 600, "15 Minutes": 900, "30 Minutes": 1800, "1 Hour": 3600, "5 Hours": 7200, "10 Hours": 36000}
 last_image_dir = ""
-global lastkey
-lastkey = ""
 
 class DraggableButton(QtWidgets.QToolButton):
     """A QToolButton that supports drag and drop and swaps the button properties on drop"""
