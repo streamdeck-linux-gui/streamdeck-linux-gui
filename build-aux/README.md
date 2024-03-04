@@ -4,6 +4,7 @@ All commands assume run from this directory, prepend pathing as needed for build
 ## Install qt requirements
 ```
 flatpak install --user org.kde.Sdk//5.15-23.08
+flatpak install --user org.kde.Platform//5.15-23.08
 ```
 This selects the qt version to base the flatpak off of; as of writing, 5.15 was the latest attached to a known flatpak runtime version (23.08 - see freedesktop for current 'stable' version). For more options, just run the above command without '//5.15-23.08' and and select something else. 
 
