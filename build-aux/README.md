@@ -10,18 +10,18 @@ This selects the qt version to base the flatpak off of; as of writing, 5.15 was 
 
 ## To Build:
 ```
-flatpak-builder --force-clean build-dir com.foursthreeti.streamdeck-linux-gui.json
+flatpak-builder --force-clean build-dir com.streamdeck.linux-gui.json
 ```
 
 ## Run testing:
 ```
-flatpak-builder --run build-dir com.foursthreeti.streamdeck-linux-gui.json streamdeck
+flatpak-builder --run build-dir com.streamdeck.linux-gui.json streamdeck
 ```
 
 ## Build for deployment:
 Provides a directory that can be added as a repository (be aware of path)
 ```
-flatpak-builder --repo=repo --force-clean build-dir com.foursthreeti.streamdeck-linux-gui.json
+flatpak-builder --repo=repo --force-clean build-dir com.streamdeck.linux-gui.json
 ```
 
 ## Add personal repo
@@ -36,11 +36,15 @@ Then you can delete the folder that was created (should be called whatever the l
 
 ## Install from personal repo
 ```
-flatpak --user install personal com.foursthreeti.streamdeck-linux-gui
+flatpak --user install personal com.streamdeck.linux-gui
 ```
 
 ## Run installed flatpak
 ```
-flatpak run com.foursthreeti.streamdeck-linux-gui
+flatpak run com.streamdeck.linux-gui
+```
+To uninstall
+```
+flatpak uninstall com.streamdeck.linux-gui
 ```
 

@@ -1,5 +1,5 @@
 {
-    "app-id": "com.foursthreeti.streamdeck-linux-gui",
+    "app-id": "com.streamdeck.linux-gui",
     "runtime": "org.kde.Platform",
     "runtime-version": "5.15-23.08",
     "sdk": "org.kde.Sdk",
