@@ -86,7 +86,8 @@ class ImageFilter(Filter):
                     frame = frame.convert("RGBA")
                 except BaseException:
                     pass
-            frame.thumbnail(size, Image.LANCZOS)
+            scale_factor = min(size[0] / frame.size[0], size[1] / frame.size[1])
+            frame = frame.resize((int(v * scale_factor) for v in frame.size), Image.LANCZOS)
             self.frames.append((frame, milliseconds, hashcode))
 
         self.frame_cycle = itertools.cycle(self.frames)
