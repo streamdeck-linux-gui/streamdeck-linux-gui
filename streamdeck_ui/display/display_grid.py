@@ -20,9 +20,6 @@ class DisplayGrid:
     filters for one individual button display.
     """
 
-    _empty_filter: EmptyFilter = EmptyFilter()
-    "Static instance of EmptyFilter shared by all pipelines"
-
     lock: threading.Lock
 
     def __init__(
@@ -58,6 +55,11 @@ class DisplayGrid:
             # Default to original stream deck size - even though we're not actually going to display anything
         self.serial_number = streamdeck.get_serial_number()
 
+        self._empty_filter: EmptyFilter = EmptyFilter()
+        self._empty_filter.initialize(self.size)
+        # Instance of EmptyFilter shared by all pipelines related to this
+        # DisplayGrid instance
+
         self.pages: Dict[int, Dict[int, Pipeline]] = {}
         # A dictionary of lists of pipelines. Each page has
         # a list, corresponding to each button.
@@ -76,7 +78,7 @@ class DisplayGrid:
         for page in pages:
             self.initialize_page(page)
         # The sync event allows a caller to wait until all the buttons have been processed
-        DisplayGrid._empty_filter.initialize(self.size)
+
 
     def initialize_page(self, page: int):
         self.pages[page] = {}
@@ -91,7 +93,7 @@ class DisplayGrid:
     def replace(self, page: int, button: int, filters: List[Filter]):
         with self.lock:
             pipeline = Pipeline()
-            pipeline.add(DisplayGrid._empty_filter)
+            pipeline.add(self._empty_filter)
             for pipeline_filter in filters:
                 pipeline_filter.initialize(self.size)
                 pipeline.add(pipeline_filter)
