@@ -4,16 +4,21 @@ from typing import List
 from evdev import InputDevice, UInput
 from evdev import ecodes as e
 from evdev import list_devices
-from PySide6.QtCore import QStringListModel
+from PySide6.QtCore import QStringListModel, QThread
 from PySide6.QtWidgets import QCompleter
 
 _DEFAULT_KEY_PRESS_DELAY = 0.05
 _DEFAULT_KEY_SECTION_DELAY = 0.5
+# As far as I know all the key syms in linux are integers below 1000
+# use 2000 or above to signify a delay, and add the delay in seconds to this keysym value
+# For example, if you would like a delay of 5 seconds then the keysym would be 2005
+_DELAY_KEYSYM = 2000
 
 # fmt: off
 _SPECIAL_KEYS = {
     "plus": "+",
-    "comma": ","
+    "comma": ",",
+    "delay": "delay",
 }
 _OLD_NUMPAD_KEYS = {
     "numpad_0": e.KEY_KP0,
@@ -242,6 +247,8 @@ def parse_keys_as_keycodes(keys: str) -> List[List[str]]:
         individual = list(filter(None, individual))
         # replace any string with e.KEY_<string>
         individual = [getattr(e, f"KEY_{key.upper()}", key) for key in individual]
+        # check if delay
+        individual = [(int(key.replace("delay", "")) + _DELAY_KEYSYM) if isinstance(key, str) and key.startswith("delay") else key for key in individual]  # type: ignore # fmt: skip
         # replace special keys
         individual = [_SPECIAL_KEYS.get(key, key) for key in individual]
         # replace old numpad keys
@@ -325,23 +332,49 @@ def keyboard_write(string: str):
             print(f"Unsupported character: {char}")
 
 
+_PRESS_KEY_THREADS: List[QThread] = []
+
+
+class KeyboardThread(QThread):
+    def __init__(self, keys):
+        super().__init__()
+        self.keys = keys
+
+    def run(self):
+        _UINPUT.initialize()
+        _ui = _UINPUT.device
+        sections = parse_keys_as_keycodes(self.keys)
+        for section_of_keycodes in sections:
+            for keycode in section_of_keycodes:
+                if keycode > _DELAY_KEYSYM:
+                    # if it is a delay, subtract the delay keysym from the keycode to get the delay in seconds
+                    time.sleep(keycode - _DELAY_KEYSYM)
+                    continue
+                _ui.write(e.EV_KEY, keycode, 1)
+                _ui.syn()
+            time.sleep(_DEFAULT_KEY_PRESS_DELAY)
+
+            for keycode in reversed(section_of_keycodes):
+                _ui.write(e.EV_KEY, keycode, 0)
+                _ui.syn()
+
+            # add some delay between sections, only if there are more than one
+            if len(section_of_keycodes) > 1:
+                time.sleep(_DEFAULT_KEY_SECTION_DELAY)
+
+
+def cleanup_keyboard_thread():
+    global _PRESS_KEY_THREADS
+    # Remove threads that are not running anymore
+    _PRESS_KEY_THREADS = [t for t in _PRESS_KEY_THREADS if t.isRunning()]
+
+
 def keyboard_press_keys(keys: str):
-    _UINPUT.initialize()
-    _ui = _UINPUT.device
-    sections = parse_keys_as_keycodes(keys)
-    for section_of_keycodes in sections:
-        for keycode in section_of_keycodes:
-            _ui.write(e.EV_KEY, keycode, 1)
-            _ui.syn()
-        time.sleep(_DEFAULT_KEY_PRESS_DELAY)
-
-        for keycode in reversed(section_of_keycodes):
-            _ui.write(e.EV_KEY, keycode, 0)
-            _ui.syn()
-
-        # add some delay between sections, only if there are more than one
-        if len(section_of_keycodes) > 1:
-            time.sleep(_DEFAULT_KEY_SECTION_DELAY)
+    global _PRESS_KEY_THREADS
+    thread = KeyboardThread(keys)
+    thread.finished.connect(cleanup_keyboard_thread)
+    _PRESS_KEY_THREADS.append(thread)
+    thread.start()
 
 
 def get_valid_key_names() -> List[str]:
