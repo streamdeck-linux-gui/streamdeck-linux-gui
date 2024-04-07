@@ -1,7 +1,11 @@
 import pytest
 from evdev import ecodes as e
 
-from streamdeck_ui.modules.keyboard import parse_keys_as_keycodes
+from streamdeck_ui.modules.keyboard import (
+    parse_keys_as_keycodes,
+    _DELAY_KEYSYM,
+    _DEFAULT_ADDITIONAL_DELAY,
+)
 
 
 @pytest.mark.parametrize(
@@ -22,6 +26,18 @@ from streamdeck_ui.modules.keyboard import parse_keys_as_keycodes
         ("CTRL+KP0", [[e.KEY_LEFTCTRL, e.KEY_KP0]]),
         ("CTRL + ", [[e.KEY_LEFTCTRL]]),
         ("CTRL + 1, 1", [[e.KEY_LEFTCTRL, e.KEY_1], [e.KEY_1]]),
+        (
+            "CTRL + 1, delay, a",
+            [
+                [e.KEY_LEFTCTRL, e.KEY_1],
+                [_DELAY_KEYSYM + _DEFAULT_ADDITIONAL_DELAY],
+                [e.KEY_A],
+            ],
+        ),
+        (
+            "delay 5.1, CTRL+delay0.6+a",
+            [[_DELAY_KEYSYM + 51], [e.KEY_LEFTCTRL, _DELAY_KEYSYM + 6, e.KEY_A]],
+        ),
     ],
 )
 def test_parse_keys_as_keycodes(keys, expected):
