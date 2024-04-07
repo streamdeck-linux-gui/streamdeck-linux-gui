@@ -1,5 +1,5 @@
 import time
-from typing import List
+from typing import List, Union, Dict
 
 from evdev import InputDevice, UInput
 from evdev import ecodes as e
@@ -9,18 +9,21 @@ from PySide6.QtWidgets import QCompleter
 
 _DEFAULT_KEY_PRESS_DELAY = 0.05
 _DEFAULT_KEY_SECTION_DELAY = 0.5
+
 # As far as I know all the key syms in linux are integers below 1000
-# use 2000 or above to signify a delay, and add the delay in seconds to this keysym value
-# For example, if you would like a delay of 5 seconds then the keysym would be 2005
+# use 2000 or above to signify a delay, and add the delay in deciseconds to this keysym value
+# For example, if you would like a delay of 5 seconds --> 50 deciseconds, then the keysym would be 2050
 _DELAY_KEYSYM = 2000
+# Default delay to add when user uses delay keyword in deciseconds (1/10th of a second)
+_DEFAULT_ADDITIONAL_DELAY = 5
 
 # fmt: off
-_SPECIAL_KEYS = {
+_SPECIAL_KEYS: Dict[str, str] = {
     "plus": "+",
     "comma": ",",
     "delay": "delay",
 }
-_OLD_NUMPAD_KEYS = {
+_OLD_NUMPAD_KEYS: Dict[str, int] = {
     "numpad_0": e.KEY_KP0,
     "numpad_1": e.KEY_KP1,
     "numpad_2": e.KEY_KP2,
@@ -38,7 +41,7 @@ _OLD_NUMPAD_KEYS = {
     "numpad_subtract": e.KEY_KPMINUS,
     "numpad_add": e.KEY_KPPLUS,
 }
-_OLD_PYNPUT_KEYS = {
+_OLD_PYNPUT_KEYS: Dict[str, int] = {
     "media_volume_mute": e.KEY_MUTE,
     "media_volume_down": e.KEY_VOLUMEDOWN,
     "media_volume_up": e.KEY_VOLUMEUP,
@@ -52,7 +55,7 @@ _OLD_PYNPUT_KEYS = {
     "caps_lock": e.KEY_CAPSLOCK,
     "scroll_lock": e.KEY_SCROLLLOCK,
 }
-_MODIFIER_KEYS = {
+_MODIFIER_KEYS: Dict[str, int] = {
     "ctrl": e.KEY_LEFTCTRL,
     "alt": e.KEY_LEFTALT,
     "alt_gr": e.KEY_RIGHTALT,
@@ -63,7 +66,7 @@ _MODIFIER_KEYS = {
 }
 
 _BAD_ECODES = ['KEY_MAX', 'KEY_CNT']
-_KEY_MAPPING = {
+_KEY_MAPPING: Dict[str, int] = {
     'a': e.KEY_A,
     'b': e.KEY_B,
     'c': e.KEY_C,
@@ -162,7 +165,7 @@ _KEY_MAPPING = {
     '?': e.KEY_SLASH,
     '~': e.KEY_GRAVE,
 }
-_SHIFT_KEY_MAPPING = {
+_SHIFT_KEY_MAPPING: Dict[str, int] = {
     '!': e.KEY_1,
     '@': e.KEY_2,
     '#': e.KEY_3,
@@ -233,6 +236,27 @@ class UInputWrapper:
 _UINPUT = UInputWrapper()
 
 
+def parse_delay(key: Union[str, int]) -> Union[str, int]:
+    if isinstance(key, int) or not key.startswith("delay"):
+        return key
+    key = key.replace("delay", "")
+    if len(key) == 0:
+        return _DELAY_KEYSYM + _DEFAULT_ADDITIONAL_DELAY
+    delay = _DEFAULT_ADDITIONAL_DELAY
+    try:
+        delay = int(float(key) * 10)
+    except ValueError:
+        print("Cannot parse delay amount, using default delay")
+    return _DELAY_KEYSYM + delay
+
+
+def parse_keys(
+        key: Union[str, int], key_type: Union[Dict[str, int], Dict[str, str]]) -> Union[str, int]:  # fmt: skip
+    if isinstance(key, int):
+        return key
+    return key_type.get(key, key)
+
+
 def parse_keys_as_keycodes(keys: str) -> List[List[str]]:
     stripped = keys.strip().replace(" ", "").lower()
     if not stripped:
@@ -248,17 +272,17 @@ def parse_keys_as_keycodes(keys: str) -> List[List[str]]:
         # replace any string with e.KEY_<string>
         individual = [getattr(e, f"KEY_{key.upper()}", key) for key in individual]
         # check if delay
-        individual = [(int(key.replace("delay", "")) + _DELAY_KEYSYM) if isinstance(key, str) and key.startswith("delay") else key for key in individual]  # type: ignore # fmt: skip
+        individual = [parse_delay(key) for key in individual]
         # replace special keys
-        individual = [_SPECIAL_KEYS.get(key, key) for key in individual]
+        individual = [parse_keys(key, _SPECIAL_KEYS) for key in individual]
         # replace old numpad keys
-        individual = [_OLD_NUMPAD_KEYS.get(key, key) for key in individual]
+        individual = [parse_keys(key, _OLD_NUMPAD_KEYS) for key in individual]
         # replace old media keys
-        individual = [_OLD_PYNPUT_KEYS.get(key, key) for key in individual]
+        individual = [parse_keys(key, _OLD_PYNPUT_KEYS) for key in individual]
         # replace modifier keys
-        individual = [_MODIFIER_KEYS.get(key, key) for key in individual]
+        individual = [parse_keys(key, _MODIFIER_KEYS) for key in individual]
         # replace key names with key codes
-        individual = [_KEY_MAPPING.get(key, key) for key in individual]
+        individual = [parse_keys(key, _KEY_MAPPING) for key in individual]
 
         # if any value is not an int, raise an error
         if not all(isinstance(key, int) for key in individual):
@@ -348,7 +372,7 @@ class KeyboardThread(QThread):
             for keycode in section_of_keycodes:
                 if keycode > _DELAY_KEYSYM:
                     # if it is a delay, subtract the delay keysym from the keycode to get the delay in seconds
-                    time.sleep(keycode - _DELAY_KEYSYM)
+                    time.sleep((keycode - _DELAY_KEYSYM) / 10.0)
                     continue
                 _ui.write(e.EV_KEY, keycode, 1)
                 _ui.syn()
