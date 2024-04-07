@@ -1,11 +1,7 @@
 import pytest
 from evdev import ecodes as e
 
-from streamdeck_ui.modules.keyboard import (
-    parse_keys_as_keycodes,
-    _DELAY_KEYSYM,
-    _DEFAULT_ADDITIONAL_DELAY,
-)
+from streamdeck_ui.modules.keyboard import _DEFAULT_ADDITIONAL_DELAY, _DELAY_KEYSYM, parse_keys_as_keycodes
 
 
 @pytest.mark.parametrize(

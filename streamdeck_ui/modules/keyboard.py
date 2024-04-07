@@ -1,5 +1,5 @@
 import time
-from typing import List, Union, Dict
+from typing import Dict, List, Union
 
 from evdev import InputDevice, UInput
 from evdev import ecodes as e
@@ -257,7 +257,7 @@ def parse_keys(
     return key_type.get(key, key)
 
 
-def parse_keys_as_keycodes(keys: str) -> List[List[str]]:
+def parse_keys_as_keycodes(keys: str) -> List[List[Union[str, int]]]:
     stripped = keys.strip().replace(" ", "").lower()
     if not stripped:
         return []
@@ -272,25 +272,25 @@ def parse_keys_as_keycodes(keys: str) -> List[List[str]]:
         # replace any string with e.KEY_<string>
         individual = [getattr(e, f"KEY_{key.upper()}", key) for key in individual]
         # check if delay
-        individual = [parse_delay(key) for key in individual]
+        parsed: List[Union[str, int]] = [parse_delay(key) for key in individual]
         # replace special keys
-        individual = [parse_keys(key, _SPECIAL_KEYS) for key in individual]
+        parsed = [parse_keys(key, _SPECIAL_KEYS) for key in parsed]
         # replace old numpad keys
-        individual = [parse_keys(key, _OLD_NUMPAD_KEYS) for key in individual]
+        parsed = [parse_keys(key, _OLD_NUMPAD_KEYS) for key in parsed]
         # replace old media keys
-        individual = [parse_keys(key, _OLD_PYNPUT_KEYS) for key in individual]
+        parsed = [parse_keys(key, _OLD_PYNPUT_KEYS) for key in parsed]
         # replace modifier keys
-        individual = [parse_keys(key, _MODIFIER_KEYS) for key in individual]
+        parsed = [parse_keys(key, _MODIFIER_KEYS) for key in parsed]
         # replace key names with key codes
-        individual = [parse_keys(key, _KEY_MAPPING) for key in individual]
+        parsed = [parse_keys(key, _KEY_MAPPING) for key in parsed]
 
         # if any value is not an int, raise an error
-        if not all(isinstance(key, int) for key in individual):
-            invalid_keys = [key for key in individual if not isinstance(key, int)]
+        if not all(isinstance(key, int) for key in parsed):
+            invalid_keys = [key for key in parsed if not isinstance(key, int)]
             raise ValueError(f"Invalid keys: {invalid_keys}")
 
-        if len(individual) > 0:
-            parsed_keys.append(individual)
+        if len(parsed) > 0:
+            parsed_keys.append(parsed)
 
     return parsed_keys
 
