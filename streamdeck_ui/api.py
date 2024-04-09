@@ -3,7 +3,7 @@ import os
 import threading
 from copy import deepcopy
 from functools import partial
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Any, Callable, Dict, List, Optional, Tuple
 
 from PIL.ImageQt import ImageQt
 from PySide6.QtCore import QObject, Signal
@@ -58,6 +58,9 @@ class StreamDeckServer:
     state: Dict[str, DeckState] = {}
     "The data structure holding configuration for all Stream Decks by serial number"
 
+    plugins_settings: Dict[str, Dict[str, str]] = {}
+    "The data structure holding configuration for plugins by plugin name"
+
     key_event_lock: threading.Lock
     "Lock to serialize key press events"
 
@@ -79,6 +82,9 @@ class StreamDeckServer:
     streamdeck_keys = KeySignalEmitter()
     "Use the connect method on the key_pressed signal to subscribe"
 
+    gui_redraw_buttons: Any
+    "Allow the api to trigger a GUI button refresh"
+
     def __init__(self) -> None:
         self.decks_by_serial: Dict[str, StreamDeck.StreamDeck] = {}
 
@@ -94,6 +100,9 @@ class StreamDeckServer:
         # plug events and key signals?
         self.streamdeck_keys = KeySignalEmitter()
         self.plugevents = StreamDeckSignalEmitter()
+
+    def set_gui_redraw_buttons(self, gui_redraw_buttons: Callable):
+        self.gui_redraw_buttons = gui_redraw_buttons
 
     def stop_dimmer(self, serial_number: str) -> None:
         """Stops the dimmer for the given Stream Deck
@@ -177,7 +186,7 @@ class StreamDeckServer:
         self.export_config(STATE_FILE)
 
     def open_config(self, config_file: str):
-        self.state = read_state_from_config(config_file)
+        self.state, self.plugins_settings = read_state_from_config(config_file)
 
     def import_config(self, config_file: str) -> None:
         self.stop()
@@ -186,7 +195,7 @@ class StreamDeckServer:
         self.start()
 
     def export_config(self, output_file: str) -> None:
-        write_state_to_config(output_file, self.state)
+        write_state_to_config(output_file, self.state, self.plugins_settings)
 
     def _on_steam_deck_attached(self, streamdeck_id: str, streamdeck: StreamDeck):
         streamdeck.open()
@@ -327,7 +336,7 @@ class StreamDeckServer:
         multi_state = self._button_multi_state(serial_number, page, button)
         # if no state is specified, use the current state
         choose_state = state or multi_state.state
-        # if the choose state is not in the states dict, add it
+        # if the chosen state is not in the states dict, add it
         multi_state.states[choose_state] = multi_state.states.setdefault(choose_state, ButtonState())
         return multi_state.states[choose_state]
 
@@ -584,6 +593,18 @@ class StreamDeckServer:
         """Returns the text to be produced when the specified button is pressed"""
         return self._button_state(serial_number, page, button).write
 
+    def set_button_plugin_settings(
+        self, serial_number: str, page: int, button: int, plugin: str, plugins_settings: Dict[str, str]
+    ) -> None:
+        old_settings = self.get_button_plugin_settings(serial_number, page, button, plugin)
+
+        if old_settings != plugins_settings:
+            self._button_state(serial_number, page, button).plugins_settings[plugin] = plugins_settings
+            self._save_state()
+
+    def get_button_plugin_settings(self, serial_number: str, page: int, button: int, plugin: str) -> Dict[str, str]:
+        return self._button_state(serial_number, page, button).plugins_settings.get(plugin, {})
+
     def set_brightness(self, serial_number: str, brightness: int) -> None:
         """Sets the brightness for every button on the deck"""
         if self.get_brightness(serial_number) != brightness:
@@ -699,3 +720,10 @@ class StreamDeckServer:
             )
 
         display_handler.replace(page, button, filters)
+
+    def get_plugin_settings(self, plugin: str) -> dict:
+        return self.plugins_settings.get(plugin, {})
+
+    def set_plugin_settings(self, plugin: str, settings: dict) -> None:
+        self.plugins_settings[plugin] = settings
+        self._save_state()

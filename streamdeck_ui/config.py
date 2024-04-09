@@ -1,7 +1,7 @@
 """Defines shared configuration variables for the streamdeck_ui project"""
 import json
 import os
-from typing import Dict
+from typing import Dict, Tuple
 
 from streamdeck_ui.model import ButtonMultiState, ButtonState, DeckState, DeckStateV1
 
@@ -42,12 +42,12 @@ def do_config_file_backup(config_file_path: str, backup_config_file_path: str) -
 
 def do_config_file_migration() -> None:
     """Update the config file to the latest version"""
-    state = read_state_from_config(STATE_FILE)
+    state, _ = read_state_from_config(STATE_FILE)
     do_config_file_backup(STATE_FILE, STATE_FILE_BACKUP)
-    write_state_to_config(STATE_FILE, state)
+    write_state_to_config(STATE_FILE, state, {})
 
 
-def read_state_from_config(config_file_path: str) -> Dict[str, DeckState]:
+def read_state_from_config(config_file_path: str) -> Tuple[Dict[str, DeckState], Dict[str, dict]]:
     """Open the config file and return its content as a dict"""
 
     with open(config_file_path, "r") as config_file:
@@ -58,11 +58,12 @@ def read_state_from_config(config_file_path: str) -> Dict[str, DeckState]:
                 f"Incompatible version of config file found: {file_version} does not match required version {CONFIG_FILE_VERSION}."
             )
         if file_version == CONFIG_FILE_PREVIOUS_VERSION:
-            return _migrate_deck_state_from_previous_version(config["state"])
+            return _migrate_deck_state_from_previous_version(config["state"]), {}
         state = _to_deck_states(config["state"])
+        plugins = config.get("plugins", {})
         validate_current_page(state)
         validate_current_button_state(state)
-        return state
+        return state, plugins
 
 
 def validate_current_page(state: Dict[str, DeckState]) -> None:
@@ -83,13 +84,14 @@ def validate_current_button_state(state: Dict[str, DeckState]) -> None:
                     button_state.state = next(iter(button_state.states))
 
 
-def write_state_to_config(config_file_path: str, state: Dict[str, DeckState]) -> None:
+def write_state_to_config(config_file_path: str, state: Dict[str, DeckState], plugins: Dict[str, dict]) -> None:
     """Write the state to the config file"""
     temp_file_path = config_file_path + ".tmp"
     try:
         with open(temp_file_path, "w") as config_file:
             config = {
                 "state": _to_deck_config(state),
+                "plugins": plugins,
                 "streamdeck_ui_version": CONFIG_FILE_VERSION,
             }
             json.dump(config, config_file, indent=4)
@@ -186,6 +188,7 @@ def _to_button_state(button: dict) -> ButtonState:
         font_color=button.get("font_color", ""),
         font_size=button.get("font_size", 0),
         background_color=button.get("background_color", ""),
+        plugins_settings=button.get("plugins", {}),
     )
 
 
@@ -233,6 +236,7 @@ def _to_button_config(button: ButtonState) -> dict:
         "font_color": button.font_color,
         "font_size": button.font_size,
         "background_color": button.background_color,
+        "plugins": button.plugins_settings,
     }
 
 

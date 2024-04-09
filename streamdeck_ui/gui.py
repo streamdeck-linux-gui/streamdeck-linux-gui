@@ -1,10 +1,13 @@
 """Defines the QT powered interface for configuring Stream Decks"""
+import importlib
 import os
 import shlex
 import signal
 import sys
 from functools import partial
+from pathlib import Path
 from subprocess import Popen  # nosec - Need to allow users to specify arbitrary commands
+from types import ModuleType
 from typing import Dict, List, Optional, Union
 
 from importlib_metadata import PackageNotFoundError, version
@@ -13,10 +16,14 @@ from PySide6.QtGui import QAction, QDesktopServices, QDrag, QFont, QIcon, QPalet
 from PySide6.QtWidgets import (
     QApplication,
     QColorDialog,
+    QComboBox,
     QDialog,
+    QDialogButtonBox,
     QFileDialog,
+    QFormLayout,
     QGridLayout,
     QHBoxLayout,
+    QLabel,
     QMainWindow,
     QMenu,
     QMessageBox,
@@ -36,6 +43,7 @@ from streamdeck_ui.config import (
     DEFAULT_FONT_COLOR,
     DEFAULT_FONT_FALLBACK_PATH,
     DEFAULT_FONT_SIZE,
+    PROJECT_PATH,
     STATE_FILE,
     STATE_FILE_BACKUP,
     config_file_need_migration,
@@ -53,6 +61,9 @@ from streamdeck_ui.ui_settings import Ui_SettingsDialog
 # this ignore is just a workaround to set api with something
 # and be able to test
 api: StreamDeckServer = StreamDeckServer()
+
+plugins: Dict[str, ModuleType]
+"Mapping of loaded plugin names to their respective modules"
 
 main_window: "MainWindow"
 "Reference to the main window, used across multiple functions"
@@ -230,7 +241,8 @@ def handle_keypress(ui, deck_id: str, key: int, state: bool) -> None:
                             break
             else:
                 show_tray_warning_message(
-                    f"Unable to perform switch page, the page {switch_page} does not exist in your current settings"  # noqa: E713
+                    f"Unable to perform switch page, the page {switch_page} does not exist in your current settings"
+                    # noqa: E713
                 )
 
         if switch_state:
@@ -246,8 +258,15 @@ def handle_keypress(ui, deck_id: str, key: int, state: bool) -> None:
                     redraw_button(key)
             else:
                 show_tray_warning_message(
-                    f"Unable to perform switch button state, the button state {switch_state} does not exist in your current settings"  # noqa: E713
+                    f"Unable to perform switch button state, the button state {switch_state} does not exist in your current settings"
+                    # noqa: E713
                 )
+
+        for plugin in plugins.keys():
+            button_plugins_settings = api.get_button_plugin_settings(deck_id, page, key, plugin)
+
+            if button_plugins_settings:
+                plugins[plugin].button_pressed(button_plugins_settings)
 
 
 def _deck() -> Optional[str]:
@@ -581,7 +600,7 @@ def build_button_state_form(tab) -> None:
     tab.button_form = base_widget
 
     tab_ui = Ui_ButtonForm()
-    tab_ui.setupUi(base_widget)
+    tab_ui.setupUi(base_widget, plugins)
 
     deck_id = _deck()
     page_id = _page()
@@ -634,6 +653,7 @@ def build_button_state_form(tab) -> None:
     tab_ui.switch_page.valueChanged.connect(partial(update_button_attribute, "switch_page"))
     tab_ui.switch_state.valueChanged.connect(partial(update_button_attribute, "switch_state"))
     tab_ui.add_image.clicked.connect(partial(show_button_state_image_dialog))
+    tab_ui.plugins_button.clicked.connect(partial(show_plugin_button_settings, tab_ui.plugins))
     tab_ui.remove_image.clicked.connect(show_button_state_remove_image_dialog)
     tab_ui.text_h_align.clicked.connect(partial(update_align_text_horizontal))
     tab_ui.text_v_align.clicked.connect(partial(update_align_text_vertical))
@@ -656,6 +676,8 @@ def enable_button_configuration(ui: Ui_ButtonForm, enabled: bool):
     ui.text_v_align.setEnabled(enabled)
     ui.text_color.setEnabled(enabled)
     ui.background_color.setEnabled(enabled)
+    ui.plugins.setEnabled(enabled)
+    ui.plugins_button.setEnabled(enabled)
     # default black color looks like it's enabled even when it's not
     # we set it to white when disabled to make it more obvious
     if enabled:
@@ -941,7 +963,7 @@ def build_buttons(ui, tab) -> None:
         )
 
 
-def export_config(window, api) -> None:
+def export_config(window) -> None:
     file_name = QFileDialog.getSaveFileName(
         window, "Export Config", os.path.expanduser("~/streamdeck_ui_export.json"), "JSON (*.json)"
     )[0]
@@ -951,7 +973,7 @@ def export_config(window, api) -> None:
     api.export_config(file_name)
 
 
-def import_config(window, api) -> None:
+def import_config(window) -> None:
     file_name = QFileDialog.getOpenFileName(window, "Import Config", os.path.expanduser("~"), "Config Files (*.json)")[
         0
     ]
@@ -1044,7 +1066,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
         self.ui = Ui_MainWindow()
-        self.ui.setupUi(self)
+        self.ui.setupUi(self, plugins)
         self.window_shown = True
         self.settings = QSettings("streamdeck-ui", "streamdeck-ui")
         self.restoreGeometry(self.settings.value("geometry", self.saveGeometry()))
@@ -1207,17 +1229,21 @@ def create_main_window(api: StreamDeckServer, app: QApplication) -> MainWindow:
     ui.add_button_state.setEnabled(False)
     ui.remove_button_state.clicked.connect(handle_delete_button_state_with_confirmation)
     ui.remove_button_state.setEnabled(False)
-    ui.actionExport.triggered.connect(partial(export_config, main_window, api))
-    ui.actionImport.triggered.connect(partial(import_config, main_window, api))
+    ui.actionExport.triggered.connect(partial(export_config, main_window))
+    ui.actionImport.triggered.connect(partial(import_config, main_window))
     ui.actionExit.triggered.connect(app.exit)
     ui.actionAbout.triggered.connect(main_window.about_dialog)
     ui.actionDocs.triggered.connect(browse_documentation)
     ui.actionGithub.triggered.connect(browse_github)
+
+    for plugin in plugins.keys():
+        action = main_window.findChild(QAction, f"action_plugin_{plugin}")
+        action.triggered.connect(partial(show_plugin_settings, plugin))
+
     ui.settingsButton.setEnabled(False)
     ui.button_states.clear()
     build_button_state_pages()
 
-    ui = main_window.ui
     # allow call redraw_button from ui instance
     ui.redraw_button = redraw_button  # type: ignore [attr-defined]
 
@@ -1231,6 +1257,84 @@ def create_main_window(api: StreamDeckServer, app: QApplication) -> MainWindow:
     api.plugevents.cpu_changed.connect(partial(streamdeck_cpu_changed, ui))
 
     return main_window
+
+
+def show_plugin_settings(plugin: str):
+    """
+    Shows the settings dialog for the plugin, if the plugin provides one. Otherwise the dialog will just display a
+    message, that no plugin settings are provided.<br /><br />
+    @param plugin: the plugin for which the settings should be displayed
+    """
+    dialog = QDialog(main_window)
+
+    button_box = QDialogButtonBox(dialog)
+    button_box.setOrientation(Qt.Horizontal)
+    button_box.setCenterButtons(False)
+    button_box.accepted.connect(dialog.accept)
+    button_box.rejected.connect(dialog.reject)
+
+    plugin_settings_layout = plugins[plugin].get_settings_layout(dialog, api.get_plugin_settings(plugin))
+
+    has_custom_settings = plugin_settings_layout is not None
+
+    if has_custom_settings:
+        button_box.setStandardButtons(QDialogButtonBox.Cancel | QDialogButtonBox.Ok)
+    else:
+        button_box.setStandardButtons(QDialogButtonBox.Ok)
+        label = QLabel()
+        label.setText("This plugin does not provide settings.")
+        plugin_settings_layout = QFormLayout()
+        plugin_settings_layout.setWidget(0, QFormLayout.LabelRole, label)
+
+    plugin_settings_layout.addWidget(button_box)
+
+    dialog.setWindowTitle(f"{plugins[plugin].get_name()} settings")
+    dialog.setLayout(plugin_settings_layout)
+
+    if dialog.exec() and has_custom_settings:
+        settings = plugin_settings_layout.get_settings()
+        api.set_plugin_settings(plugin, settings)
+        plugins[plugin].apply_settings(settings)
+
+
+def show_plugin_button_settings(plugins_combobox: QComboBox):
+    plugin = plugins_combobox.currentText()
+
+    if not plugin:
+        return
+
+    global last_image_dir
+    deck_id = _deck()
+    page_id = _page()
+    button_id = _button()
+
+    if deck_id is None or page_id is None or button_id is None:
+        return
+
+    dialog = QDialog(main_window)
+
+    button_box = QDialogButtonBox(dialog)
+    button_box.setOrientation(Qt.Horizontal)
+    button_box.setCenterButtons(False)
+    button_box.accepted.connect(dialog.accept)
+    button_box.rejected.connect(dialog.reject)
+    button_box.setStandardButtons(QDialogButtonBox.Cancel | QDialogButtonBox.Ok)
+
+    plugin = plugins_combobox.currentData()
+
+    plugin_button_settings_layout = plugins[plugin].get_button_settings_layout(
+        dialog, api.get_button_plugin_settings(deck_id, page_id, button_id, plugin)
+    )
+
+    plugin_button_settings_layout.addWidget(button_box)
+
+    dialog.setWindowTitle(f"{plugins[plugin].get_name()} button settings")
+    dialog.setLayout(plugin_button_settings_layout)
+
+    if dialog.exec():
+        settings = plugin_button_settings_layout.get_settings()
+        api.set_button_plugin_settings(deck_id, page_id, button_id, plugin, settings)
+        plugins[plugin].apply_button_settings(deck_id, page_id, button_id, settings)
 
 
 def show_migration_config_warning_and_check(app: QApplication) -> None:
@@ -1348,8 +1452,39 @@ def sigterm_handler(app, cli, signal_value, frame):
         sys.exit(1)
 
 
+def load_plugins() -> None:
+    """
+    Iterates of all subfolders of the plugins-folder and tries to import the contained file plugin.py as a module.
+    If successful, it is added to the plugins mapping, else a message is written and the folder skipped.
+    """
+    global plugins
+    plugins = {}
+
+    plugins_dir = os.path.join(PROJECT_PATH, "plugins")
+
+    if not os.path.isdir(plugins_dir):
+        return
+
+    plugins_path = Path(plugins_dir)
+
+    for path in plugins_path.iterdir():
+        path_str = str(path)
+
+        if not os.path.isdir(str(path_str)):
+            continue
+
+        try:
+            plugin_module = importlib.import_module(f"plugins.{path.stem}.plugin")
+        except ImportError:
+            print(f"plugins.{path.stem}.plugin is not a valid python module.")
+            continue
+
+        plugins[path.stem] = plugin_module
+
+
 def start(_exit: bool = False) -> None:
     global api
+    global plugins
     global main_window
     show_ui = True
     if "-h" in sys.argv or "--help" in sys.argv:
@@ -1377,6 +1512,10 @@ def start(_exit: bool = False) -> None:
             app.setApplicationVersion(app_version)
             logo = QIcon(APP_LOGO)
             app.setWindowIcon(logo)
+
+            load_plugins()
+            api.set_gui_redraw_buttons(redraw_buttons)
+
             main_window = create_main_window(api, app)
             create_tray(logo, app)
 
@@ -1390,6 +1529,11 @@ def start(_exit: bool = False) -> None:
 
             cli = CLIStreamDeckServer(api, main_window.ui)
             cli.start()
+
+            for plugin in plugins.keys():
+                settings = api.get_plugin_settings(plugin)
+
+                plugins[plugin].initialize(api, settings)
 
             configure_signals(app, cli)
 

@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from types import ModuleType
+from typing import Dict
 
 ################################################################################
 ## Form generated from reading UI file 'button.ui'
@@ -22,7 +24,7 @@ from PySide6.QtWidgets import (QApplication, QComboBox, QFormLayout, QHBoxLayout
 from . import resources_rc
 
 class Ui_ButtonForm(object):
-    def setupUi(self, ButtonForm):
+    def setupUi(self, ButtonForm, plugins: Dict[str, ModuleType]):
         if not ButtonForm.objectName():
             ButtonForm.setObjectName(u"ButtonForm")
         ButtonForm.resize(568, 778)
@@ -99,9 +101,9 @@ class Ui_ButtonForm(object):
         palette.setBrush(QPalette.Active, QPalette.ToolTipText, brush)
         brush5 = QBrush(QColor(0, 0, 0, 128))
         brush5.setStyle(Qt.SolidPattern)
-#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
+        #if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
         palette.setBrush(QPalette.Active, QPalette.PlaceholderText, brush5)
-#endif
+        #endif
         palette.setBrush(QPalette.Inactive, QPalette.WindowText, brush)
         palette.setBrush(QPalette.Inactive, QPalette.Button, brush1)
         palette.setBrush(QPalette.Inactive, QPalette.Light, brush1)
@@ -117,9 +119,9 @@ class Ui_ButtonForm(object):
         palette.setBrush(QPalette.Inactive, QPalette.AlternateBase, brush1)
         palette.setBrush(QPalette.Inactive, QPalette.ToolTipBase, brush4)
         palette.setBrush(QPalette.Inactive, QPalette.ToolTipText, brush)
-#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
+        #if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
         palette.setBrush(QPalette.Inactive, QPalette.PlaceholderText, brush5)
-#endif
+        #endif
         palette.setBrush(QPalette.Disabled, QPalette.WindowText, brush2)
         palette.setBrush(QPalette.Disabled, QPalette.Button, brush1)
         palette.setBrush(QPalette.Disabled, QPalette.Light, brush1)
@@ -135,9 +137,9 @@ class Ui_ButtonForm(object):
         palette.setBrush(QPalette.Disabled, QPalette.AlternateBase, brush1)
         palette.setBrush(QPalette.Disabled, QPalette.ToolTipBase, brush4)
         palette.setBrush(QPalette.Disabled, QPalette.ToolTipText, brush)
-#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
+        #if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
         palette.setBrush(QPalette.Disabled, QPalette.PlaceholderText, brush5)
-#endif
+        #endif
         self.background_color.setPalette(palette)
 
         self.formLayout.setWidget(1, QFormLayout.FieldRole, self.background_color)
@@ -239,9 +241,9 @@ class Ui_ButtonForm(object):
         palette1.setBrush(QPalette.Active, QPalette.AlternateBase, brush1)
         palette1.setBrush(QPalette.Active, QPalette.ToolTipBase, brush4)
         palette1.setBrush(QPalette.Active, QPalette.ToolTipText, brush)
-#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
+        #if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
         palette1.setBrush(QPalette.Active, QPalette.PlaceholderText, brush5)
-#endif
+        #endif
         palette1.setBrush(QPalette.Inactive, QPalette.WindowText, brush)
         palette1.setBrush(QPalette.Inactive, QPalette.Button, brush1)
         palette1.setBrush(QPalette.Inactive, QPalette.Light, brush1)
@@ -257,9 +259,9 @@ class Ui_ButtonForm(object):
         palette1.setBrush(QPalette.Inactive, QPalette.AlternateBase, brush1)
         palette1.setBrush(QPalette.Inactive, QPalette.ToolTipBase, brush4)
         palette1.setBrush(QPalette.Inactive, QPalette.ToolTipText, brush)
-#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
+        #if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
         palette1.setBrush(QPalette.Inactive, QPalette.PlaceholderText, brush5)
-#endif
+        #endif
         palette1.setBrush(QPalette.Disabled, QPalette.WindowText, brush2)
         palette1.setBrush(QPalette.Disabled, QPalette.Button, brush1)
         palette1.setBrush(QPalette.Disabled, QPalette.Light, brush1)
@@ -275,9 +277,9 @@ class Ui_ButtonForm(object):
         palette1.setBrush(QPalette.Disabled, QPalette.AlternateBase, brush1)
         palette1.setBrush(QPalette.Disabled, QPalette.ToolTipBase, brush4)
         palette1.setBrush(QPalette.Disabled, QPalette.ToolTipText, brush)
-#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
+        #if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
         palette1.setBrush(QPalette.Disabled, QPalette.PlaceholderText, brush5)
-#endif
+        #endif
         self.text_color.setPalette(palette1)
 
         self.horizontalLayout.addWidget(self.text_color)
@@ -354,6 +356,29 @@ class Ui_ButtonForm(object):
 
         self.formLayout.setWidget(11, QFormLayout.FieldRole, self.write)
 
+        self.plugins = QComboBox(ButtonForm)
+        self.plugins_button = QPushButton(ButtonForm)
+
+        if plugins:
+            for plugin in plugins.keys():
+                self.plugins.addItem(plugins[plugin].get_name(), plugin)
+
+            self.label_plugins = QLabel(ButtonForm)
+            self.label_plugins.setText("Plugins")
+
+            self.formLayout.setWidget(12, QFormLayout.LabelRole, self.label_plugins)
+
+            icon = QIcon()
+            icon.addFile(u":/icons/icons/gear.png", QSize(), QIcon.Normal, QIcon.Off)
+
+            self.plugins_button.setIcon(icon)
+            self.plugins_button.setMaximumSize(QSize(30, 30))
+
+            plugins_layout = QHBoxLayout()
+            plugins_layout.addWidget(self.plugins)
+            plugins_layout.addWidget(self.plugins_button)
+
+            self.formLayout.setLayout(12, QFormLayout.FieldRole, plugins_layout)
 
         self.retranslateUi(ButtonForm)
 

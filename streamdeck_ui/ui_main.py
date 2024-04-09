@@ -1,4 +1,15 @@
 # -*- coding: utf-8 -*-
+from functools import partial
+
+from PySide6.QtCore import (QCoreApplication, QMetaObject, QRect,
+                            QSize, Qt)
+from PySide6.QtGui import (QAction, QIcon)
+from PySide6.QtWidgets import (QComboBox, QGridLayout, QGroupBox,
+                               QHBoxLayout, QLayout, QMenu,
+                               QMenuBar, QProgressBar, QPushButton, QSizePolicy,
+                               QSpacerItem, QStatusBar, QTabWidget, QVBoxLayout,
+                               QWidget)
+
 
 ################################################################################
 ## Form generated from reading UI file 'main.ui'
@@ -8,23 +19,9 @@
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
 
-from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
-    QMetaObject, QObject, QPoint, QRect,
-    QSize, QTime, QUrl, Qt)
-from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
-    QCursor, QFont, QFontDatabase, QGradient,
-    QIcon, QImage, QKeySequence, QLinearGradient,
-    QPainter, QPalette, QPixmap, QRadialGradient,
-    QTransform)
-from PySide6.QtWidgets import (QApplication, QComboBox, QGridLayout, QGroupBox,
-    QHBoxLayout, QLayout, QMainWindow, QMenu,
-    QMenuBar, QProgressBar, QPushButton, QSizePolicy,
-    QSpacerItem, QStatusBar, QTabWidget, QVBoxLayout,
-    QWidget)
-from . import resources_rc
 
 class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
+    def setupUi(self, MainWindow, plugins: dict):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
         MainWindow.resize(940, 766)
@@ -94,7 +91,6 @@ class Ui_MainWindow(object):
 
         self.deviceSettings_horizontalLayout.addWidget(self.cpu_usage)
 
-
         self.left_verticalLayout.addLayout(self.deviceSettings_horizontalLayout)
 
         self.pageActions = QHBoxLayout()
@@ -122,7 +118,6 @@ class Ui_MainWindow(object):
         self.remove_page.setIcon(icon2)
 
         self.pageActions.addWidget(self.remove_page)
-
 
         self.left_verticalLayout.addLayout(self.pageActions)
 
@@ -175,7 +170,6 @@ class Ui_MainWindow(object):
 
         self.button_actions.addWidget(self.remove_button_state)
 
-
         self.verticalLayout_3.addLayout(self.button_actions)
 
         self.button_states = QTabWidget(self.groupBox)
@@ -188,12 +182,9 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_3.addWidget(self.button_states)
 
-
         self.right_horizontalLayout.addWidget(self.groupBox)
 
-
         self.main_horizontalLayout.addLayout(self.right_horizontalLayout)
-
 
         self.horizontalLayout.addLayout(self.main_horizontalLayout)
 
@@ -214,6 +205,11 @@ class Ui_MainWindow(object):
 
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuHelp.menuAction())
+
+        self.menuPlugins = QMenu(self.menubar)
+        self.menuPlugins.setObjectName(u"menuPlugins")
+        self.menuPlugins.setTitle("Plugins")
+
         self.menuFile.addAction(self.actionImport)
         self.menuFile.addAction(self.actionExport)
         self.menuFile.addSeparator()
@@ -223,11 +219,21 @@ class Ui_MainWindow(object):
         self.menuHelp.addSeparator()
         self.menuHelp.addAction(self.actionAbout)
 
+        if plugins:
+            self.menubar.addAction(self.menuPlugins.menuAction())
+
+            for plugin in plugins.keys():
+                action_plugin = QAction(MainWindow)
+                action_plugin.setObjectName(f"action_plugin_{plugin}")
+                action_plugin.setText(plugins[plugin].get_name())
+                action_plugin.setIcon(plugins[plugin].get_icon())
+
+                self.menuPlugins.addAction(action_plugin)
+
         self.retranslateUi(MainWindow)
 
         self.pages.setCurrentIndex(0)
         self.button_states.setCurrentIndex(0)
-
 
         QMetaObject.connectSlotsByName(MainWindow)
     # setupUi
@@ -242,26 +248,26 @@ class Ui_MainWindow(object):
         self.actionAbout.setText(QCoreApplication.translate("MainWindow", u"About...", None))
         self.settingsButton.setText("")
         self.cpu_usage.setFormat("")
-#if QT_CONFIG(tooltip)
+        # if QT_CONFIG(tooltip)
         self.add_page.setToolTip(QCoreApplication.translate("MainWindow", u"Add new page", None))
-#endif // QT_CONFIG(tooltip)
+        # endif // QT_CONFIG(tooltip)
         self.add_page.setText("")
-#if QT_CONFIG(tooltip)
+        # if QT_CONFIG(tooltip)
         self.remove_page.setToolTip(QCoreApplication.translate("MainWindow", u"Delete current page", None))
-#endif // QT_CONFIG(tooltip)
+        # endif // QT_CONFIG(tooltip)
         self.remove_page.setText("")
         self.pages.setTabText(self.pages.indexOf(self.page_1), "")
         self.groupBox.setTitle(QCoreApplication.translate("MainWindow", u"Configure Button", None))
-#if QT_CONFIG(tooltip)
+        # if QT_CONFIG(tooltip)
         self.add_button_state.setToolTip(QCoreApplication.translate("MainWindow", u"Add a new button state", None))
-#endif // QT_CONFIG(tooltip)
+        # endif // QT_CONFIG(tooltip)
         self.add_button_state.setText("")
-#if QT_CONFIG(tooltip)
-        self.remove_button_state.setToolTip(QCoreApplication.translate("MainWindow", u"Remove current selected button state", None))
-#endif // QT_CONFIG(tooltip)
+        # if QT_CONFIG(tooltip)
+        self.remove_button_state.setToolTip(
+            QCoreApplication.translate("MainWindow", u"Remove current selected button state", None))
+        # endif // QT_CONFIG(tooltip)
         self.remove_button_state.setText("")
         self.button_states.setTabText(self.button_states.indexOf(self.tab), "")
         self.menuFile.setTitle(QCoreApplication.translate("MainWindow", u"File", None))
         self.menuHelp.setTitle(QCoreApplication.translate("MainWindow", u"Help", None))
     # retranslateUi
-

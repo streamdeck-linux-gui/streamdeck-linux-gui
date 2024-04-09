@@ -1,5 +1,6 @@
 import itertools
 import os
+from datetime import datetime
 from fractions import Fraction
 from io import BytesIO
 from typing import Callable, Tuple
@@ -19,15 +20,21 @@ class ImageFilter(Filter):
 
     def __init__(self, file: str):
         super(ImageFilter, self).__init__()
-        self.file = os.path.expanduser(file)
-        try:
-            file_stats = os.stat(file)
-            file_size = file_stats.st_size
-            mod_time = file_stats.st_mtime
-        except BaseException:
-            file_size = 0
-            mod_time = 0
-            print(f"Unable to load icon {self.file} to calculate stats.")
+
+        if file.startswith("<svg "):
+            self.file = file
+            file_size = len(file)
+            mod_time = datetime.utcnow().timestamp()
+        else:
+            self.file = os.path.expanduser(file)
+            try:
+                file_stats = os.stat(file)
+                file_size = file_stats.st_size
+                mod_time = file_stats.st_mtime
+            except BaseException:
+                file_size = 0
+                mod_time = 0
+                print(f"Unable to load icon {self.file} to calculate stats.")
 
         # Create a tuple of the file metadata for creating a hashcode.
         self.metadata = (self.__class__, self.file, file_size, mod_time)
@@ -39,34 +46,41 @@ class ImageFilter(Filter):
         frame_hash = []
 
         try:
-            kind = filetype.guess(self.file)
-            if kind is None:
-                svg_code = open(self.file).read()
-                png = cairosvg.svg2png(svg_code, output_height=size[1], output_width=size[0])
+            if self.file.startswith("<svg "):
+                png = cairosvg.svg2png(self.file, output_height=size[1], output_width=size[0])
                 image_file = BytesIO(png)
                 image = Image.open(image_file)
                 frame_duration.append(-1)
                 frame_hash.append(image_hash)
             else:
-                image = Image.open(self.file)
-                image.seek(0)
-                # Frame number is used to create unique hash
-                frame_number = 1
-                while True:
-                    try:
-                        frame_duration.append(image.info["duration"])
-                        # Create tuple and hash it, to combine the image and frame hashcodes
-                        frame_hash.append(hash((image_hash, frame_number)))
-                        image.seek(image.tell() + 1)
-                        frame_number += 1
-                    except EOFError:
-                        # Reached the final frame
-                        break
-                    except KeyError:
-                        # If the key 'duration' can't be found, it's not an animation
-                        frame_duration.append(-1)
-                        frame_hash.append(image_hash)
-                        break
+                kind = filetype.guess(self.file)
+                if kind is None:
+                    svg_code = open(self.file).read()
+                    png = cairosvg.svg2png(svg_code, output_height=size[1], output_width=size[0])
+                    image_file = BytesIO(png)
+                    image = Image.open(image_file)
+                    frame_duration.append(-1)
+                    frame_hash.append(image_hash)
+                else:
+                    image = Image.open(self.file)
+                    image.seek(0)
+                    # Frame number is used to create unique hash
+                    frame_number = 1
+                    while True:
+                        try:
+                            frame_duration.append(image.info["duration"])
+                            # Create tuple and hash it, to combine the image and frame hashcodes
+                            frame_hash.append(hash((image_hash, frame_number)))
+                            image.seek(image.tell() + 1)
+                            frame_number += 1
+                        except EOFError:
+                            # Reached the final frame
+                            break
+                        except KeyError:
+                            # If the key 'duration' can't be found, it's not an animation
+                            frame_duration.append(-1)
+                            frame_hash.append(image_hash)
+                            break
 
         except BaseException as icon_error:
             # FIXME: caller should handle this?

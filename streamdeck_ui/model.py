@@ -32,6 +32,8 @@ class ButtonState:
     """Font size of the text on the button"""
     background_color: str = ""
     """Background color of the button"""
+    plugins_settings: Dict[str, Dict[str, str]] = field(default_factory=dict)
+    """Plugins settings of the button"""
 
 
 @dataclass
