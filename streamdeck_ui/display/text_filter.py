@@ -22,7 +22,11 @@ class TextFilter(Filter):
         self.horizontal_align = horizontal_align
         self.font_color = font_color
         self.fallback_font = ImageFont.truetype(DEFAULT_FONT_FALLBACK_PATH, font_size)
-        self.true_font = ImageFont.truetype(font, font_size)
+        try:
+            self.true_font = ImageFont.truetype(font, font_size)
+        except OSError:
+            print("Unable to set font: " + font)
+            self.true_font = self.fallback_font
         # fmt: off
         kernel = [
             0, 1, 2, 1, 0,
