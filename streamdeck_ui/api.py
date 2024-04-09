@@ -596,6 +596,7 @@ class StreamDeckServer:
     def set_button_plugin_settings(
         self, serial_number: str, page: int, button: int, plugin: str, plugins_settings: Dict[str, str]
     ) -> None:
+        """Sets the plugin settings to be sent to the plugin when the button is pressed."""
         old_settings = self.get_button_plugin_settings(serial_number, page, button, plugin)
 
         if old_settings != plugins_settings:
@@ -603,6 +604,7 @@ class StreamDeckServer:
             self._save_state()
 
     def get_button_plugin_settings(self, serial_number: str, page: int, button: int, plugin: str) -> Dict[str, str]:
+        """Returns the plugin settings to be sent to the plugin when the button is pressed."""
         return self._button_state(serial_number, page, button).plugins_settings.get(plugin, {})
 
     def set_brightness(self, serial_number: str, brightness: int) -> None:
@@ -721,9 +723,19 @@ class StreamDeckServer:
 
         display_handler.replace(page, button, filters)
 
-    def get_plugin_settings(self, plugin: str) -> dict:
+    def get_plugin_settings(self, plugin: str) -> Dict[str, str]:
+        """
+        Retrieves the settings for the provided plugin.
+        @param plugin: the name of the plugin
+        @return: the plugin settings; may be an empty dict
+        """
         return self.plugins_settings.get(plugin, {})
 
-    def set_plugin_settings(self, plugin: str, settings: dict) -> None:
+    def set_plugin_settings(self, plugin: str, settings: Dict[str, str]) -> None:
+        """
+        Sets the settings for a plugin.
+        @param plugin: the plugin
+        @param settings: the settings
+        """
         self.plugins_settings[plugin] = settings
         self._save_state()

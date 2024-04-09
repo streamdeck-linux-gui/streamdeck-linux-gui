@@ -266,7 +266,7 @@ def handle_keypress(ui, deck_id: str, key: int, state: bool) -> None:
             button_plugins_settings = api.get_button_plugin_settings(deck_id, page, key, plugin)
 
             if button_plugins_settings:
-                plugins[plugin].button_pressed(button_plugins_settings)
+                plugins[plugin].button_pressed(deck_id, page, key, button_plugins_settings)
 
 
 def _deck() -> Optional[str]:
