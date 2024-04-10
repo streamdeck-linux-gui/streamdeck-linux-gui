@@ -65,7 +65,7 @@ def apply_button_settings(deck_id: str, page_id: int, button_id: int, button_set
     pass
 
 
-def button_pressed(deck_id: str, page_id: int, button_id: int, button_settings: Dict[str, str]) -> None:
+def button_pressed(button_settings: Dict[str, str]) -> None:
     """
     This function is called when a button (key) on the Stream Deck is pressed and button settings were provided for this
     plugin.
