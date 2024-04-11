@@ -1298,6 +1298,10 @@ def show_plugin_settings(plugin: str):
 
 
 def show_plugin_button_settings(plugins_combobox: QComboBox):
+    """
+    Shows the button settings dialog for the plugin.<br /><br />
+    @param plugins_combobox: the Plugin-Combobox from where the currently selected plugin is read
+    """
     plugin = plugins_combobox.currentText()
 
     if not plugin:
@@ -1454,7 +1458,7 @@ def sigterm_handler(app, cli, signal_value, frame):
 
 def load_plugins() -> None:
     """
-    Iterates of all subfolders of the plugins-folder and tries to import the contained file plugin.py as a module.
+    Iterates over all subfolders of the plugins-folder and tries to import the contained file plugin.py as a module.
     If successful, it is added to the plugins mapping, else a message is written and the folder skipped.
     """
     global plugins
