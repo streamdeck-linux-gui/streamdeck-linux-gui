@@ -28,6 +28,9 @@ class Semaphore:
         # release the semaphore
         fcntl.flock(self.semaphore_fd, fcntl.LOCK_UN)
 
+        # remove semaphore file
+        os.remove(self.semaphore_file)
+        
         # close the file descriptor
         os.close(self.semaphore_fd)
 
