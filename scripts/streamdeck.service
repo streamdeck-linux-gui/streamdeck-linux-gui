@@ -1,5 +1,7 @@
 [Unit]
 Description=A Linux compatible UI for the Elgato Stream Deck.
+After=graphical-session.target
+Requires=graphical-session.target
 
 [Service]
 Type=simple
@@ -7,4 +9,4 @@ ExecStart=<path to streamdeck> -n
 Restart=on-failure
 
 [Install]
-WantedBy=default.target
+WantedBy=graphical-session.target
