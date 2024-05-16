@@ -34,6 +34,8 @@ sh -c "echo -e 'SUBSYSTEM==\"usb\", ATTRS{idVendor}==\"0fd9\", ATTRS{idProduct}=
 'SUBSYSTEM==\"usb\", ATTRS{idVendor}==\"0fd9\", ATTRS{idProduct}==\"006c\", TAG+=\"uaccess\"\\n'\
 'SUBSYSTEM==\"usb\", ATTRS{idVendor}==\"0fd9\", ATTRS{idProduct}==\"006d\", TAG+=\"uaccess\"\\n'\
 'SUBSYSTEM==\"usb\", ATTRS{idVendor}==\"0fd9\", ATTRS{idProduct}==\"0080\", TAG+=\"uaccess\"\\n'\
+'SUBSYSTEM==\"usb\", ATTRS{idVendor}==\"0fd9\", ATTRS{idProduct}==\"0084\", TAG+=\"uaccess\"\\n'\
+'SUBSYSTEM==\"usb\", ATTRS{idVendor}==\"0fd9\", ATTRS{idProduct}==\"008f\", TAG+=\"uaccess\"\\n'\
 'KERNEL==\"uinput\", SUBSYSTEM==\"misc\", OPTIONS+=\"static_node=uinput\", TAG+=\"uaccess\", GROUP=\"input\", MODE=\"0660\"' > /etc/udev/rules.d/60-streamdeck.rules"
 ```
 
