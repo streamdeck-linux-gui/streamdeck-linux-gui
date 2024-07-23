@@ -87,7 +87,7 @@ class ImageFilter(Filter):
                 except BaseException:
                     pass
             scale_factor = min(size[0] / frame.size[0], size[1] / frame.size[1])
-            frame = frame.resize((int(v * scale_factor) for v in frame.size), Image.LANCZOS)
+            frame = frame.resize([int(v * scale_factor) for v in frame.size], Image.LANCZOS)
             self.frames.append((frame, milliseconds, hashcode))
 
         self.frame_cycle = itertools.cycle(self.frames)
