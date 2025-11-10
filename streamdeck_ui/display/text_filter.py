@@ -1,5 +1,5 @@
 from fractions import Fraction
-from typing import Callable, Tuple
+from typing import Callable, Optional, Tuple
 
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
@@ -8,10 +8,10 @@ from streamdeck_ui.display.filter import Filter
 
 
 class TextFilter(Filter):
-    font_blur: ImageFilter.Kernel = None
+    font_blur: Optional[ImageFilter.Kernel] = None
     # Static instance - no need to create one per Filter instance
 
-    image: Image
+    image: Optional[Image.Image]
 
     def __init__(
         self, text: str, font: str, font_size: int, font_color: str, vertical_align: str, horizontal_align: str
@@ -67,22 +67,22 @@ class TextFilter(Filter):
         if self.vertical_align == "top":
             label_y = 0
         elif self.vertical_align == "middle-top":
-            label_y = gap + label_h
+            label_y = int(gap + label_h)
         elif self.vertical_align == "middle":
-            label_y = size[1] // 2 - (label_h // 2)
+            label_y = size[1] // 2 - (int(label_h) // 2)
         elif self.vertical_align == "middle-bottom":
-            label_y = (gap + label_h) * 3
+            label_y = int((gap + label_h) * 3)
         else:
-            label_y = size[1] - label_h
+            label_y = int(size[1] - label_h)
             # Default or "bottom"
 
         if self.horizontal_align == "left":
             label_x = 0
         elif self.horizontal_align == "right":
-            label_x = size[0] - label_w
+            label_x = int(size[0] - label_w)
         else:
             self.horizontal_align = "center"
-            label_x = (size[0] - label_w) // 2
+            label_x = (size[0] - int(label_w)) // 2
             # Default or "center"
 
         label_pos = (label_x, label_y)

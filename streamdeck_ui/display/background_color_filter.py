@@ -7,7 +7,7 @@ from streamdeck_ui.display.filter import Filter
 
 
 class BackgroundColorFilter(Filter):
-    image: Image
+    image: Optional[Image.Image]
 
     def __init__(self, color: str):
         super(BackgroundColorFilter, self).__init__()

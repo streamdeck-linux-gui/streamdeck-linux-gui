@@ -47,7 +47,7 @@ class KeypressFilter(Filter):
             if self.active:
                 input = get_input()
                 background = self.blank_image.copy()
-                input.thumbnail((self.size[0] - 10, self.size[1] - 10), Image.LANCZOS)
+                input.thumbnail((self.size[0] - 10, self.size[1] - 10), Image.Resampling.LANCZOS)
                 # Reduce the image by 10px
 
                 enhancer = ImageEnhance.Brightness(input)
