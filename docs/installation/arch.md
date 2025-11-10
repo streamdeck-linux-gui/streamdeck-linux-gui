@@ -75,9 +75,9 @@ pipx install  streamdeck-gui-ng
 
 #### From Source
 
-Please make sure you have followed [Install dependencies](#install-dependencies) and [Configure access to Elgato devices](#configure-access-to-elgato-devices) before continuing.
+Please make sure you have followed [Install dependencies](#install-dependencies) and [Configure access to Elgato devices](#configure-access-to-elgato-devices-udev-rules) before continuing.
 
-The steps to install from source can be found [here](source.md)
+The steps to install from source can be found in the [installation from source guide](source.md)
 
 ## Launch the Streamdeck UI
 

@@ -59,7 +59,7 @@ python3 -m pipx install streamdeck-gui-ng
 
 Please make sure you have followed the steps below untill the **Install Stream Deck UI section** before continuing.
 
-The steps to install from source can be found [here](source.md)
+The steps to install from source can be found in the [installation from source guide](source.md)
 
 ### Launch the Streamdeck UI
 

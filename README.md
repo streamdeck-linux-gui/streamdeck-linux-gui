@@ -87,12 +87,12 @@ Contributuions encouraged and very welcome, however some rules and guidelines mu
 
 ### General Guidelines
 
-* The project is versioned according to [Semantic Versioning](https://semver.org/).
-* When writing your commit messages, please follow the [Angular commit message](https://gist.github.com/brianclements/841ea7bffdb01346392c).
-* Pull requests should be made against the `develop` branch, so please make sure you check out the `develop` branch.
-* Pull requests should include tests and documentation as appropriate.
-* When opening a pull request, if possible, attach a screenshot or GIF of the changes.
-* Please read the [contributing guide](https://github.com/streamdeck-linux-gui/streamdeck-linux-gui/blob/main/docs/contributing/contributing-guide.md) for more information and instructions on how to get started.
+- The project is versioned according to [Semantic Versioning](https://semver.org/).
+- When writing your commit messages, please follow the [Angular commit message](https://gist.github.com/brianclements/841ea7bffdb01346392c).
+- Pull requests should be made against the `develop` branch, so please make sure you check out the `develop` branch.
+- Pull requests should include tests and documentation as appropriate.
+- When opening a pull request, if possible, attach a screenshot or GIF of the changes.
+- Please read the [contributing guide](https://github.com/millaguie/streamdeck-gui-ng/blob/main/docs/contributing/contributing-guide.md) for more information and instructions on how to get started.
 
 ### Feature Requests
 
@@ -100,16 +100,16 @@ Open a new discussion with the `feature request` tag and describe the feature yo
 
 ### Bug Reports
 
-Open a bug report [here](https://github.com/streamdeck-linux-gui/streamdeck-linux-gui/issues) and follow the template. Please include as much information as possible.
+Open a [bug report](https://github.com/millaguie/streamdeck-gui-ng/issues) and follow the template. Please include as much information as possible.
 
 ### Have a Question?
 
-If you need any help, have a question, or just want to discuss something related to the project, please feel free to open a [discussion](https://github.com/streamdeck-linux-gui/streamdeck-linux-gui/discussions).
+If you need any help, have a question, or just want to discuss something related to the project, please feel free to open a [discussion](https://github.com/millaguie/streamdeck-gui-ng/discussions).
 
 ## Known issues
 
-* pip package is not yet available for the current state of the project. Please install from source, currently trying to find a better way to provide the package.
-* Streamdeck uses [pynput](https://github.com/moses-palmer/pynput) for simulating **Key Presses** but it lacks proper [support for Wayland](https://github.com/moses-palmer/pynput/issues/189). Generally your results will be good when using X (Ubuntu/Linux Mint). [This thread](https://github.com/timothycrosley/streamdeck-ui/issues/47) may be useful.
-* **Key Press** or **Write Text** does not work on Fedora (outside of the streamdeck itself), which is not particularly useful. However, still do a lot with the **Command** feature.
-* Some users have reported that the Stream Deck device does not work on all on specific USB ports, as it draws quite a bit of power and/or has [strict bandwidth requirements](https://github.com/timothycrosley/streamdeck-ui/issues/69#issuecomment-715887397). Try a different port.
-* If you are executing a shell script from the Command feature - remember to add the shebang at the top of your file, for the language in question. `#!/bin/bash` or `#!/usr/bin/python3` etc. The streamdeck may appear to lock up if you don't under some distros.
+- pip package is not yet available for the current state of the project. Please install from source, currently trying to find a better way to provide the package.
+- Streamdeck uses [pynput](https://github.com/moses-palmer/pynput) for simulating **Key Presses** but it lacks proper [support for Wayland](https://github.com/moses-palmer/pynput/issues/189). Generally your results will be good when using X (Ubuntu/Linux Mint). [This thread](https://github.com/timothycrosley/streamdeck-ui/issues/47) may be useful.
+- **Key Press** or **Write Text** does not work on Fedora (outside of the streamdeck itself), which is not particularly useful. However, still do a lot with the **Command** feature.
+- Some users have reported that the Stream Deck device does not work on all on specific USB ports, as it draws quite a bit of power and/or has [strict bandwidth requirements](https://github.com/timothycrosley/streamdeck-ui/issues/69#issuecomment-715887397). Try a different port.
+- If you are executing a shell script from the Command feature - remember to add the shebang at the top of your file, for the language in question. `#!/bin/bash` or `#!/usr/bin/python3` etc. The streamdeck may appear to lock up if you don't under some distros.
