@@ -37,7 +37,7 @@ PATH=$PATH:$HOME/.local/bin
 The following will create a file called `/etc/udev/rules.d/60-streamdeck.rules` with all the necessary udev rules that provides your user with access to USB devices created by Elgato.
 
 ```bash
-sudo wget https://raw.githubusercontent.com/streamdeck-linux-gui/streamdeck-linux-gui/main/udev/60-streamdeck.rules -O /etc/udev/rules.d/60-streamdeck.rules
+sudo wget https://raw.githubusercontent.com/millaguie/streamdeck-gui-ng/main/udev/60-streamdeck.rules -O /etc/udev/rules.d/60-streamdeck.rules
 ```
 
 alternatively to grabbing the file directly from the repository you can use the following command:
@@ -70,7 +70,7 @@ sudo pacman -S python-pipx
 ```
 
 ```console
-pipx install  streamdeck-linux-gui
+pipx install  streamdeck-gui-ng
 ```
 
 #### From Source

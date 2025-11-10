@@ -7,13 +7,13 @@ To install from source, you first need to install the dependencies and configure
 Clone the repository:
 
 ```bash
-git clone <https://github.com/streamdeck-linux-gui/streamdeck-linux-gui.git>
+git clone <https://github.com/millaguie/streamdeck-gui-ng.git>
 ```
 
 Change to the directory:
 
 ```bash
-cd streamdeck-linux-gui
+cd streamdeck-gui-ng
 ```
 
 Build the package using the following command:

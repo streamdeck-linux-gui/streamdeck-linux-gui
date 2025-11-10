@@ -20,10 +20,10 @@ Base System Requirements:
 
 Once you have verified that your system matches the base requirements, you can start getting the project working by following these steps:
 
-1. [Fork the project on GitHub](https://github.com/streamdeck-linux-gui/streamdeck-linux-gui/fork).
+1. [Fork the project on GitHub](https://github.com/millaguie/streamdeck-gui-ng/fork).
     - Make sure you untick the "copy the main branch only" option. This will ensure you have a full copy of the project to work with.
 2. Clone your fork to your local file system:
-    `git clone https://github.com/$GITHUB_ACCOUNT/streamdeck-linux-gui.git`
+    `git clone https://github.com/$GITHUB_ACCOUNT/streamdeck-gui-ng.git`
 3. `cd streamdeck_ui`
 4. `poetry install`
 
@@ -31,7 +31,7 @@ Once you have verified that your system matches the base requirements, you can s
 
 Congrats! You're now ready to make a contribution! Use the following as a guide to help you reach a successful pull request:
 
-1. Check the [issues page](https://github.com/streamdeck-linux-gui/streamdeck-linux-gui/issues) or [discussions](https://github.com/streamdeck-linux-gui/streamdeck-linux-gui/discussions) on GitHub to see if the task you want to complete is listed there.
+1. Check the [issues page](https://github.com/millaguie/streamdeck-gui-ng/issues) or [discussions](https://github.com/millaguie/streamdeck-gui-ng/discussions) on GitHub to see if the task you want to complete is listed there.
     - If it's listed there, write a comment letting others know you are working on it.
     - If it's not listed in GitHub issues or discussions, go ahead and log a new issue. Then add a comment letting everyone know you have it under control.
         - If you're not sure if it's something that is good for the main streamdeck_ui project and want immediate feedback, you can discuss it on [Discord](https://discord.gg/ZCZesnEj4).
@@ -48,8 +48,8 @@ Thanks for the contribution! It will be reviewed as soon as possible, and once a
 
 ## Thank you
 
-I cannot tell you how thankful we are for the hard work done by streamdeck-linux-gui contributors like *you*.
+I cannot tell you how thankful we are for the hard work done by streamdeck-gui-ng contributors like *you*.
 
 Thank you!
 
-The streamdeck-linux-gui users! :heart:
+The streamdeck-gui-ng users! :heart:

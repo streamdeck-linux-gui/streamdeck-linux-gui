@@ -95,7 +95,7 @@ class StreamDeckMonitor:
                         print("------------------------")
                         print("A suitable LibUSB installation could not be found.")
                         print("Check installation instructions:")
-                        print("https://streamdeck-linux-gui.github.io/streamdeck-linux-gui/")
+                        print("https://millaguie.github.io/streamdeck-gui-ng/")
                         showed_libusb_help = True
 
                         # No point showing the next help if we can't even enumerate
@@ -124,7 +124,7 @@ class StreamDeckMonitor:
                             print("------------------------")
                             print("A Stream Deck is attached, but it could not be opened.")
                             print("Check installation instructions and ensure a udev rule has been added and loaded.")
-                            print("https://streamdeck-linux-gui.github.io/streamdeck-linux-gui/")
+                            print("https://millaguie.github.io/streamdeck-gui-ng/")
                             showed_open_help = True
                         pass
 

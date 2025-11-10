@@ -1,28 +1,38 @@
-[![streamdeck_ui - Linux compatible UI for the Elgato Stream Deck](docs/art/logo_large.png)](https://github.com/streamdeck-linux-gui/streamdeck-linux-gui)
+[![streamdeck-gui-ng - Next Generation Linux UI for the Elgato Stream Deck](docs/art/logo_large.png)](https://github.com/millaguie/streamdeck-gui-ng)
 _________________
 
-[![PyPI version](https://badge.fury.io/py/streamdeck-linux-gui.svg)](https://pypi.org/project/streamdeck-linux-gui/)
-[![Build Status](https://github.com/streamdeck-linux-gui/streamdeck-linux-gui/actions/workflows/test.yaml/badge.svg)](https://github.com/streamdeck-linux-gui/streamdeck-linux-gui/actions/workflows/test.yaml?query=branch%3Amain)
-[![Docs Status](https://github.com/streamdeck-linux-gui/streamdeck-linux-gui/actions/workflows/docs.yml/badge.svg)](https://github.com/streamdeck-linux-gui/streamdeck-linux-gui/actions/workflows/docs.yml)
-[![codecov](https://codecov.io/gh/streamdeck-linux-gui/streamdeck-linux-gui/branch/main/graph/badge.svg?token=I4WC0MVVZ3)](https://codecov.io/gh/streamdeck-linux-gui/streamdeck-linux-gui)
-[![Join Discord](https://img.shields.io/badge/Join%20Discord-Discord-green?labelColor=Blue&style=flat&logo=discord&link=https://discord.gg/ZCZesnEj4)](https://discord.gg/ZCZesnEj4)
-[![License](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/streamdeck-linux-gui/streamdeck-linux-gui)
+[![PyPI version](https://badge.fury.io/py/streamdeck-gui-ng.svg)](https://pypi.org/project/streamdeck-gui-ng/)
+[![Build Status](https://github.com/millaguie/streamdeck-gui-ng/actions/workflows/test.yaml/badge.svg)](https://github.com/millaguie/streamdeck-gui-ng/actions/workflows/test.yaml?query=branch%3Amain)
+[![Docs Status](https://github.com/millaguie/streamdeck-gui-ng/actions/workflows/docs.yml/badge.svg)](https://github.com/millaguie/streamdeck-gui-ng/actions/workflows/docs.yml)
+[![License](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/millaguie/streamdeck-gui-ng)
 [![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://timothycrosley.github.io/isort/)
 [![semantic-release: angular](https://img.shields.io/badge/semantic--release-angular-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
 
 _________________
 
-**streamdeck-linux-gui** A Linux compatible UI for the Elgato Stream Deck.
+**streamdeck-gui-ng** - Next Generation Linux compatible UI for the Elgato Stream Deck.
 
-This project is a fork and drop-in replacement for [streamdeck_ui](https://github.com/timothycrosley/streamdeck-ui), which was abandoned after its original owner disappeared.
+## Why This Fork?
 
-> [!WARNING]  
-> THIS PROJECT IS IN MAINTENANCE MODE ONLY!  
-> Pull requests for critical bug fixes, dependency updates or documentation are accepted to keep the application functional, however, no new features will be accepted. 
-> For a more feature-complete project, it is recommended to use [streamcontroller](https://github.com/StreamController/StreamController).
-> You can read more about this here: [The Sunset path: Moving to StreamController](https://github.com/streamdeck-linux-gui/streamdeck-linux-gui/discussions/203)
+I use Stream Deck every day and depend on it for my workflow. When I noticed that streamdeck-linux-gui had entered maintenance mode and was no longer accepting new features, I decided to fork it to ensure continued development and modernization.
 
-All credit to the orignal authors, and the many contributors to the project.
+This fork aims to:
+- Modernize the codebase with support for current Python versions (3.11+)
+- Fix security vulnerabilities and keep dependencies up to date
+- Continue active development and feature improvements
+- Maintain compatibility with the latest Stream Deck devices
+
+## Project History
+
+**streamdeck-gui-ng** is the third generation of this project:
+
+1. **[streamdeck_ui](https://github.com/timothycrosley/streamdeck-ui)** (Original) - Created by Timothy Crosley, this was the first Linux UI for Stream Deck. The project was abandoned when the original author disappeared.
+
+2. **[streamdeck-linux-gui](https://github.com/streamdeck-linux-gui/streamdeck-linux-gui)** (First Fork) - The community forked the original project to keep it alive. However, this fork eventually entered maintenance mode in 2024, accepting only critical bug fixes while directing users to [StreamController](https://github.com/StreamController/StreamController) for new features.
+
+3. **streamdeck-gui-ng** (This Fork) - A modernized continuation for users who prefer the original architecture and want continued development of this proven codebase.
+
+All credit to the original authors and the many contributors to both previous projects. This fork builds on their excellent work.
 
 ![Streamdeck UI Usage Example](docs/art/example.gif)
 
