@@ -22,7 +22,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        python-version: [ "3.8", "3.9", "3.10", "3.11", "3.12" ]
+        python-version: [ "3.9", "3.10", "3.11", "3.12" ]
     steps:
       #----------------------------------------------
       #       check-out repo and set-up python     
@@ -39,7 +39,6 @@ jobs:
       - name: Install Poetry
         uses: snok/install-poetry@v1
         with:
-          version: 1.8.3
           virtualenvs-create: true
           virtualenvs-in-project: true
       #----------------------------------------------
