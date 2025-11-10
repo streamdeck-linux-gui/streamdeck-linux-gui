@@ -1,0 +1,21 @@
+# go-semantic-release configuration
+# https://github.com/go-semantic-release/semantic-release
+
+hooks:
+  post-release:
+    - sed -i 's/version = "[^"]*"/version = "{{.Version}}"/g' pyproject.toml
+    - git add pyproject.toml
+    - git commit -m "chore(release): bump version to {{.Version}} [skip ci]"
+    - git push origin main
+
+commit-message-template: |
+  chore(release): {{.Version}}
+
+  {{.ReleaseNotes}}
+
+changelog:
+  print: false
+
+assets:
+  - path: pyproject.toml
+    name: pyproject.toml

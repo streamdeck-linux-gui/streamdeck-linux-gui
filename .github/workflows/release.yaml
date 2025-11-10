@@ -1,35 +1,45 @@
 name: Release
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
-# PyPI Publishing Setup:
-# This workflow uses PyPI Trusted Publishing (recommended secure method)
-# To enable releases:
-# 1. Create PyPI account at https://pypi.org/account/register/
-# 2. Go to https://pypi.org/manage/account/publishing/
-# 3. Add pending publisher with these details:
-#    - PyPI Project Name: streamdeck-gui-ng
-#    - Owner: millaguie
-#    - Repository: streamdeck-gui-ng
-#    - Workflow name: release.yaml
-#    - Environment: stable
-# 4. First run will create the project on PyPI automatically
+# Automatic Semantic Release:
+# This workflow analyzes commits since the last release and automatically:
+# 1. Determines version bump based on conventional commits:
+#    - fix: → patch (4.1.3 → 4.1.4)
+#    - feat: → minor (4.1.3 → 4.2.0)
+#    - BREAKING CHANGE: → major (4.1.3 → 5.0.0)
+# 2. Updates version in pyproject.toml
+# 3. Creates a GitHub release with changelog
+# 4. Triggers the publish workflow to upload to PyPI
 
 jobs:
   release:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
-    environment: stable
+    if: github.ref == 'refs/heads/main'
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
     outputs:
       version: ${{ steps.semrel.outputs.version }}
+      new_release_published: ${{ steps.semrel.outputs.new_release_published }}
 
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
       - uses: go-semantic-release/action@v1
         id: semrel
-        name: Release
+        name: Create Release
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          allow-initial-development-versions: true
+          force-bump-patch-version: true
 
 #  publish:
 #    runs-on: ubuntu-latest
