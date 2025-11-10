@@ -584,6 +584,16 @@ class StreamDeckServer:
         """Returns the text to be produced when the specified button is pressed"""
         return self._button_state(serial_number, page, button).write
 
+    def set_button_force_refresh(self, serial_number: str, page: int, button: int, force_refresh: bool) -> None:
+        """Sets whether to force icon refresh after command execution"""
+        if self.get_button_force_refresh(serial_number, page, button) != force_refresh:
+            self._button_state(serial_number, page, button).force_refresh = force_refresh
+            self._save_state()
+
+    def get_button_force_refresh(self, serial_number: str, page: int, button: int) -> bool:
+        """Returns whether icon refresh is forced after command execution"""
+        return self._button_state(serial_number, page, button).force_refresh
+
     def set_brightness(self, serial_number: str, brightness: int) -> None:
         """Sets the brightness for every button on the deck"""
         if self.get_brightness(serial_number) != brightness:

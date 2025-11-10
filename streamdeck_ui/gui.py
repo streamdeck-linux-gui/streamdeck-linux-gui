@@ -194,6 +194,11 @@ def handle_keypress(ui, deck_id: str, key: int, state: bool) -> None:
         if command:
             try:
                 Popen(shlex.split(command))  # nosec, need to allow execution of arbitrary commands
+                # Force refresh icon after command execution if configured
+                if api.get_button_force_refresh(deck_id, page, key):
+                    api._update_button_filters(deck_id, page, key)
+                    display_handler = api.display_handlers[deck_id]
+                    display_handler.synchronize()
             except Exception as error:
                 print(f"The command '{command}' failed: {error}")
                 show_tray_warning_message("The command failed to execute.")
@@ -610,6 +615,7 @@ def build_button_state_form(tab) -> None:
     tab_ui.change_brightness.setValue(button_state.brightness_change)
     tab_ui.switch_page.setValue(button_state.switch_page)
     tab_ui.switch_state.setValue(button_state.switch_state)
+    tab_ui.force_refresh.setChecked(button_state.force_refresh)
 
     font_family, font_style = find_font_info(button_state.font or DEFAULT_FONT_FALLBACK_PATH)
     prepare_button_state_form_text_font_list(tab_ui, font_family)
@@ -633,6 +639,7 @@ def build_button_state_form(tab) -> None:
     tab_ui.background_color.clicked.connect(partial(show_button_state_background_color_dialog, tab_ui))
     tab_ui.switch_page.valueChanged.connect(partial(update_button_attribute, "switch_page"))
     tab_ui.switch_state.valueChanged.connect(partial(update_button_attribute, "switch_state"))
+    tab_ui.force_refresh.stateChanged.connect(lambda state: update_button_attribute("force_refresh", bool(state)))
     tab_ui.add_image.clicked.connect(partial(show_button_state_image_dialog))
     tab_ui.remove_image.clicked.connect(show_button_state_remove_image_dialog)
     tab_ui.text_h_align.clicked.connect(partial(update_align_text_horizontal))
@@ -649,6 +656,7 @@ def enable_button_configuration(ui: Ui_ButtonForm, enabled: bool):
     ui.write.setEnabled(enabled)
     ui.change_brightness.setEnabled(enabled)
     ui.switch_page.setEnabled(enabled)
+    ui.force_refresh.setEnabled(enabled)
     ui.switch_state.setEnabled(enabled)
     ui.add_image.setEnabled(enabled)
     ui.remove_image.setEnabled(enabled)
@@ -861,6 +869,7 @@ def _reset_build_button_state_form(ui: Ui_ButtonForm):
     ui.write.clear()
     ui.change_brightness.setValue(0)
     ui.switch_page.setValue(0)
+    ui.force_refresh.setChecked(False)
     ui.switch_state.setValue(0)
 
 

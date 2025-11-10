@@ -32,6 +32,8 @@ class ButtonState:
     """Font size of the text on the button"""
     background_color: str = ""
     """Background color of the button"""
+    force_refresh: bool = False
+    """Force icon refresh after command execution"""
 
 
 @dataclass

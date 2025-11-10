@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'button.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.5.3
+## Created by: Qt User Interface Compiler version 6.6.2
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -15,10 +15,10 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QComboBox, QFormLayout, QHBoxLayout,
-    QLabel, QLineEdit, QPlainTextEdit, QPushButton,
-    QSizePolicy, QSpinBox, QTextEdit, QVBoxLayout,
-    QWidget)
+from PySide6.QtWidgets import (QApplication, QCheckBox, QComboBox, QFormLayout,
+    QHBoxLayout, QLabel, QLineEdit, QPlainTextEdit,
+    QPushButton, QSizePolicy, QSpinBox, QTextEdit,
+    QVBoxLayout, QWidget)
 from . import resources_rc
 
 class Ui_ButtonForm(object):
@@ -43,7 +43,7 @@ class Ui_ButtonForm(object):
 
         self.remove_image = QPushButton(ButtonForm)
         self.remove_image.setObjectName(u"remove_image")
-        sizePolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
+        sizePolicy = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.remove_image.sizePolicy().hasHeightForWidth())
@@ -65,7 +65,7 @@ class Ui_ButtonForm(object):
 
         self.background_color = QPushButton(ButtonForm)
         self.background_color.setObjectName(u"background_color")
-        sizePolicy1 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
+        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Maximum)
         sizePolicy1.setHorizontalStretch(0)
         sizePolicy1.setVerticalStretch(0)
         sizePolicy1.setHeightForWidth(self.background_color.sizePolicy().hasHeightForWidth())
@@ -190,7 +190,7 @@ class Ui_ButtonForm(object):
         self.horizontalLayout.setObjectName(u"horizontalLayout")
         self.text_font = QComboBox(ButtonForm)
         self.text_font.setObjectName(u"text_font")
-        sizePolicy2 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
+        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
         sizePolicy2.setHorizontalStretch(0)
         sizePolicy2.setVerticalStretch(0)
         sizePolicy2.setHeightForWidth(self.text_font.sizePolicy().hasHeightForWidth())
@@ -205,7 +205,7 @@ class Ui_ButtonForm(object):
 
         self.text_font_size = QSpinBox(ButtonForm)
         self.text_font_size.setObjectName(u"text_font_size")
-        sizePolicy3 = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        sizePolicy3 = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         sizePolicy3.setHorizontalStretch(0)
         sizePolicy3.setVerticalStretch(0)
         sizePolicy3.setHeightForWidth(self.text_font_size.sizePolicy().hasHeightForWidth())
@@ -217,7 +217,7 @@ class Ui_ButtonForm(object):
 
         self.text_color = QPushButton(ButtonForm)
         self.text_color.setObjectName(u"text_color")
-        sizePolicy4 = QSizePolicy(QSizePolicy.Maximum, QSizePolicy.Maximum)
+        sizePolicy4 = QSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Maximum)
         sizePolicy4.setHorizontalStretch(0)
         sizePolicy4.setVerticalStretch(0)
         sizePolicy4.setHeightForWidth(self.text_color.sizePolicy().hasHeightForWidth())
@@ -354,6 +354,16 @@ class Ui_ButtonForm(object):
 
         self.formLayout.setWidget(11, QFormLayout.FieldRole, self.write)
 
+        self.label_force_refresh = QLabel(ButtonForm)
+        self.label_force_refresh.setObjectName(u"label_force_refresh")
+
+        self.formLayout.setWidget(12, QFormLayout.LabelRole, self.label_force_refresh)
+
+        self.force_refresh = QCheckBox(ButtonForm)
+        self.force_refresh.setObjectName(u"force_refresh")
+
+        self.formLayout.setWidget(12, QFormLayout.FieldRole, self.force_refresh)
+
 
         self.retranslateUi(ButtonForm)
 
@@ -402,5 +412,10 @@ class Ui_ButtonForm(object):
         self.label_10.setText(QCoreApplication.translate("ButtonForm", u"Switch state", None))
         self.label_7.setText(QCoreApplication.translate("ButtonForm", u"Brightness +/-:", None))
         self.label_6.setText(QCoreApplication.translate("ButtonForm", u"Write Text:", None))
+        self.label_force_refresh.setText(QCoreApplication.translate("ButtonForm", u"Force Refresh:", None))
+#if QT_CONFIG(tooltip)
+        self.force_refresh.setToolTip(QCoreApplication.translate("ButtonForm", u"Force icon refresh after command execution", None))
+#endif // QT_CONFIG(tooltip)
+        self.force_refresh.setText(QCoreApplication.translate("ButtonForm", u"Refresh icon after command", None))
     # retranslateUi
 
