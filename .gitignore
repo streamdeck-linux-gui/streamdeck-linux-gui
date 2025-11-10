@@ -89,3 +89,6 @@ out
 
 # QT
 .qt_for_python/
+
+# Private fork notes
+TODO-CI-CONFIG.md
