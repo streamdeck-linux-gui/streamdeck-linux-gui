@@ -25,7 +25,6 @@ jobs:
       pull-requests: write
     outputs:
       version: ${{ steps.semrel.outputs.version }}
-      new_release_published: ${{ steps.semrel.outputs.new_release_published }}
 
     steps:
       - uses: actions/checkout@v3
@@ -44,7 +43,7 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     needs: release
-    if: needs.release.outputs.new_release_published == 'true'
+    if: needs.release.outputs.version != ''
     environment: pypi
     permissions:
       id-token: write
