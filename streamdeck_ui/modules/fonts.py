@@ -1,4 +1,5 @@
 """Adds support for handling system fonts in Linux"""
+
 import os
 import re
 import subprocess  # nosec B404

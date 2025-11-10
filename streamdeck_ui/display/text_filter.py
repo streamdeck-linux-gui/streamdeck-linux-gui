@@ -111,13 +111,13 @@ class TextFilter(Filter):
                 stroke_width=2,
             )
 
-    def transform(
+    def transform(  # type: ignore[override]
         self,
         get_input: Callable[[], Image.Image],
         get_output: Callable[[int], Image.Image],
         input_changed: bool,
         time: Fraction,
-    ) -> Tuple[Image.Image, int]:
+    ) -> Tuple[Optional[Image.Image], int]:
         """
         The transformation returns the loaded image, ando overwrites whatever came before.
         """
@@ -128,7 +128,8 @@ class TextFilter(Filter):
                 return (image, self.hashcode)
 
             input = get_input()
-            input.paste(self.image, self.image)
+            if self.image:
+                input.paste(self.image, self.image)
             return (input, self.hashcode)
         return (None, self.hashcode)
 
@@ -137,5 +138,5 @@ def is_a_valid_text_filter_font(font) -> bool:
     try:
         TextFilter("", font, 12, "white", "top", "left")
         return True
-    except BaseException:
+    except BaseException:  # noqa: B036
         return False

@@ -1,4 +1,5 @@
 """Defines the Python API for interacting with the StreamDeck Configuration UI"""
+
 import os
 import threading
 from copy import deepcopy

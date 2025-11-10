@@ -19,7 +19,7 @@ class BackgroundColorFilter(Filter):
         self.image = Image.new("RGB", size)
         self.image.paste(self.color, (0, 0, size[0], size[1]))
 
-    def transform(
+    def transform(  # type: ignore[override]
         self,
         get_input: Callable[[], Image.Image],
         get_output: Callable[[int], Image.Image],

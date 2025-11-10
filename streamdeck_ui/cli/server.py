@@ -80,7 +80,7 @@ class CLIStreamDeckServer:
                 cmd = create_command(cfg)
                 cmd.execute(self.api, self.ui)
                 conn.close()
-            except BaseException:
+            except BaseException:  # noqa: B036
                 pass
         try:
             os.remove(path)

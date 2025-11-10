@@ -101,7 +101,7 @@ class DisplayGrid:
             pipeline.add(keypress)
             self.pages[page][button] = pipeline
 
-    def get_image(self, page: int, button: int) -> Image.Image:
+    def get_image(self, page: int, button: int) -> Optional[Image.Image]:
         with self.lock:
             # REVIEW: Consider returning not the last result, but a thumbnail
             # or something that represents the current "static" look of

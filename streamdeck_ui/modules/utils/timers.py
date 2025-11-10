@@ -16,7 +16,7 @@ def debounce(timeout=500):
         def partial_func(*args, **kwargs):
             try:
                 timer.timeout.disconnect()
-            except BaseException:
+            except BaseException:  # noqa: B036
                 pass
             return func(*args, **kwargs)
 
@@ -25,7 +25,7 @@ def debounce(timeout=500):
                 timer.stop()
             try:
                 timer.timeout.disconnect()
-            except BaseException:
+            except BaseException:  # noqa: B036
                 pass
             timer.timeout.connect(partial(partial_func, *args, **kwargs))
             timer.start(timeout)

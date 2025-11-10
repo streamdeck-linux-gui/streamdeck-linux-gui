@@ -1,4 +1,5 @@
 """Defines the QT powered interface for configuring Stream Decks"""
+
 import os
 import shlex
 import signal
@@ -567,9 +568,7 @@ def build_button_state_pages():
 
 
 def build_button_state_form(tab) -> None:
-    global selected_button
-    global main_window
-
+    global selected_button, main_window  # noqa: F824
     if hasattr(tab, "button_form"):
         for widget in tab.findChildren(QWidget):
             widget.hide()
@@ -1360,8 +1359,7 @@ def sigterm_handler(app, cli, signal_value, frame):
 
 
 def start(_exit: bool = False) -> None:
-    global api
-    global main_window
+    global api, main_window  # noqa: F824
     show_ui = True
     if "-h" in sys.argv or "--help" in sys.argv:
         print(f"Usage: {os.path.basename(sys.argv[0])}")

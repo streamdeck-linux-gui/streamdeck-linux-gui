@@ -1,5 +1,5 @@
 from fractions import Fraction
-from typing import Callable, Tuple
+from typing import Callable, Optional, Tuple
 
 from PIL import Image, ImageEnhance
 
@@ -24,13 +24,13 @@ class PulseFilter(Filter):
     def initialize(self, size: Tuple[int, int]):
         pass
 
-    def transform(
+    def transform(  # type: ignore[override]
         self,
         get_input: Callable[[], Image.Image],
         get_output: Callable[[int], Image.Image],
         input_changed: bool,
         time: Fraction,
-    ) -> Tuple[Image.Image, int]:
+    ) -> Tuple[Optional[Image.Image], int]:
         brightness_changed = False
         if time - self.last_time > self.pulse_delay:
             brightness_changed = True
