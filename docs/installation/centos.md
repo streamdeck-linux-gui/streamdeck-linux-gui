@@ -47,7 +47,7 @@ python3.8 -m pip install --upgrade pip
 The following will create a file called `/etc/udev/rules.d/60-streamdeck.rules` with all the necessary udev rules that provides your user with access to USB devices created by Elgato.
 
 ```bash
-sudo wget https://raw.githubusercontent.com/streamdeck-linux-gui/streamdeck-linux-gui/main/udev/60-streamdeck.rules -O /etc/udev/rules.d/60-streamdeck.rules
+sudo wget https://raw.githubusercontent.com/millaguie/streamdeck-gui-ng/main/udev/60-streamdeck.rules -O /etc/udev/rules.d/60-streamdeck.rules
 ```
 
 alternatively to grabbing the file directly from the repository you can use the following command:
@@ -76,14 +76,14 @@ If the software is having problems later to detect the Stream Deck, you can try 
 ### From Pypi with pip
 
 ```bash
-python3.8 -m pip install streamdeck-linux-gui --user
+python3.8 -m pip install streamdeck-gui-ng --user
 ```
 
 ### From Source
 
 Please make sure you have followed the steps below untill the **Install Stream Deck UI section** before continuing.
 
-The steps to install from source can be found [here](source.md)
+The steps to install from source can be found in the [installation from source guide](source.md)
 
 ### Launch the Streamdeck UI
 

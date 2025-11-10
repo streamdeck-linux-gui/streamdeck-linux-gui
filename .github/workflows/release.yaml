@@ -8,9 +8,9 @@ on:
 # 1. Create PyPI account at https://pypi.org/account/register/
 # 2. Go to https://pypi.org/manage/account/publishing/
 # 3. Add pending publisher with these details:
-#    - PyPI Project Name: streamdeck-linux-gui
+#    - PyPI Project Name: streamdeck-gui-ng
 #    - Owner: millaguie
-#    - Repository: streamdeck-linux-gui
+#    - Repository: streamdeck-gui-ng
 #    - Workflow name: release.yaml
 #    - Environment: stable
 # 4. First run will create the project on PyPI automatically

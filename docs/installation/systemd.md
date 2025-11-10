@@ -1,6 +1,6 @@
 # systemd installation
 
-Once you have a working streamdeck-linux-gui installation, you can also configure it to run as a systemd user service. It will automatically run when you login and you can manage it using `systemctl`.
+Once you have a working streamdeck-gui-ng installation, you can also configure it to run as a systemd user service. It will automatically run when you login and you can manage it using `systemctl`.
 
 ## Installation
 
@@ -38,7 +38,7 @@ systemctl --user daemon-reload
 systemctl --user enable streamdeck
 ```
 
-> Tip: Before you continue, make sure you are not already running streamdeck-linux-gui. If it's open, click File > Exit. Only one instance of streamdeck-linux-gui can be running at a time.
+> Tip: Before you continue, make sure you are not already running streamdeck-gui-ng. If it's open, click File > Exit. Only one instance of streamdeck-gui-ng can be running at a time.
 
 You are now all set. To start the service, run the following command:
 
@@ -68,12 +68,12 @@ systemctl --user stop streamdeck
 
 ## Installation in virtual environment
 
-If you have installed streamdeck-linux-gui in a virtual environment, you can still use it in a systemd service.
+If you have installed streamdeck-gui-ng in a virtual environment, you can still use it in a systemd service.
 
 Assume you are in the following directory:
 
 ```bash
-/home/johnsmith/streamdeck-linux-gui
+/home/johnsmith/streamdeck-gui-ng
 ```
 
 You create a virtual environment, called `.venv` and activate it as follows:
@@ -83,18 +83,18 @@ python3 -m venv .venv
 source .venv/bin/activate
 ```
 
-and finally install streamdeck-linux-gui like this:
+and finally install streamdeck-gui-ng like this:
 
 ```bash
-python3 -m pip install streamdeck-linux-gui
+python3 -m pip install streamdeck-gui-ng
 ```
 
-> Your virtual environment is now configured and located in `/home/johnsmith/streamdeck-linux-gui/.venv`
+> Your virtual environment is now configured and located in `/home/johnsmith/streamdeck-gui-ng/.venv`
 
 The steps for installing the systemd service is exactly the same. The only difference is you have to point the `ExecStart=` to the streamdeck executable inside the virtual environment, like so:
 
 ```ini
-ExecStart=/home/johnsmith/streamdeck-linux-gui/.venv/bin/streamdeck -n
+ExecStart=/home/johnsmith/streamdeck-gui-ng/.venv/bin/streamdeck -n
 ```
 
 ## Uninstalling

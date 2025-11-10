@@ -873,12 +873,12 @@ def _reset_build_button_state_form(ui: Ui_ButtonForm):
 
 
 def browse_documentation():
-    url = QUrl("https://streamdeck-linux-gui.github.io/streamdeck-linux-gui/")
+    url = QUrl("https://millaguie.github.io/streamdeck-gui-ng/")
     QDesktopServices.openUrl(url)
 
 
 def browse_github():
-    url = QUrl("https://github.com/streamdeck-linux-gui/streamdeck-linux-gui")
+    url = QUrl("https://github.com/millaguie/streamdeck-gui-ng")
     QDesktopServices.openUrl(url)
 
 
@@ -1371,7 +1371,7 @@ def start(_exit: bool = False) -> None:
         show_ui = False
 
     try:
-        app_version = version("streamdeck-linux-gui")
+        app_version = version("streamdeck-gui-ng")
     except PackageNotFoundError:
         app_version = "devel"
 

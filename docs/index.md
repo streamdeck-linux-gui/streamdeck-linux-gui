@@ -1,4 +1,4 @@
-[![streamdeck_ui - Linux compatible UI for the Elgato Stream Deck](art/logo_large.png)](https://github.com/streamdeck-linux-gui/streamdeck-linux-gui)
+[![streamdeck_ui - Linux compatible UI for the Elgato Stream Deck](art/logo_large.png)](https://github.com/millaguie/streamdeck-gui-ng)
 _________________
 
 ![Streamdeck UI Usage Example](art/example.gif)
@@ -14,11 +14,11 @@ _________________
 
 Once you're up and running, consider installing a [systemd service](installation/systemd.md).
 
-> Use the [troubleshooting](troubleshooting.md) guide or [search](https://github.com/streamdeck-linux-gui/streamdeck-linux-gui/issues?q=is%3Aissue) the issues for guidance. If you cannot find on the issue on this repository please try searching on the original at [streamdeck_ui](https://githib.com/timothycrosley/streamdeck_ui/issues?q=is%Aissue).
+> Use the [troubleshooting](troubleshooting.md) guide or [search](https://github.com/millaguie/streamdeck-gui-ng/issues?q=is%3Aissue) the issues for guidance. If you cannot find on the issue on this repository please try searching on the original at [streamdeck_ui](https://githib.com/timothycrosley/streamdeck_ui/issues?q=is%Aissue).
 
 ### Precooked Scripts
 
-There are scripts for setting up streamdeck_ui on [Debian/Ubuntu](https://github.com/streamdeck-linux-gui/streamdeck-linux-gui/blob/master/scripts/ubuntu_install.sh) and [Fedora](https://github.com/streamdeck-linux-gui/streamdeck-linux-gui/blob/master/scripts/fedora_install.sh).
+There are scripts for setting up streamdeck_ui on [Debian/Ubuntu](https://github.com/millaguie/streamdeck-gui-ng/blob/master/scripts/ubuntu_install.sh) and [Fedora](https://github.com/millaguie/streamdeck-gui-ng/blob/master/scripts/fedora_install.sh).
 
 ## Help
 

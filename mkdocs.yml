@@ -1,5 +1,5 @@
-site_name: streamdeck-linux-gui
-copyright: Copyright &copy; 2023 streamdeck-linux-gui
+site_name: streamdeck-gui-ng
+copyright: Copyright &copy; 2025 streamdeck-gui-ng
 theme:
   icon:
     repo: fontawesome/brands/github
@@ -11,9 +11,9 @@ theme:
   features:
     - navigation.expand
 
-repo_name: streamdeck-linux-gui
-repo_url: https://github.com/streamdeck-linux-gui/streamdeck-linux-gui
-edit_uri: https://github.com/streamdeck-linux-gui/streamdeck-linux-gui/docs
+repo_name: streamdeck-gui-ng
+repo_url: https://github.com/millaguie/streamdeck-gui-ng
+edit_uri: https://github.com/millaguie/streamdeck-gui-ng/docs
 
 markdown_extensions:
   - admonition
@@ -38,7 +38,5 @@ nav:
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/streamdeck-linux-gui/streamdeck-linux-gui
-    - icon: fontawesome/brands/discord
-      link: https://discord.gg/ZCZesnEj4
+      link: https://github.com/millaguie/streamdeck-gui-ng
 

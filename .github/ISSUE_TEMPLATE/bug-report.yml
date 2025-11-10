@@ -9,7 +9,7 @@ body:
           # Bug report
            Thank you for taking the time to report a bug. Please fill in as much of the template below as you're able.
 
-           If you are not entirely sure that this is a bug, please open a [discussion](https://github.com/streamdeck-linux-gui/streamdeck-linux-gui/discussions/new/choose)
+           If you are not entirely sure that this is a bug, please open a [discussion](https://github.com/millaguie/streamdeck-gui-ng/discussions/new/choose)
 
   - type: checkboxes
     id: terms
@@ -20,11 +20,11 @@ body:
           required: true
         - label: I have searched open and closed issues for duplicates
           required: true
-        - label: I have read the [Contribution Guidelines](https://streamdeck-linux-gui.github.io/streamdeck-linux-gui/contributing/contributing-guide/)
+        - label: I have read the [Contribution Guidelines](https://millaguie.github.io/streamdeck-gui-ng/contributing/contributing-guide/)
           required: true
-        - label: I have read the [Code of Conduct](https://streamdeck-linux-gui.github.io/streamdeck-linux-gui/contributing/code-of-conduct/)
+        - label: I have read the [Code of Conduct](https://millaguie.github.io/streamdeck-gui-ng/contributing/code-of-conduct/)
           required: true
-        - label: I have read the [Documentation](https://streamdeck-linux-gui.github.io/streamdeck-linux-gui/)
+        - label: I have read the [Documentation](https://millaguie.github.io/streamdeck-gui-ng/)
           required: true
 
   - type: textarea
