@@ -1,17 +1,21 @@
 name: Test
 
-on: 
+on:
   push:
     paths:
       - 'scripts/*'
       - 'streamdeck_ui/*'
       - 'tests/*'
+      - 'pyproject.toml'
+      - 'poetry.lock'
       - '.github/workflows/test.yaml'
   pull_request:
-    paths: 
+    paths:
       - 'scripts/*'
       - 'streamdeck_ui/*'
       - 'tests/*'
+      - 'pyproject.toml'
+      - 'poetry.lock'
       - '.github/workflows/test.yaml'
   workflow_dispatch:
   workflow_call:
