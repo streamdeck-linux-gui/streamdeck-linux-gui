@@ -1,5 +1,5 @@
 from fractions import Fraction
-from typing import Callable, Tuple
+from typing import Callable, Optional, Tuple
 
 from PIL import Image, ImageEnhance
 
@@ -29,13 +29,13 @@ class KeypressFilter(Filter):
         self.size = size
         pass
 
-    def transform(
+    def transform(  # type: ignore[override]
         self,
         get_input: Callable[[], Image.Image],
         get_output: Callable[[int], Image.Image],
         input_changed: bool,
         time: Fraction,
-    ) -> Tuple[Image.Image, int]:
+    ) -> Tuple[Optional[Image.Image], int]:
         frame_hash = hash((self.filter_hash, self.active))
         if input_changed or self.active != self.last_state:
             self.last_state = self.active
@@ -47,7 +47,7 @@ class KeypressFilter(Filter):
             if self.active:
                 input = get_input()
                 background = self.blank_image.copy()
-                input.thumbnail((self.size[0] - 10, self.size[1] - 10), Image.LANCZOS)
+                input.thumbnail((self.size[0] - 10, self.size[1] - 10), Image.Resampling.LANCZOS)
                 # Reduce the image by 10px
 
                 enhancer = ImageEnhance.Brightness(input)

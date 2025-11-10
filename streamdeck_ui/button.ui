@@ -1188,6 +1188,23 @@
    <item row="11" column="1">
     <widget class="QPlainTextEdit" name="write"/>
    </item>
+   <item row="12" column="0">
+    <widget class="QLabel" name="label_force_refresh">
+     <property name="text">
+      <string>Force Refresh:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="12" column="1">
+    <widget class="QCheckBox" name="force_refresh">
+     <property name="toolTip">
+      <string>Force icon refresh after command execution</string>
+     </property>
+     <property name="text">
+      <string>Refresh icon after command</string>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <resources>

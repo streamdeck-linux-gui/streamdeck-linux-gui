@@ -2,7 +2,7 @@ import itertools
 import os
 from fractions import Fraction
 from io import BytesIO
-from typing import Callable, Tuple
+from typing import Callable, Optional, Tuple
 
 import cairosvg
 import filetype
@@ -24,7 +24,7 @@ class ImageFilter(Filter):
             file_stats = os.stat(file)
             file_size = file_stats.st_size
             mod_time = file_stats.st_mtime
-        except BaseException:
+        except BaseException:  # noqa: B036
             file_size = 0
             mod_time = 0
             print(f"Unable to load icon {self.file} to calculate stats.")
@@ -68,7 +68,7 @@ class ImageFilter(Filter):
                         frame_hash.append(image_hash)
                         break
 
-        except BaseException as icon_error:
+        except BaseException as icon_error:  # noqa: B036
             # FIXME: caller should handle this?
             print(f"Unable to load icon {self.file} with error {icon_error}")
             image = Image.open(WARNING_ICON)
@@ -84,23 +84,23 @@ class ImageFilter(Filter):
             if frame.has_transparency_data and frame.mode != "RGBA":
                 try:
                     frame = frame.convert("RGBA")
-                except BaseException:
+                except BaseException:  # noqa: B036
                     pass
             scale_factor = min(size[0] / frame.size[0], size[1] / frame.size[1])
-            frame = frame.resize([int(v * scale_factor) for v in frame.size], Image.LANCZOS)
+            frame = frame.resize((int(v * scale_factor) for v in frame.size), Image.Resampling.LANCZOS)
             self.frames.append((frame, milliseconds, hashcode))
 
         self.frame_cycle = itertools.cycle(self.frames)
         self.current_frame = next(self.frame_cycle)
         self.frame_time = Fraction()
 
-    def transform(
+    def transform(  # type: ignore[override]
         self,
         get_input: Callable[[], Image.Image],
         get_output: Callable[[int], Image.Image],
         input_changed: bool,
         time: Fraction,
-    ) -> Tuple[Image.Image, int]:
+    ) -> Tuple[Optional[Image.Image], int]:
         """
         The transformation returns the loaded image, ando overwrites whatever came before.
         """

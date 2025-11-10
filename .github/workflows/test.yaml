@@ -22,7 +22,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        python-version: [ "3.8", "3.9", "3.10", "3.11", "3.12" ]
+        python-version: [ "3.11", "3.12", "3.13" ]
     steps:
       #----------------------------------------------
       #       check-out repo and set-up python     
@@ -89,24 +89,8 @@ jobs:
       - name: Add pytest-xvfb
         run: poetry add pytest-xvfb
       #----------------------------------------------
-      #    run test suite and output coverage file   
+      #    run test suite and output coverage file
       #----------------------------------------------
-      - name: Test
+      - name: Test with coverage
         run: bash -c "poetry run pytest tests/ -s --cov=streamdeck_ui/ --cov-report=term-missing ${@-}"
-      #----------------------------------------------
-      #            generate coverage stats              
-      #----------------------------------------------
-      - name: Generate Coverage Report
-        run: poetry run coverage xml
-      #----------------------------------------------
-      #             upload coverage stats              
-      #----------------------------------------------
-      - name: Upload coverage
-        uses: codecov/codecov-action@v4
-        with:
-          file: ./coverage.xml
-          fail_ci_if_error: true
-          token: ${{ secrets.CODECOV_TOKEN }}
-        env: 
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
