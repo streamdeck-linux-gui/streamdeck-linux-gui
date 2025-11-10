@@ -17,6 +17,7 @@ _________________
 I use Stream Deck every day and depend on it for my workflow. When I noticed that streamdeck-linux-gui had entered maintenance mode and was no longer accepting new features, I decided to fork it to ensure continued development and modernization.
 
 This fork aims to:
+
 - Modernize the codebase with support for current Python versions (3.11+)
 - Fix security vulnerabilities and keep dependencies up to date
 - Continue active development and feature improvements
@@ -38,39 +39,39 @@ All credit to the original authors and the many contributors to both previous pr
 
 ## Key Features
 
-* **Linux Compatible**: Enables usage of Stream Deck devices (Original, MK2, Mini and XL) on Linux.
-* **Multi-device**: Enables connecting and configuring multiple Stream Decks on one computer.
-* **Brightness Control**: Supports controlling the brightness from both the configuration UI and buttons on the device itself.
-* **Configurable Button Display**: Icons + Text, Icon Only, and Text Only configurable per button on the Stream Deck.
-* **Multi-Action Support**: Run commands, write text and press hotkey combinations at the press of a single button on your Stream Deck.
-* **Button Pages**: streamdeck_ui supports multiple pages of buttons and dynamically setting up buttons to switch between those pages.
-* **Auto Reconnect**: Automatically and gracefully reconnects, in the case the device is unplugged and replugged in.
-* **Import/Export**: Supports saving and restoring Stream Deck configuration.
-* **Drag/Drop**: Move buttons by simply drag and drop.
-* **Drag/Drop Image**: Configure a button image by dragging it from your file manager onto the button.
-* **Auto Dim**: Configure the Stream Deck to automatically dim the display after a period of time. A button press wakes it up again.
-* **Animated icons**: Use an animated gif to liven things up a bit.
-* **Runs under systemd**: Run automatically in the background as a systemd --user service.
-* **Stream Deck Pedal**: Supports actions when pressing pedals.
+- **Linux Compatible**: Enables usage of Stream Deck devices (Original, MK2, Mini and XL) on Linux.
+- **Multi-device**: Enables connecting and configuring multiple Stream Decks on one computer.
+- **Brightness Control**: Supports controlling the brightness from both the configuration UI and buttons on the device itself.
+- **Configurable Button Display**: Icons + Text, Icon Only, and Text Only configurable per button on the Stream Deck.
+- **Multi-Action Support**: Run commands, write text and press hotkey combinations at the press of a single button on your Stream Deck.
+- **Button Pages**: streamdeck_ui supports multiple pages of buttons and dynamically setting up buttons to switch between those pages.
+- **Auto Reconnect**: Automatically and gracefully reconnects, in the case the device is unplugged and replugged in.
+- **Import/Export**: Supports saving and restoring Stream Deck configuration.
+- **Drag/Drop**: Move buttons by simply drag and drop.
+- **Drag/Drop Image**: Configure a button image by dragging it from your file manager onto the button.
+- **Auto Dim**: Configure the Stream Deck to automatically dim the display after a period of time. A button press wakes it up again.
+- **Animated icons**: Use an animated gif to liven things up a bit.
+- **Runs under systemd**: Run automatically in the background as a systemd --user service.
+- **Stream Deck Pedal**: Supports actions when pressing pedals.
 
 # Documentation
 
 Communication with the Stream Deck is powered by the [Python Elgato Stream Deck Library](https://github.com/abcminiuser/python-elgato-streamdeck#python-elgato-stream-deck-library).
 
-Documentation is available at [https://streamdeck-linux-gui.github.io/streamdeck-linux-gui/](https://streamdeck-linux-gui.github.io/streamdeck-linux-gui/)
+Documentation is available at [https://millaguie.github.io/streamdeck-gui-ng/](https://millaguie.github.io/streamdeck-gui-ng/)
 
 ## Installation Guides
 
-* [Arch/Manjaro](docs/installation/arch.md)
-* [CentOS](docs/installation/centos.md)
-* [Fedora](docs/installation/fedora.md)
-* [NixOS](docs/installation/nixos.md)
-* [openSUSE](docs/installation/opensuse.md)
-* [Ubuntu/Mint](docs/installation/ubuntu.md)
+- [Arch/Manjaro](docs/installation/arch.md)
+- [CentOS](docs/installation/centos.md)
+- [Fedora](docs/installation/fedora.md)
+- [NixOS](docs/installation/nixos.md)
+- [openSUSE](docs/installation/opensuse.md)
+- [Ubuntu/Mint](docs/installation/ubuntu.md)
 
 Once you're up and running, consider installing a [systemd service](docs/installation/systemd.md).
 
-> Use the [troubleshooting](docs/troubleshooting.md) guide or [search](https://github.com/streamdeck-linux-gui/streamdeck-linux-gui/issues?q=is%3Aissue) the issues for guidance. If you cannot find on the issue on this repository please try searching on the original at [streamdeck_ui](https://github.com/timothycrosley/streamdeck-ui/issues?q=is%3Aissue++).
+> Use the [troubleshooting](docs/troubleshooting.md) guide or [search](https://github.com/millaguie/streamdeck-gui-ng/issues?q=is%3Aissue) the issues for guidance. If you cannot find on the issue on this repository please try searching on the original at [streamdeck_ui](https://github.com/timothycrosley/streamdeck-ui/issues?q=is%3Aissue++).
 
 ### Precooked Scripts
 
