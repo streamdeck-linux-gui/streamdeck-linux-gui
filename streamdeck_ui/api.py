@@ -535,6 +535,16 @@ class StreamDeckServer:
         """Returns the page switch set for the specified button. 0 implies no page switch."""
         return self._button_state(serial_number, page, button).switch_page
 
+    def set_button_temp_switch_page(self, serial_number: str, page: int, button: int, temp_switch_page: int) -> None:
+        """Sets the temporary page switch associated with the button"""
+        if self.get_button_temp_switch_page(serial_number, page, button) != temp_switch_page:
+            self._button_state(serial_number, page, button).temp_switch_page = temp_switch_page
+            self._save_state()
+
+    def get_button_temp_switch_page(self, serial_number: str, page: int, button: int) -> int:
+        """Returns the temporary page switch set for the specified button. 0 implies no temporary page switch."""
+        return self._button_state(serial_number, page, button).temp_switch_page
+
     def set_button_keys(self, serial_number: str, page: int, button: int, keys: str) -> None:
         """Sets the keys associated with the button"""
         if self.get_button_keys(serial_number, page, button) != keys:
@@ -645,6 +655,30 @@ class StreamDeckServer:
         display_handler.set_page(page)
         # Wait for at least one cycle
         display_handler.synchronize()
+
+    def set_temp_page(self, serial_number: str, page: int) -> None:
+        """Sets a temporary page, storing the current page to return to on release"""
+        if page not in self.get_pages(serial_number):
+            return
+        # Store current page as previous page
+        self.state[serial_number].previous_page = self.get_page(serial_number)
+        # Switch to temporary page
+        self.state[serial_number].page = page
+
+        display_handler = self.display_handlers[serial_number]
+        display_handler.set_page(page)
+        display_handler.synchronize()
+
+    def restore_previous_page(self, serial_number: str) -> None:
+        """Restores the previous page after temporary page switch"""
+        previous_page = self.state[serial_number].previous_page
+        if previous_page in self.get_pages(serial_number):
+            self.state[serial_number].page = previous_page
+            self.state[serial_number].previous_page = 0
+
+            display_handler = self.display_handlers[serial_number]
+            display_handler.set_page(previous_page)
+            display_handler.synchronize()
 
     def _update_streamdeck_filters(self, serial_number: str):
         """Updates the filters for all the StreamDeck buttons.

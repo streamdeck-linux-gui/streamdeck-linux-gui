@@ -179,7 +179,7 @@ class DraggableButton(QToolButton):
 
 
 def handle_keypress(ui, deck_id: str, key: int, state: bool) -> None:
-    # TODO: Handle both key down and key up events in future.
+    # Handle button press (state=True) and release (state=False) events
     if state:
         if api.reset_dimmer(deck_id):
             return
@@ -190,6 +190,7 @@ def handle_keypress(ui, deck_id: str, key: int, state: bool) -> None:
         write = api.get_button_write(deck_id, page, key)
         brightness_change = api.get_button_change_brightness(deck_id, page, key)
         switch_page = api.get_button_switch_page(deck_id, page, key)
+        temp_switch_page = api.get_button_temp_switch_page(deck_id, page, key)
         switch_state = api.get_button_switch_state(deck_id, page, key)
 
         if command:
@@ -225,7 +226,20 @@ def handle_keypress(ui, deck_id: str, key: int, state: bool) -> None:
                 print(f"Could not change brightness: {error}")
                 show_tray_warning_message("Unable to change brightness.")
 
-        if switch_page:
+        if temp_switch_page:
+            temp_switch_page_index = temp_switch_page - 1
+            if temp_switch_page_index in api.get_pages(deck_id):
+                api.set_temp_page(deck_id, temp_switch_page_index)
+                if _deck() == deck_id:
+                    for page in range(ui.pages.count()):
+                        if ui.pages.widget(page).property("page_id") == temp_switch_page_index:
+                            ui.pages.setCurrentIndex(page)
+                            break
+            else:
+                show_tray_warning_message(
+                    f"Unable to perform temporary switch page, the page {temp_switch_page} does not exist in your current settings"  # noqa: E713
+                )
+        elif switch_page:
             switch_page_index = switch_page - 1
             if switch_page_index in api.get_pages(deck_id):
                 api.set_page(deck_id, switch_page_index)
@@ -254,6 +268,21 @@ def handle_keypress(ui, deck_id: str, key: int, state: bool) -> None:
                 show_tray_warning_message(
                     f"Unable to perform switch button state, the button state {switch_state} does not exist in your current settings"  # noqa: E713
                 )
+    else:
+        # Handle button release (state=False)
+        page = api.get_page(deck_id)
+        temp_switch_page = api.get_button_temp_switch_page(deck_id, page, key)
+
+        # If this button had a temporary page switch, restore the previous page
+        if temp_switch_page:
+            api.restore_previous_page(deck_id)
+            if _deck() == deck_id:
+                # Update UI to show the previous page
+                previous_page = api.get_page(deck_id)
+                for page_idx in range(ui.pages.count()):
+                    if ui.pages.widget(page_idx).property("page_id") == previous_page:
+                        ui.pages.setCurrentIndex(page_idx)
+                        break
 
 
 def _deck() -> Optional[str]:
@@ -613,6 +642,7 @@ def build_button_state_form(tab) -> None:
     tab_ui.background_color.setPalette(QPalette(button_state.background_color or DEFAULT_BACKGROUND_COLOR))
     tab_ui.change_brightness.setValue(button_state.brightness_change)
     tab_ui.switch_page.setValue(button_state.switch_page)
+    tab_ui.temp_switch_page.setValue(button_state.temp_switch_page)
     tab_ui.switch_state.setValue(button_state.switch_state)
     tab_ui.force_refresh.setChecked(button_state.force_refresh)
 
@@ -637,6 +667,7 @@ def build_button_state_form(tab) -> None:
     tab_ui.text_color.clicked.connect(partial(show_button_state_font_color_dialog, tab_ui))
     tab_ui.background_color.clicked.connect(partial(show_button_state_background_color_dialog, tab_ui))
     tab_ui.switch_page.valueChanged.connect(partial(update_button_attribute, "switch_page"))
+    tab_ui.temp_switch_page.valueChanged.connect(partial(update_button_attribute, "temp_switch_page"))
     tab_ui.switch_state.valueChanged.connect(partial(update_button_attribute, "switch_state"))
     tab_ui.force_refresh.stateChanged.connect(lambda state: update_button_attribute("force_refresh", bool(state)))
     tab_ui.add_image.clicked.connect(partial(show_button_state_image_dialog))
@@ -655,6 +686,7 @@ def enable_button_configuration(ui: Ui_ButtonForm, enabled: bool):
     ui.write.setEnabled(enabled)
     ui.change_brightness.setEnabled(enabled)
     ui.switch_page.setEnabled(enabled)
+    ui.temp_switch_page.setEnabled(enabled)
     ui.force_refresh.setEnabled(enabled)
     ui.switch_state.setEnabled(enabled)
     ui.add_image.setEnabled(enabled)

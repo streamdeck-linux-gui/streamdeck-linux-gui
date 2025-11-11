@@ -16,6 +16,8 @@ class ButtonState:
     """Command to execute, actionable by the button"""
     switch_page: int = 0
     """Page to switch, actionable by the button"""
+    temp_switch_page: int = 0
+    """Temporary page to switch while button is pressed, returns to previous page on release"""
     switch_state: int = 0
     """Button state to switch, actionable by the button"""
     brightness_change: int = 0
@@ -58,6 +60,8 @@ class DeckState:
     """Rotation of the StreamDeck display"""
     page: int = 0
     """Current displayed page in the StreamDeck"""
+    previous_page: int = 0
+    """Previous page for temporary page switching"""
 
 
 @dataclass

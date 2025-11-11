@@ -1151,51 +1151,71 @@
     </widget>
    </item>
    <item row="9" column="0">
+    <widget class="QLabel" name="label_temp_switch_page">
+     <property name="text">
+      <string>Temp Switch Page:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="1">
+    <widget class="QSpinBox" name="temp_switch_page">
+     <property name="minimum">
+      <number>0</number>
+     </property>
+     <property name="maximum">
+      <number>999999999</number>
+     </property>
+     <property name="value">
+      <number>0</number>
+     </property>
+    </widget>
+   </item>
+   <item row="10" column="0">
     <widget class="QLabel" name="label_10">
      <property name="text">
       <string>Switch state</string>
      </property>
     </widget>
    </item>
-   <item row="9" column="1">
+   <item row="10" column="1">
     <widget class="QSpinBox" name="switch_state">
      <property name="maximum">
       <number>999999999</number>
      </property>
     </widget>
    </item>
-   <item row="10" column="0">
+   <item row="11" column="0">
     <widget class="QLabel" name="label_7">
      <property name="text">
       <string>Brightness +/-:</string>
      </property>
     </widget>
    </item>
-   <item row="10" column="1">
+   <item row="11" column="1">
     <widget class="QSpinBox" name="change_brightness">
      <property name="minimum">
       <number>-99</number>
      </property>
     </widget>
    </item>
-   <item row="11" column="0">
+   <item row="12" column="0">
     <widget class="QLabel" name="label_6">
      <property name="text">
       <string>Write Text:</string>
      </property>
     </widget>
    </item>
-   <item row="11" column="1">
+   <item row="12" column="1">
     <widget class="QPlainTextEdit" name="write"/>
    </item>
-   <item row="12" column="0">
+   <item row="13" column="0">
     <widget class="QLabel" name="label_force_refresh">
      <property name="text">
       <string>Force Refresh:</string>
      </property>
     </widget>
    </item>
-   <item row="12" column="1">
+   <item row="13" column="1">
     <widget class="QCheckBox" name="force_refresh">
      <property name="toolTip">
       <string>Force icon refresh after command execution</string>
