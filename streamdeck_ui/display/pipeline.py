@@ -1,5 +1,5 @@
 from fractions import Fraction
-from typing import Dict, List, Tuple
+from typing import Dict, List, Optional, Tuple
 
 from PIL.Image import Image
 
@@ -8,20 +8,20 @@ from streamdeck_ui.display.filter import Filter
 
 class Pipeline:
     def __init__(self) -> None:
-        self.filters: List[Tuple[Filter, Image]] = []
+        self.filters: List[Tuple[Filter, Optional[Image]]] = []
         self.first_run = True
         self.output_cache: Dict[int, Image] = {}
 
-    def add(self, filter: Filter) -> None:
-        self.filters.append((filter, None))
+    def add(self, pipeline_filter: Filter) -> None:
+        self.filters.append((pipeline_filter, None))
         self.first_run = True
 
-    def execute(self, time: Fraction) -> Tuple[Image, int]:
+    def execute(self, time: Fraction) -> Tuple[Optional[Image], int]:
         """
         Executes all the filter in the pipeline and returns the final image, or None if the pipeline did not yield any changes.
         """
 
-        image: Image = None
+        image: Optional[Image] = None
         is_modified = False
         pipeline_hash = 0
 
@@ -32,9 +32,20 @@ class Pipeline:
         # like using functools.partial, but this needs to be investigated.
 
         for i, (current_filter, cached) in enumerate(self.filters):
+
+            def _get_input(current_image=image, cached_image=cached) -> Image:
+                source = current_image if current_image is not None else cached_image
+                if source is None:
+                    # Pipelines always start with EmptyFilter, but keep this defensive.
+                    raise ValueError("No source image available in pipeline")
+                return source.copy()
+
+            def _get_output(output_hash: int, current_pipeline_hash=pipeline_hash) -> Optional[Image]:
+                return self.output_cache.get(hash((output_hash, current_pipeline_hash)))
+
             (image, hashcode) = current_filter.transform(
-                lambda input_image=image: input_image.copy(),  # type: ignore [misc]
-                lambda output_hash, pipeline_hash=pipeline_hash: self.output_cache.get(hash((output_hash, pipeline_hash)), None),  # type: ignore [misc]
+                _get_input,
+                _get_output,
                 is_modified | self.first_run,
                 time,
             )
@@ -52,7 +63,7 @@ class Pipeline:
                 is_modified = True
 
             # Store this image with pipeline hash if we haven't seen it.
-            if pipeline_hash not in self.output_cache:
+            if pipeline_hash not in self.output_cache and image is not None:
                 self.output_cache[pipeline_hash] = image
 
         if self.first_run:
@@ -62,7 +73,7 @@ class Pipeline:
 
         return (image if is_modified else None, pipeline_hash)
 
-    def last_result(self) -> Image:
+    def last_result(self) -> Optional[Image]:
         """
         Returns the last known output of the pipeline
         """

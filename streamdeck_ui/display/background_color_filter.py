@@ -7,7 +7,7 @@ from streamdeck_ui.display.filter import Filter
 
 
 class BackgroundColorFilter(Filter):
-    image: Image
+    image: Optional[Image.Image]
 
     def __init__(self, color: str):
         super(BackgroundColorFilter, self).__init__()
@@ -22,7 +22,7 @@ class BackgroundColorFilter(Filter):
     def transform(
         self,
         get_input: Callable[[], Image.Image],
-        get_output: Callable[[int], Image.Image],
+        get_output: Callable[[int], Optional[Image.Image]],
         input_changed: bool,
         time: Fraction,
     ) -> Tuple[Optional[Image.Image], int]:

@@ -1,5 +1,5 @@
 from fractions import Fraction
-from typing import Callable, Tuple
+from typing import Callable, Optional, Tuple
 
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
@@ -8,10 +8,10 @@ from streamdeck_ui.display.filter import Filter
 
 
 class TextFilter(Filter):
-    font_blur: ImageFilter.Kernel = None
+    font_blur: Optional[ImageFilter.Kernel] = None
     # Static instance - no need to create one per Filter instance
 
-    image: Image
+    image: Optional[Image.Image]
 
     def __init__(
         self, text: str, font: str, font_size: int, font_color: str, vertical_align: str, horizontal_align: str
@@ -61,6 +61,8 @@ class TextFilter(Filter):
         _, _, _, label_h = foreground_draw.textbbox(
             (0, 0), "\n".join(["lLpgyL|"] * len(text_split_newline)), font=self.true_font
         )
+        label_w = int(label_w)
+        label_h = int(label_h)
 
         gap = (size[1] - 5 * label_h) // 4
 
@@ -114,10 +116,10 @@ class TextFilter(Filter):
     def transform(
         self,
         get_input: Callable[[], Image.Image],
-        get_output: Callable[[int], Image.Image],
+        get_output: Callable[[int], Optional[Image.Image]],
         input_changed: bool,
         time: Fraction,
-    ) -> Tuple[Image.Image, int]:
+    ) -> Tuple[Optional[Image.Image], int]:
         """
         The transformation returns the loaded image, ando overwrites whatever came before.
         """
@@ -126,6 +128,9 @@ class TextFilter(Filter):
             image = get_output(self.hashcode)
             if image:
                 return (image, self.hashcode)
+
+            if self.image is None:
+                return (None, self.hashcode)
 
             input = get_input()
             input.paste(self.image, self.image)
@@ -137,5 +142,5 @@ def is_a_valid_text_filter_font(font) -> bool:
     try:
         TextFilter("", font, 12, "white", "top", "left")
         return True
-    except BaseException:
+    except Exception:
         return False

@@ -1,5 +1,5 @@
 from fractions import Fraction
-from typing import Callable, Tuple
+from typing import Callable, Optional, Tuple
 
 from PIL import Image
 
@@ -28,10 +28,10 @@ class EmptyFilter(filter.Filter):
     def transform(
         self,
         get_input: Callable[[], Image.Image],
-        get_output: Callable[[int], Image.Image],
+        get_output: Callable[[int], Optional[Image.Image]],
         input_changed: bool,
         time: Fraction,
-    ) -> Tuple[Image.Image, int]:
+    ) -> Tuple[Optional[Image.Image], int]:
         """
         Returns an empty Image object.
 

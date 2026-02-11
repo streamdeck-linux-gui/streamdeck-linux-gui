@@ -71,7 +71,6 @@ class CLIStreamDeckServer:
             self.sock.settimeout(CLIStreamDeckServer.SOCKET_CONNECTION_TIMEOUT_SECOND)
         except OSError:
             print("warning: for some reason, unable to utilize CLI commands.")
-            pass
 
         while not self.quit.is_set():
             try:
@@ -80,8 +79,10 @@ class CLIStreamDeckServer:
                 cmd = create_command(cfg)
                 cmd.execute(self.api, self.ui)
                 conn.close()
-            except BaseException:
-                pass
+            except socket.timeout:
+                continue
+            except Exception as cli_error:
+                print(f"warning: unable to execute CLI command: {cli_error}")
         try:
             os.remove(path)
         except OSError:

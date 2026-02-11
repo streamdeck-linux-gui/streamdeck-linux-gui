@@ -1,4 +1,5 @@
 """Defines shared configuration variables for the streamdeck_ui project"""
+
 import json
 import os
 from typing import Dict

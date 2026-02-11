@@ -30,7 +30,7 @@ class Semaphore:
 
         # remove semaphore file
         os.remove(self.semaphore_file)
-        
+
         # close the file descriptor
         os.close(self.semaphore_fd)
 

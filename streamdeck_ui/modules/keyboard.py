@@ -394,7 +394,6 @@ def cleanup_keyboard_thread():
 
 
 def keyboard_press_keys(keys: str):
-    global _PRESS_KEY_THREADS
     thread = KeyboardThread(keys)
     thread.finished.connect(cleanup_keyboard_thread)
     _PRESS_KEY_THREADS.append(thread)
