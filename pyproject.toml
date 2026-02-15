@@ -12,16 +12,10 @@ packages = [
 
 
 [tool.poetry.dependencies]
-python = ">=3.8,<3.15"
+python = ">=3.10,<3.15"
 streamdeck = "^0.9.5"
-pillow = [
-  {version = ">=10.3.0,<11.0.0", python = ">=3.8,<3.10"},
-  {version = "^12.1.0", python = ">=3.10,<3.15"}
-]
-pyside6 = [
-  {version = "6.6.2", python = ">=3.8,<3.9"},
-  {version = "^6.10.1", python = ">=3.9,<3.15"}
-]
+pillow = "^12.1.0"
+pyside6 = "^6.10.1"
 CairoSVG = "^2.5.2"
 filetype = "^1.0.10"
 importlib-metadata = "^6.8.0"
@@ -40,20 +34,17 @@ pytest-qt = "^4.2.0"
 
 [tool.poetry.group.lint.dependencies]
 black = "^24.3.0"
-flake8-bugbear = [
-  {version = "23.3.12", python = ">=3.8,<3.10"},
-  {version = ">=24.0.0,<26.0.0", python = ">=3.10,<3.15"}
-]
+flake8-bugbear = ">=24.0.0,<26.0.0"
 mypy = "^1.6.1"
 pep8-naming = "^0.13.3"
 vulture = "^2.10"
 bandit = [
-  {version = "^1.7.7", python = ">=3.8,<3.14"},
+  {version = "^1.7.7", python = ">=3.10,<3.14"},
   {version = ">=1.8.0,<2.0.0", python = ">=3.14,<3.15"}
 ]
 safety = "^2.3.5"
-marshmallow = {version = ">=3.26.2,<4.0.0", python = ">=3.9,<3.15"}
-setuptools = {version = ">=78.1.1,<81.0.0", python = ">=3.9,<3.15"}
+marshmallow = {version = ">=3.26.2,<4.0.0", python = ">=3.10,<3.15"}
+setuptools = {version = ">=78.1.1,<81.0.0", python = ">=3.10,<3.15"}
 isort = "^5.12.0"
 
 [tool.poetry.scripts]
@@ -71,7 +62,7 @@ line-length = 120
 profile = "hug"
 
 [tool.mypy]
-python_version = "3.8"
+python_version = "3.10"
 
 [tool.portray]
 output_dir = "site"
