@@ -16,6 +16,7 @@ Base System Requirements:
 
 - Python 3.10+
 - Poetry
+- Node.js + npm (for local Markdown linting with `npx`)
 - Bash or a bash-compatible shell (should be auto-installed on Linux/Mac)
 
 Once you have verified that your system matches the base requirements, you can start getting the project working by following these steps:
@@ -39,7 +40,8 @@ Congrats! You're now ready to make a contribution! Use the following as a guide 
 3. Do your magic here. You can use `poetry run streamdeck` to run the application while developing.
 4. Try to include tests for your code whenever possible.
 5. Ensure your code matches the [HOPE-8 Coding Standard](https://github.com/hugapi/HOPE/blob/master/all/HOPE-8--Style-Guide-for-Hug-Code.md#hope-8----style-guide-for-hug-code) used by the project.
-    - You can use the `lint.sh` script existing in the scripts directory: `bash scripts/lint.sh`. This will let you know if everything is okay before you commit it.
+    - You can use the `lint.sh` script in the `scripts` directory: `bash scripts/lint.sh`.
+    - The lint script now includes local Markdown linting (`markdownlint-cli2`) with the same `.markdownlint.yml` config used in CI.
 6. Ensure all tests pass. You can use the `test.sh` script inside the scripts directory: `bash scripts/test.sh`.
 7. When committing your changes, please make sure you follow the [Angular commit message format](https://gist.github.com/brianclements/841ea7bffdb01346392c).
 8. Submit a pull request to the main project repository via GitHub.
