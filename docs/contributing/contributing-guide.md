@@ -14,7 +14,7 @@ Account Requirements:
 
 Base System Requirements:
 
-- Python 3.8+
+- Python 3.10+
 - Poetry
 - Bash or a bash-compatible shell (should be auto-installed on Linux/Mac)
 

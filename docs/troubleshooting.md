@@ -1,12 +1,12 @@
 # Troubleshooting
 
-> Note you may need to use `python`, `python3` or `python3.8` in the commands shown below, depending on your distribution. The examples simply use `python` for simplicity's sake.
+> Note you may need to use `python`, `python3` or `python3.10` in the commands shown below, depending on your distribution. The examples simply use `python` for simplicity's sake.
 
 ## Basics
 
 There are **four** important things you need to get a working system.
 
-1. You need a working Python 3.8 or higher with pip installed.
+1. You need a working Python 3.10 or higher with pip installed.
 2. You need to install hidapi.
 3. You need a udev rule that allows access to your Stream Deck.
 4. You need to install streamdeck-linux-gui and all its dependencies with pip.

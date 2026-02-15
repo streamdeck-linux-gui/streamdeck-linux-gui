@@ -20,16 +20,16 @@ sudo rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch
 
 > and try the hdapi install again.
 
-## Install python 3.8
+## Install python 3.10
 
-CentOS 7/8 ships with Python 3.6. We need to build version 3.8 (or later if you prefer).
+CentOS 7/8 ships with Python 3.6. We need to build version 3.10 (or later if you prefer).
 
 ```bash
 sudo yum -y groupinstall "Development Tools"
 sudo yum -y install openssl-devel bzip2-devel libffi-devel
-wget https://www.python.org/ftp/python/3.8.9/Python-3.8.9.tgz
-tar xvf Python-3.8.9.tgz
-cd Python-3.8.9/
+wget https://www.python.org/ftp/python/3.10.19/Python-3.10.19.tgz
+tar xvf Python-3.10.19.tgz
+cd Python-3.10.19/
 ./configure --enable-optimizations
 sudo make altinstall
 ```
@@ -39,7 +39,7 @@ sudo make altinstall
 You need to upgrade pip, using pip. In my experience, old versions of pip may fail to properly install some of the required Python dependencies.
 
 ```bash
-python3.8 -m pip install --upgrade pip
+python3.10 -m pip install --upgrade pip
 ```
 
 ### Configure access to Elgato devices (udev rules)
@@ -76,7 +76,7 @@ If the software is having problems later to detect the Stream Deck, you can try 
 ### From Pypi with pip
 
 ```bash
-python3.8 -m pip install streamdeck-linux-gui --user
+python3.10 -m pip install streamdeck-linux-gui --user
 ```
 
 ### From Source

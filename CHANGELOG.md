@@ -11,7 +11,7 @@ To upgrade to the latest version, run:
 python -m pip install streamdeck-ui --user --upgrade
 ```
 
-> Note you may have to use `python3`, `python3.8` etc. depending on your operating system and Python version.
+> Note you may have to use `python3`, `python3.10` etc. depending on your operating system and Python version.
 
 # Change log
 

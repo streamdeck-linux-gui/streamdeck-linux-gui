@@ -37,7 +37,7 @@ Die Kommunikation mit dem Streamdeck erfolgt durch die [Python Elgato Stream Dec
 
 ## Linux Schnellstart
 
-**Python 3.8** wird benötigt. Sie können die Version, die sie installiert haben, überprüfen mit `python3 --version`.
+**Python 3.10** wird benötigt. Sie können die Version, die sie installiert haben, überprüfen mit `python3 --version`.
 
 ### Vorgefertigte Skripte
 
