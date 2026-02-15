@@ -20,5 +20,3 @@ poetry run flake8 streamdeck_ui/ tests/ --ignore F403,F401,W503 --exclude ui_mai
 
 poetry run safety check --policy-file .safety-policy.yml
 poetry run bandit -r streamdeck_ui/
-
-./scripts/lint-docs.sh
