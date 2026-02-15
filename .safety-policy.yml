@@ -5,31 +5,4 @@ security:
   ignore-cvss-severity-below: 0
   ignore-cvss-unknown-severity: false
   continue-on-vulnerability-error: false
-  ignore-vulnerabilities:
-    77744:
-      reason: "Python 3.8 support blocks upgrade to urllib3>=2.5.0; remove when 3.8 support is dropped."
-      expires: "2026-06-30"
-    82331:
-      reason: "Python 3.8 support blocks upgrade to urllib3>=2.6.0; remove when 3.8 support is dropped."
-      expires: "2026-06-30"
-    84031:
-      reason: "Python 3.8 support blocks upgrade to urllib3>=2.6.3; remove when 3.8 support is dropped."
-      expires: "2026-06-30"
-    77745:
-      reason: "Python 3.8 support blocks upgrade to urllib3>=2.5.0; remove when 3.8 support is dropped."
-      expires: "2026-06-30"
-    82332:
-      reason: "Python 3.8 support blocks upgrade to urllib3>=2.6.0; remove when 3.8 support is dropped."
-      expires: "2026-06-30"
-    76752:
-      reason: "Python 3.8 support blocks upgrade to setuptools>=78.1.1; remove when 3.8 support is dropped."
-      expires: "2026-06-30"
-    82918:
-      reason: "Python 3.8 support blocks upgrade to pymdown-extensions>=10.16.1; remove when 3.8 support is dropped."
-      expires: "2026-06-30"
-    79883:
-      reason: "Python 3.8 support blocks upgrade to pip>=25.2; remove when 3.8 support is dropped."
-      expires: "2026-06-30"
-    83159:
-      reason: "Python 3.8 support blocks upgrade to marshmallow>=3.26.2; remove when 3.8 support is dropped."
-      expires: "2026-06-30"
+  ignore-vulnerabilities: {}
