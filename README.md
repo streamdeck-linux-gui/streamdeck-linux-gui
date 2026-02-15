@@ -18,7 +18,7 @@ This project is a fork and drop-in replacement for [streamdeck_ui](https://githu
 
 > [!WARNING]  
 > THIS PROJECT IS IN MAINTENANCE MODE ONLY!  
-> Pull requests for critical bug fixes, dependency updates or documentation are accepted to keep the application functional, however, no new features will be accepted. 
+> Pull requests for critical bug fixes, dependency updates or documentation are accepted to keep the application functional, however, no new features will be accepted.
 > For a more feature-complete project, it is recommended to use [streamcontroller](https://github.com/StreamController/StreamController).
 > You can read more about this here: [The Sunset path: Moving to StreamController](https://github.com/streamdeck-linux-gui/streamdeck-linux-gui/discussions/203)
 

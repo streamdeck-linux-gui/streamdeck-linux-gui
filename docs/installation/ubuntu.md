@@ -46,6 +46,7 @@ sudo udevadm trigger
 ```
 
 If the software is having problems later to detect the Stream Deck, you can try unplugging/plugging it back in.
+
 ## Install Stream Deck UI
 
 ### From Pypi with pipx

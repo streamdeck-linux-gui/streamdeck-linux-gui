@@ -7,7 +7,7 @@ This has been tested on:
 * Arch with Gnome (Per every release, thanks to dhtseany)
 * Arch with Sway ans wayland
 
-## AUR 
+## AUR
 
 On Arch Linux, its recommended installing from AUR repositorues. there are two AUR packages available:
 
@@ -75,10 +75,9 @@ pipx install  streamdeck-linux-gui
 
 #### From Source
 
-Please make sure you have followed [Install dependencies](#install-dependencies) and [Configure access to Elgato devices](#configure-access-to-elgato-devices) before continuing.
+Please make sure you have followed [Install dependencies](#install-dependencies) and [Configure access to Elgato devices](#configure-access-to-elgato-devices-udev-rules) before continuing.
 
 The steps to install from source can be found [here](source.md)
-
 
 ## Launch the Streamdeck UI
 
