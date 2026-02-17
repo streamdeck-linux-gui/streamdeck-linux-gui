@@ -17,6 +17,7 @@ jobs:
         name: Release
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          custom-arguments: '--commit-analyzer-opt patch_release_rules=fix,ref,build'
 
   publish:
     runs-on: ubuntu-latest
