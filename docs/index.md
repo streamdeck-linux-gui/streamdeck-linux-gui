@@ -69,10 +69,10 @@ bash -c "wmctrl -a firefox  && xdotool key alt+1"
 
 Simulates key press combinations (hot keys). The basic format is a group of keys, separated by a `+` sign to press simultaneously. Separate key combination groups with a `,` if additional key combinations are needed. For example, `alt+F4,f` means press and hold `alt`, followed by `F4` and then release both. Next, press and release `f`.
 
-You can also specify a KeyCode in hex format, for example, `0x74` is the KeyCode for `t`. This is also sometimes called the keysym value.
+Use key names directly (for example, `t`, `capslock`, or `numpad_divide`).
+Hex keysyms from tools like `xev` (for example, `0x74`, `0xffe5`, `0xffaf`) are not supported by the `evdev` backend.
 
-> You can use the `xev` tool and capture the key you are looking for.
-> In the output, look for the **keysym hex value**, for example `(keysym 0x74, t)`
+> You can use the `evtest` tool to inspect key behavior on your system and map it to an `evdev` key name.
 >
 > Use `comma` or `plus` if you want to actually *output* `,` or `+` respectively.
 >
@@ -90,11 +90,11 @@ You can also specify a KeyCode in hex format, for example, `0x74` is the KeyCode
 * `1,delay,delay,2,delay,delay,3` — Type 123 with a 1-second delay between key presses (using default delay).
 * `1,delay 1,2,delay 1,3` — Type 123 with a 1-second delay between key presses (using custom delay).
 * `e,c,h,o,space,",t,e,s,t,",enter` — Type `echo "test"` and press enter.
-* `ctrl+alt+0x74` — Opens a new terminal window. `0x74` is the KeyCode for `t`. TIP: If the character doesn't work, try using the KeyCode instead.
-* `0xffe5` — Toggle Caps Lock.
-* `0xffaf` — The `/` key on the numeric key pad.
+* `ctrl+alt+t` — Opens a new terminal window in many desktop environments.
+* `capslock` — Toggle Caps Lock.
+* `numpad_divide` — The `/` key on the numeric key pad.
 
-The standard list of keys can be found [at the source](https://pynput.readthedocs.io/en/latest/_modules/pynput/keyboard/_base.html#Key).
+The supported key names come from `evdev` key names plus aliases declared in `streamdeck_ui/modules/keyboard.py`.
 
 The `super` key (Windows key) can be problematic on some versions of Linux. Instead of using the Key Press feature, you could use the Command feature as follows. In this example, it will press `Super` and `4`, which launches application number 4 in your favorites (Ubuntu).
 
