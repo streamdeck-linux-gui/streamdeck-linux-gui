@@ -25,6 +25,27 @@ def test_set_page():
     api.set_page.assert_called_once_with(deck_id, 0)
 
 
+def test_set_page_does_not_switch_selected_ui_page_for_other_deck():
+    cfg = {
+        "command": "set_page",
+        "deck": 0,
+        "page": 1,
+    }
+    cmd = commands.create_command(cfg)
+
+    api = MagicMock()
+    api.get_page.return_value = 0
+
+    ui = MagicMock()
+    ui.device_list.currentIndex.return_value = 1
+    ui.device_list.itemData.side_effect = lambda index: {0: "deck-0", 1: "deck-1"}.get(index)
+
+    cmd.execute(api, ui)
+
+    api.set_page.assert_called_once_with("deck-0", 1)
+    ui.pages.setCurrentIndex.assert_not_called()
+
+
 def test_set_brightness():
     cfg = {
         "command": "set_brightness",
