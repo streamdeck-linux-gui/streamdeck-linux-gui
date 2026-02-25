@@ -13,7 +13,8 @@ There are **four** important things you need to get a working system.
 
 ## Key Press and Write Text do not work
 
-  Streamdeck uses [pynput](https://github.com/moses-palmer/pynput) for simulating **Key Presses**, but it was not designed for [Wayland](https://github.com/moses-palmer/pynput/issues/189). Generally your results will be good when using X, but it seems like most new releases of Linux are switching away from it.
+  Streamdeck uses [evdev](https://python-evdev.readthedocs.io/) with `uinput` for simulating **Key Presses** and **Write Text**.
+  If these actions do not work, verify that `/dev/uinput` is available and that your user has the required permissions from the udev setup in the installation guides.
 
 ## ImportError
 

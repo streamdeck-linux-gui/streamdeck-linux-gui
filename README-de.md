@@ -217,7 +217,7 @@ Joe
 
 Stellen sie sicher, dass sie die neueste Version verwenden mit `pip3 show streamdeck-ui`. Vergleichen sie es mit: [![PyPI version](https://badge.fury.io/py/streamdeck-ui.svg)](http://badge.fury.io/py/streamdeck-ui)
 
-* Streamdeck verwendet [pynput](https://github.com/moses-palmer/pynput) zur Simulation derf **Tasten-Betätigungen** wodurch ordentliche [Unterstützung für Wayland](https://github.com/moses-palmer/pynput/issues/189) fehlt. Im Allgemeinen werden sie gute Ergebnisse bei Verwendung von X haben (Ubuntu/Linux Mint). [Dieser thread](https://github.com/timothycrosley/streamdeck-ui/issues/47) lönnte nützlich sein.
+* Streamdeck verwendet [evdev](https://python-evdev.readthedocs.io/) mit `uinput` zur Simulation von **Tasten-Betätigungen** und **Text schreiben**. Wenn das nicht funktioniert, prüfen sie die `uinput`-Berechtigungen und die udev-Konfiguration aus den Installationsanleitungen.
 * **Taste drücken** oder **Text schreiben** funktioniert nicht unter Fedora (außerhalb von streamdeck selbst), was nicht besonders hilfreich ist. Die **Befehls-Funktion** kann aber trotzdem eine Menge.
 * Version [1.0.2](https://pypi.org/project/streamdeck-ui/) hat keine Fehler-Behandlung bei der **Befehls-** und der **Taste drücken** Funktion. Deshalb müssen sie vorsichtig sein - ein ungültiger Befehl oder Tastendruck stoppt auch alle anderen Prozesse. Bitte upgraden sie zur neuesten Version.
 * Einige Anwender haben berichtet, dass das Stream Deck Gerätnicht an allen USB-ports funktioniert, da es einiges an Strom verbraucht und/oder [strenge Bandbreitenanforderungen](https://github.com/timothycrosley/streamdeck-ui/issues/69#issuecomment-715887397) hat. Versuchen sie einen anderen Anschluß.
