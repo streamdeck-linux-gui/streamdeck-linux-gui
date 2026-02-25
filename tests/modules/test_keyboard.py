@@ -18,6 +18,7 @@ from streamdeck_ui.modules.keyboard import _DEFAULT_ADDITIONAL_DELAY, _DELAY_KEY
         ("CTRL++", [[e.KEY_LEFTCTRL]]),
         ("CTRL+numpad_add", [[e.KEY_LEFTCTRL, e.KEY_KPPLUS]]),
         ("CTRL+numpad_0", [[e.KEY_LEFTCTRL, e.KEY_KP0]]),
+        ("numpad_divide", [[e.KEY_KPSLASH]]),
         ("CTRL+0", [[e.KEY_LEFTCTRL, e.KEY_0]]),
         ("CTRL+KP0", [[e.KEY_LEFTCTRL, e.KEY_KP0]]),
         ("CTRL + ", [[e.KEY_LEFTCTRL]]),
@@ -43,3 +44,8 @@ def test_parse_keys_as_keycodes(keys, expected):
 def test_parse_keys_as_keycodes_with_invalid_key():
     with pytest.raises(ValueError):
         parse_keys_as_keycodes("invalid_key")
+
+
+def test_parse_keys_as_keycodes_with_hex_keysym():
+    with pytest.raises(ValueError, match="Invalid keys"):
+        parse_keys_as_keycodes("0xffaf")
