@@ -1076,7 +1076,7 @@ class MainWindow(QMainWindow):
         description = "A Linux compatible UI for the Elgato Stream Deck."
         app = QApplication.instance()
         body = [description, "Version {}\n".format(app.applicationVersion())]
-        dependencies = ("streamdeck", "pyside6", "pillow", "pynput")
+        dependencies = ("streamdeck", "pyside6", "pillow", "evdev")
         for dep in dependencies:
             try:
                 dist_version = version(dep)
