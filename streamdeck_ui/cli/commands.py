@@ -15,13 +15,15 @@ class SetPageCommand:
         self.page_index = cfg["page"]
 
     def execute(self, api: StreamDeckServer, ui):
-        deck_id = ui.device_list.itemData(ui.device_list.currentIndex())
+        selected_deck_id = ui.device_list.itemData(ui.device_list.currentIndex())
+        deck_id = selected_deck_id
         if self.deck_index is not None and ui.device_list.itemData(self.deck_index) is not None:
             deck_id = ui.device_list.itemData(self.deck_index)
         if api.get_page(deck_id) == self.page_index:
             return
         api.set_page(deck_id, self.page_index)
-        ui.pages.setCurrentIndex(self.page_index)
+        if deck_id == selected_deck_id:
+            ui.pages.setCurrentIndex(self.page_index)
 
 
 class SetButtonStateCommand:
