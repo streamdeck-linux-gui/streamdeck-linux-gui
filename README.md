@@ -16,11 +16,14 @@ _________________
 
 This project is a fork and drop-in replacement for [streamdeck_ui](https://github.com/timothycrosley/streamdeck-ui), which was abandoned after its original owner disappeared.
 
-> [!WARNING]  
-> THIS PROJECT IS IN MAINTENANCE MODE ONLY!  
-> Pull requests for critical bug fixes, dependency updates or documentation are accepted to keep the application functional, however, no new features will be accepted.
-> For a more feature-complete project, it is recommended to use [streamcontroller](https://github.com/StreamController/StreamController).
-> You can read more about this here: [The Sunset path: Moving to StreamController](https://github.com/streamdeck-linux-gui/streamdeck-linux-gui/discussions/203)
+> [!WARNING]
+> THIS PROJECT IS IN MAINTENANCE MODE ONLY!
+> Pull requests for critical bug fixes, dependency updates or documentation are accepted to keep the application functional; however, no new features will be accepted.
+> Further information on this decision is available on [GitHub Discussions](https://github.com/streamdeck-linux-gui/streamdeck-linux-gui/discussions/203).
+>
+> We recommend that you search for an alternative application. In particular, we recommend:
+> - [StreamController](https://github.com/StreamController/StreamController): "An elegant Linux app for the Elgato Stream Deck with support for plugins"
+> - [OpenDeck](https://github.com/nekename/OpenDeck): "Linux software for the Stream Deck with support for original Elgato Stream Deck plugins"
 
 All credit to the orignal authors, and the many contributors to the project.
 
