@@ -5,4 +5,9 @@ security:
   ignore-cvss-severity-below: 0
   ignore-cvss-unknown-severity: false
   continue-on-vulnerability-error: false
-  ignore-vulnerabilities: {}
+  ignore-vulnerabilities:
+    SFTY-20260902-58666:
+      reason: >-
+        nltk is only pulled in by the safety scanner itself (lint group), never
+        shipped with the application, and no fixed release exists yet (<=3.10.3).
+      expires: "2027-04-01"
