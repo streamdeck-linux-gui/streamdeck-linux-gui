@@ -43,7 +43,7 @@ class Pipeline:
             def _get_output(output_hash: int, current_pipeline_hash=pipeline_hash) -> Optional[Image]:
                 return self.output_cache.get(hash((output_hash, current_pipeline_hash)))
 
-            (image, hashcode) = current_filter.transform(
+            image, hashcode = current_filter.transform(
                 _get_input,
                 _get_output,
                 is_modified | self.first_run,

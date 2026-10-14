@@ -160,7 +160,7 @@ def execute():
         metavar="VALUE",
     )
 
-    (options, args) = parser.parse_args(sys.argv)
+    options, args = parser.parse_args(sys.argv)
     sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
     tmpdir = tempfile.gettempdir()
     file = "streamdeck_ui.sock"
