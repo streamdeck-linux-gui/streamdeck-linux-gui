@@ -1,16 +1,21 @@
 name: Test Docs
 
-on: 
+on:
   push:
     paths:
-      - 'docs/*'
-      - '.github/workflows/test-docs.yaml'
+      - '**/*.md'
+      - '.markdownlint.yml'
+      - '.github/workflows/test-docs.yml'
   pull_request:
     paths:
-      - 'docs/*'
-      - '.github/workflows/test-docs.yaml'
+      - '**/*.md'
+      - '.markdownlint.yml'
+      - '.github/workflows/test-docs.yml'
   workflow_dispatch:
   workflow_call:
+
+permissions:
+  contents: read
 
 jobs:
   test:
@@ -18,10 +23,9 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v3
-        
-      - uses: DavidAnson/markdownlint-cli2-action@v11
+        uses: actions/checkout@v7
+
+      - uses: DavidAnson/markdownlint-cli2-action@v24
         with:
           globs: '**/*.md'
           config: '.markdownlint.yml'
- 
