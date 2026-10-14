@@ -59,18 +59,25 @@ class CLIStreamDeckServer:
         try:
             tmpdir = tempfile.gettempdir()
             filename = "streamdeck_ui.sock"
-
-            saved_umask = os.umask(0o077)
             path = os.path.join(tmpdir, filename)
 
             if os.path.exists(path):
                 os.remove(path)
 
-            self.sock.bind(path)
+            # The umask is process-wide, so keep the restrictive one only while the
+            # socket file is created. Otherwise every command started from a button
+            # inherits it.
+            saved_umask = os.umask(0o077)
+            try:
+                self.sock.bind(path)
+            finally:
+                os.umask(saved_umask)
+
             self.sock.listen(1)
             self.sock.settimeout(CLIStreamDeckServer.SOCKET_CONNECTION_TIMEOUT_SECOND)
         except OSError:
             print("warning: for some reason, unable to utilize CLI commands.")
+            return
 
         while not self.quit.is_set():
             try:
@@ -87,8 +94,6 @@ class CLIStreamDeckServer:
             os.remove(path)
         except OSError:
             pass
-        finally:
-            os.umask(saved_umask)
 
 
 def execute():
