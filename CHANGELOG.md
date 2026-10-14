@@ -1,7 +1,7 @@
 # This file is no longer in use
 
 This file is no longer in use and is kept only for historical reasons.
-All changes (including pre-releases) are now visible in the github release page [here](https://github.com/streamdeck-linux-gui/streamdeck-linux-gui/releases)
+All changes (including pre-releases) are now visible on the [GitHub releases page](https://github.com/streamdeck-linux-gui/streamdeck-linux-gui/releases)
 
 # Upgrade
 

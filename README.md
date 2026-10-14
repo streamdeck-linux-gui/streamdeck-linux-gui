@@ -22,6 +22,7 @@ This project is a fork and drop-in replacement for [streamdeck_ui](https://githu
 > Further information on this decision is available on [GitHub Discussions](https://github.com/streamdeck-linux-gui/streamdeck-linux-gui/discussions/203).
 >
 > We recommend that you search for an alternative application. In particular, we recommend:
+>
 > - [StreamController](https://github.com/StreamController/StreamController): "An elegant Linux app for the Elgato Stream Deck with support for plugins"
 > - [OpenDeck](https://github.com/nekename/OpenDeck): "Linux software for the Stream Deck with support for original Elgato Stream Deck plugins"
 
@@ -31,20 +32,20 @@ All credit to the orignal authors, and the many contributors to the project.
 
 ## Key Features
 
-* **Linux Compatible**: Enables usage of Stream Deck devices (Original, MK2, Mini and XL) on Linux.
-* **Multi-device**: Enables connecting and configuring multiple Stream Decks on one computer.
-* **Brightness Control**: Supports controlling the brightness from both the configuration UI and buttons on the device itself.
-* **Configurable Button Display**: Icons + Text, Icon Only, and Text Only configurable per button on the Stream Deck.
-* **Multi-Action Support**: Run commands, write text and press hotkey combinations at the press of a single button on your Stream Deck.
-* **Button Pages**: streamdeck_ui supports multiple pages of buttons and dynamically setting up buttons to switch between those pages.
-* **Auto Reconnect**: Automatically and gracefully reconnects, in the case the device is unplugged and replugged in.
-* **Import/Export**: Supports saving and restoring Stream Deck configuration.
-* **Drag/Drop**: Move buttons by simply drag and drop.
-* **Drag/Drop Image**: Configure a button image by dragging it from your file manager onto the button.
-* **Auto Dim**: Configure the Stream Deck to automatically dim the display after a period of time. A button press wakes it up again.
-* **Animated icons**: Use an animated gif to liven things up a bit.
-* **Runs under systemd**: Run automatically in the background as a systemd --user service.
-* **Stream Deck Pedal**: Supports actions when pressing pedals.
+- **Linux Compatible**: Enables usage of Stream Deck devices (Original, MK2, Mini and XL) on Linux.
+- **Multi-device**: Enables connecting and configuring multiple Stream Decks on one computer.
+- **Brightness Control**: Supports controlling the brightness from both the configuration UI and buttons on the device itself.
+- **Configurable Button Display**: Icons + Text, Icon Only, and Text Only configurable per button on the Stream Deck.
+- **Multi-Action Support**: Run commands, write text and press hotkey combinations at the press of a single button on your Stream Deck.
+- **Button Pages**: streamdeck_ui supports multiple pages of buttons and dynamically setting up buttons to switch between those pages.
+- **Auto Reconnect**: Automatically and gracefully reconnects, in the case the device is unplugged and replugged in.
+- **Import/Export**: Supports saving and restoring Stream Deck configuration.
+- **Drag/Drop**: Move buttons by simply drag and drop.
+- **Drag/Drop Image**: Configure a button image by dragging it from your file manager onto the button.
+- **Auto Dim**: Configure the Stream Deck to automatically dim the display after a period of time. A button press wakes it up again.
+- **Animated icons**: Use an animated gif to liven things up a bit.
+- **Runs under systemd**: Run automatically in the background as a systemd --user service.
+- **Stream Deck Pedal**: Supports actions when pressing pedals.
 
 # Documentation
 
@@ -54,12 +55,12 @@ Documentation is available at [https://streamdeck-linux-gui.github.io/streamdeck
 
 ## Installation Guides
 
-* [Arch/Manjaro](docs/installation/arch.md)
-* [CentOS](docs/installation/centos.md)
-* [Fedora](docs/installation/fedora.md)
-* [NixOS](docs/installation/nixos.md)
-* [openSUSE](docs/installation/opensuse.md)
-* [Ubuntu/Mint](docs/installation/ubuntu.md)
+- [Arch/Manjaro](docs/installation/arch.md)
+- [CentOS](docs/installation/centos.md)
+- [Fedora](docs/installation/fedora.md)
+- [NixOS](docs/installation/nixos.md)
+- [openSUSE](docs/installation/opensuse.md)
+- [Ubuntu/Mint](docs/installation/ubuntu.md)
 
 Once you're up and running, consider installing a [systemd service](docs/installation/systemd.md).
 
@@ -79,12 +80,12 @@ Contributuions encouraged and very welcome, however some rules and guidelines mu
 
 ### General Guidelines
 
-* The project is versioned according to [Semantic Versioning](https://semver.org/).
-* When writing your commit messages, please follow the [Angular commit message](https://gist.github.com/brianclements/841ea7bffdb01346392c).
-* Pull requests should be made against the `develop` branch, so please make sure you check out the `develop` branch.
-* Pull requests should include tests and documentation as appropriate.
-* When opening a pull request, if possible, attach a screenshot or GIF of the changes.
-* Please read the [contributing guide](https://github.com/streamdeck-linux-gui/streamdeck-linux-gui/blob/main/docs/contributing/contributing-guide.md) for more information and instructions on how to get started.
+- The project is versioned according to [Semantic Versioning](https://semver.org/).
+- When writing your commit messages, please follow the [Angular commit message](https://gist.github.com/brianclements/841ea7bffdb01346392c).
+- Pull requests should be made against the `develop` branch, so please make sure you check out the `develop` branch.
+- Pull requests should include tests and documentation as appropriate.
+- When opening a pull request, if possible, attach a screenshot or GIF of the changes.
+- Please read the [contributing guide](https://github.com/streamdeck-linux-gui/streamdeck-linux-gui/blob/main/docs/contributing/contributing-guide.md) for more information and instructions on how to get started.
 
 ### Feature Requests
 
@@ -92,7 +93,7 @@ Open a new discussion with the `feature request` tag and describe the feature yo
 
 ### Bug Reports
 
-Open a bug report [here](https://github.com/streamdeck-linux-gui/streamdeck-linux-gui/issues) and follow the template. Please include as much information as possible.
+Open a [bug report](https://github.com/streamdeck-linux-gui/streamdeck-linux-gui/issues) and follow the template. Please include as much information as possible.
 
 ### Have a Question?
 
@@ -100,8 +101,8 @@ If you need any help, have a question, or just want to discuss something related
 
 ## Known issues
 
-* pip package is not yet available for the current state of the project. Please install from source, currently trying to find a better way to provide the package.
-* Streamdeck uses [evdev](https://python-evdev.readthedocs.io/) with `uinput` for simulating **Key Presses** and **Write Text**. If these actions do not work, verify your `uinput` permissions and udev setup from the installation guides.
-* **Key Press** or **Write Text** does not work on Fedora (outside of the streamdeck itself), which is not particularly useful. However, still do a lot with the **Command** feature.
-* Some users have reported that the Stream Deck device does not work on all on specific USB ports, as it draws quite a bit of power and/or has [strict bandwidth requirements](https://github.com/timothycrosley/streamdeck-ui/issues/69#issuecomment-715887397). Try a different port.
-* If you are executing a shell script from the Command feature - remember to add the shebang at the top of your file, for the language in question. `#!/bin/bash` or `#!/usr/bin/python3` etc. The streamdeck may appear to lock up if you don't under some distros.
+- pip package is not yet available for the current state of the project. Please install from source, currently trying to find a better way to provide the package.
+- Streamdeck uses [evdev](https://python-evdev.readthedocs.io/) with `uinput` for simulating **Key Presses** and **Write Text**. If these actions do not work, verify your `uinput` permissions and udev setup from the installation guides.
+- **Key Press** or **Write Text** does not work on Fedora (outside of the streamdeck itself), which is not particularly useful. However, still do a lot with the **Command** feature.
+- Some users have reported that the Stream Deck device does not work on all on specific USB ports, as it draws quite a bit of power and/or has [strict bandwidth requirements](https://github.com/timothycrosley/streamdeck-ui/issues/69#issuecomment-715887397). Try a different port.
+- If you are executing a shell script from the Command feature - remember to add the shebang at the top of your file, for the language in question. `#!/bin/bash` or `#!/usr/bin/python3` etc. The streamdeck may appear to lock up if you don't under some distros.

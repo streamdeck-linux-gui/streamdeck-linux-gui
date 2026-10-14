@@ -59,7 +59,7 @@ python3 -m pip install streamdeck-linux-gui --user
 
 Please make sure you have followed the steps below untill the **Install Stream Deck UI section** before continuing.
 
-The steps to install from source can be found [here](source.md)
+See the [installation from source guide](source.md) for the steps.
 
 ### Launch the Streamdeck UI
 
